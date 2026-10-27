@@ -76,7 +76,10 @@ function localDeadline(timestamp: unknown, anchor: ServerClockAnchor | null): nu
 }
 
 function remainingTime(target: number, now: number): string {
-  const totalSeconds = Math.max(0, Math.ceil((target - now) / 1000));
+  // Round to whole milliseconds first: `anchor.clientNow + 60_000` minus
+  // `anchor.clientNow` can drift to 60000.0000002 in float math, which would
+  // otherwise make `Math.ceil` jump an exact 60s up to 61.
+  const totalSeconds = Math.max(0, Math.ceil(Math.round(target - now) / 1000));
   const hours = Math.floor(totalSeconds / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);
   const seconds = totalSeconds % 60;
