@@ -1,3 +1,9 @@
+/**
+ * Modified for nijisanjifriberg on 2026-10-27.
+ * Original work: csgofriberg, Copyright (C) 2026 星海 (Xinhai).
+ * Licensed under the GNU Affero General Public License v3.
+ * See LICENSE, NOTICE and COPYRIGHT.md for details.
+ */
 import { ReactNode, useEffect } from 'react';
 import { Cake, Globe2, Layers3, Ruler, Tag, Users, UserRound } from 'lucide-react';
 import ModalPortal from './ModalPortal';

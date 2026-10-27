@@ -1,3 +1,8 @@
+/**
+ * nijisanjifriberg — Copyright (C) 2026 星海 (Xinhai).
+ * Licensed under the GNU Affero General Public License v3.
+ * See LICENSE, NOTICE and COPYRIGHT.md for details.
+ */
 // Compare i18n key sets across locales by importing the real module.
 // Run from the repo root with tsx so TypeScript is transpiled on the fly.
 import { resources } from '../../client/src/i18n/resources';

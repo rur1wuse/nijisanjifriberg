@@ -1,0 +1,64 @@
+nijisanjifriberg
+================
+
+This project is a modified version of csgofriberg.
+
+Original work
+-------------
+
+    csgofriberg
+    Copyright (C) 2026 星海 (Xinhai) <62863922+xinhai-ai@users.noreply.github.com>
+    https://github.com/shnlfriberg/csgofriberg
+
+    Licensed under the GNU Affero General Public License, version 3.
+
+Modifications
+-------------
+
+    nijisanjifriberg
+    Copyright (C) 2026 星海 (Xinhai) <62863922+xinhai-ai@users.noreply.github.com>
+    https://github.com/shnlfriberg/nijisanjifriberg
+
+    Licensed under the GNU Affero General Public License, version 3.
+
+This modified version was produced in October 2026 and is distributed under
+the same license as the original work. Because the original project is covered
+by the GNU Affero General Public License version 3, this derivative must also
+remain under AGPL-3.0.
+
+The following is a summary of the changes made. This summary is provided for
+convenience only and has no legal effect; the full difference is available from
+the version history of this repository.
+
+  * The game now targets Nijisanji JP VTubers instead of CS:GO / CS2 Major
+    players. The player dataset was replaced with 172 members.
+  * The compared attributes changed from nationality / region / team / age /
+    role / Major titles / Major appearances / active status to gender / debut
+    date / height / age / affiliations / race.
+  * Feedback levels were extended to five: correct, close, wrong, gray and
+    unknown (age not disclosed). Height and age are stored as source text and
+    parsed for comparison, including unit multipliers and unknown-age keywords.
+  * Difficulty levels were reduced to a single `normal` tier.
+  * The external player API, API tokens, cheat analysis integration and player
+    change review workflow were removed, including their routes, services,
+    middleware, admin UI, documentation and database tables.
+  * The project name, package identifiers and default database/Redis naming
+    changed from csgofriberg to nijisanjifriberg.
+  * CORS, configuration and documentation were updated accordingly.
+
+Files that differ from the original work carry the modification notice
+described in section 5 of the license; see `COPYRIGHT.md`.
+
+Source code availability
+------------------------
+
+Section 13 of the GNU Affero General Public License requires that users
+interacting with this program over a network be offered the Corresponding
+Source. Operators of a deployed instance must make the source available to
+those users. Published source: https://github.com/shnlfriberg/nijisanjifriberg
+
+Full license text
+-----------------
+
+See `LICENSE` (GNU AGPL-3.0) in this repository. The license text itself is
+unmodified and must not be modified.

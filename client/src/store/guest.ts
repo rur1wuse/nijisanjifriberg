@@ -1,3 +1,9 @@
+/**
+ * Modified for nijisanjifriberg on 2026-10-27.
+ * Original work: csgofriberg, Copyright (C) 2026 星海 (Xinhai).
+ * Licensed under the GNU Affero General Public License v3.
+ * See LICENSE, NOTICE and COPYRIGHT.md for details.
+ */
 const GUEST_NAME = 'guestName';
 const GUEST_NAME_CHANGED = 'nijisanjifriberg:guest-name-changed';
 

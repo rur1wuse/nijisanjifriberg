@@ -1,3 +1,8 @@
+/**
+ * nijisanjifriberg — Copyright (C) 2026 星海 (Xinhai).
+ * Licensed under the GNU Affero General Public License v3.
+ * See LICENSE, NOTICE and COPYRIGHT.md for details.
+ */
 import http from 'http';
 import express from 'express';
 import { AddressInfo } from 'net';

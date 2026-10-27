@@ -1,3 +1,9 @@
+/**
+ * Modified for nijisanjifriberg on 2026-10-27.
+ * Original work: csgofriberg, Copyright (C) 2026 星海 (Xinhai).
+ * Licensed under the GNU Affero General Public License v3.
+ * See LICENSE, NOTICE and COPYRIGHT.md for details.
+ */
 const STORAGE_KEY = 'nijisanjifriberg.multi-lobby-preferences';
 const PRESETS_STORAGE_KEY = 'nijisanjifriberg.multi-lobby-presets';
 const BO_OPTIONS = new Set([1, 3, 5, 7]);

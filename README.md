@@ -196,6 +196,28 @@ client/src
 └── pages/                 # Home / SingleGame / MultiLobby / MultiRoom / Stats / ...
 ```
 
-## 许可证
+## 版权与许可证
 
-本项目基于 [AGPL-3.0](LICENSE) 开源。
+本项目是 **csgofriberg** 的衍生版本，同样以 **GNU Affero 通用公共许可证第 3 版（AGPL-3.0）** 发布。
+
+| | 版权 |
+| --- | --- |
+| 原始作品：[csgofriberg](https://github.com/shnlfriberg/csgofriberg) | Copyright (C) 2026 星海 (Xinhai) &lt;62863922+xinhai-ai@users.noreply.github.com&gt; |
+| 修改版本：nijisanjifriberg | Copyright (C) 2026 星海 (Xinhai) &lt;62863922+xinhai-ai@users.noreply.github.com&gt; |
+
+- 完整许可证原文：[`LICENSE`](LICENSE)（AGPL-3.0，请勿修改许可证正文）
+- 修改说明与衍生关系：[`NOTICE`](NOTICE)
+- 版权归属、修改文件标注方式与 AGPL 合规说明：[`COPYRIGHT.md`](COPYRIGHT.md)
+
+**为什么必须沿用 AGPL-3.0**：原始项目即为 AGPL-3.0，任何衍生作品都必须以相同许可证发布，不能改为其他许可证。
+
+**相对原始作品的改动**（详见 [`NOTICE`](NOTICE)）：玩法从 CS:GO/CS2 Major 选手猜测改为彩虹社 JP 成员猜测、属性字段整体替换、难度收敛为单一档位、移除外部 API / API Token / 作弊分析 / 选手变更审核子系统、项目更名为 nijisanjifriberg。
+
+**第 13 条（网络服务）义务**：AGPL 要求通过网络与程序交互的用户能够获得其对应源码。**部署实例的运营者必须向用户提供所使用的确切版本源码**，例如在应用中提供指向对应 commit 的源码链接。
+
+**修改文件标注**：依据 AGPL 第 5 条，所有相对原始作品有改动的源文件均在文件头标注了修改日期与原始版权信息；为本次修改新建的文件则标注作者与许可证。
+
+## 贡献
+
+欢迎提交 issue 与 pull request。提交即表示你同意以 GNU AGPL-3.0 授权你的贡献。
+
