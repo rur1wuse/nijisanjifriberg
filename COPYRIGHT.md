@@ -8,7 +8,7 @@ under the GNU Affero General Public License, version 3.
 | Work | Copyright |
 | --- | --- |
 | Original: csgofriberg | Copyright (C) 2026 星海 (Xinhai) &lt;62863922+xinhai-ai@users.noreply.github.com&gt; |
-| Modifications: nijisanjifriberg | Copyright (C) 2026 rur1wuse &lt;rur1wuse@users.noreply.github.com&gt; |
+| Modifications: nijisanjifriberg | Copyright (C) 2026 rur1wuse &lt;xuelunai@gmail.com&gt; |
 
 - Original project: <https://github.com/shnlfriberg/csgofriberg>
 - This version: <https://github.com/rur1wuse/nijisanjifriberg>

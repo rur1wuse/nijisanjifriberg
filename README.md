@@ -203,7 +203,7 @@ client/src
 | | 版权 |
 | --- | --- |
 | 原始作品：[csgofriberg](https://github.com/shnlfriberg/csgofriberg) | Copyright (C) 2026 星海 (Xinhai) &lt;62863922+xinhai-ai@users.noreply.github.com&gt; |
-| 修改版本：nijisanjifriberg | Copyright (C) 2026 rur1wuse &lt;rur1wuse@users.noreply.github.com&gt; |
+| 修改版本：nijisanjifriberg | Copyright (C) 2026 rur1wuse &lt;xuelunai@gmail.com&gt; |
 
 - 完整许可证原文：[`LICENSE`](LICENSE)（AGPL-3.0，请勿修改许可证正文）
 - 修改说明与衍生关系：[`NOTICE`](NOTICE)
