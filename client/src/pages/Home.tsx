@@ -256,7 +256,7 @@ export default function Home() {
             {t('home.bilibili')}
           </a>
           <a
-            href="https://github.com/shnlfriberg/nijisanjifriberg"
+            href="https://github.com/rur1wuse/nijisanjifriberg"
             className="btn btn-github"
             target="_blank"
             rel="noopener noreferrer"

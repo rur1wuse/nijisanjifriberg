@@ -8,11 +8,11 @@
   "private": true,
   "description": "虹一把 - 彩虹社 VTuber 猜测游戏",
   "license": "AGPL-3.0-only",
-  "author": "星海 (Xinhai) <62863922+xinhai-ai@users.noreply.github.com>",
-  "homepage": "https://github.com/shnlfriberg/nijisanjifriberg",
+  "author": "rur1wuse <rur1wuse@users.noreply.github.com>",
+  "homepage": "https://github.com/rur1wuse/nijisanjifriberg",
   "repository": {
     "type": "git",
-    "url": "https://github.com/shnlfriberg/nijisanjifriberg.git"
+    "url": "https://github.com/rur1wuse/nijisanjifriberg.git"
   },
   "scripts": {
     "dev": "concurrently -n server,client -c blue,green \"pnpm --filter server dev\" \"pnpm --filter client dev\"",

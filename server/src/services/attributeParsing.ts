@@ -1,5 +1,5 @@
 /**
- * nijisanjifriberg — Copyright (C) 2026 星海 (Xinhai).
+ * nijisanjifriberg — Copyright (C) 2026 rur1wuse.
  * Licensed under the GNU Affero General Public License v3.
  * See LICENSE, NOTICE and COPYRIGHT.md for details.
  */

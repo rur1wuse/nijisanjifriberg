@@ -4,7 +4,7 @@
 
 **彩虹社（Nijisanji JP）VTuber 猜测游戏 —— 类 Wordle 玩法 + 实时多人对战**
 
-[![CI and Docker](https://github.com/shnlfriberg/nijisanjifriberg/actions/workflows/docker.yml/badge.svg)](https://github.com/shnlfriberg/nijisanjifriberg/actions/workflows/docker.yml)
+[![CI and Docker](https://github.com/rur1wuse/nijisanjifriberg/actions/workflows/docker.yml/badge.svg)](https://github.com/rur1wuse/nijisanjifriberg/actions/workflows/docker.yml)
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 [![Node.js ≥ 26](https://img.shields.io/badge/node-%E2%89%A526-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 [![pnpm workspaces](https://img.shields.io/badge/pnpm-workspaces-F69220?logo=pnpm&logoColor=white)](https://pnpm.io/)
@@ -203,7 +203,7 @@ client/src
 | | 版权 |
 | --- | --- |
 | 原始作品：[csgofriberg](https://github.com/shnlfriberg/csgofriberg) | Copyright (C) 2026 星海 (Xinhai) &lt;62863922+xinhai-ai@users.noreply.github.com&gt; |
-| 修改版本：nijisanjifriberg | Copyright (C) 2026 星海 (Xinhai) &lt;62863922+xinhai-ai@users.noreply.github.com&gt; |
+| 修改版本：nijisanjifriberg | Copyright (C) 2026 rur1wuse &lt;rur1wuse@users.noreply.github.com&gt; |
 
 - 完整许可证原文：[`LICENSE`](LICENSE)（AGPL-3.0，请勿修改许可证正文）
 - 修改说明与衍生关系：[`NOTICE`](NOTICE)

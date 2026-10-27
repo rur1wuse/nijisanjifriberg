@@ -3,7 +3,7 @@
 生产镜像仅支持 PostgreSQL，由 GitHub Actions 发布到：
 
 ```text
-ghcr.io/shnlfriberg/nijisanjifriberg
+ghcr.io/rur1wuse/nijisanjifriberg
 ```
 
 运行镜像基于 distroless Node.js，仅包含生产 Node 依赖、编译后的服务端
@@ -267,7 +267,7 @@ docker compose stop app-1 app-2
 例如：
 
 ```text
-IMAGE=ghcr.io/shnlfriberg/nijisanjifriberg:sha-0123456
+IMAGE=ghcr.io/rur1wuse/nijisanjifriberg:sha-0123456
 ```
 
 回滚时把 `IMAGE` 改回上一个标签并执行：
