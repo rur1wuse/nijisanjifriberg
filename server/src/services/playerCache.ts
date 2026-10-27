@@ -3,7 +3,7 @@ import { db } from '../db/knex';
 import { redis, redisKey, redisPublisher, redisSubscriber } from '../redis';
 import { Player } from '../types';
 import { DIFFICULTY_LEVELS } from '../difficulties';
-import { normalizeTeamHistory } from './teamHistory';
+import { normalizeCollabGroups } from './teamHistory';
 
 const INVALIDATE_CHANNEL = redisKey('players:invalidate');
 const VERSION_KEY = redisKey('players:revision');
@@ -38,7 +38,7 @@ export async function refreshPlayerCache(): Promise<void> {
       ]);
       const hydrated = rows.map((player) => ({
         ...player,
-        team_history: normalizeTeamHistory(player.team_history),
+        collab_groups: normalizeCollabGroups(player.collab_groups),
         difficulties: [] as string[],
       }));
       const hydratedById = new Map(hydrated.map((player) => [Number(player.id), player]));
@@ -58,7 +58,7 @@ export async function refreshPlayerCache(): Promise<void> {
       playersById = new Map(hydrated.map((player) => [player.id, player]));
       searchablePlayers = allPlayers.map((player) => ({
         player,
-        search: normalizeSearch(`${player.nickname}\0${player.team}`),
+        search: normalizeSearch(`${player.nickname}\0${player.race}`),
       }));
       publicList = {
         version: pendingVersion || storedVersion || String(Date.now()),

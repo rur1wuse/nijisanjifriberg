@@ -15,3 +15,5 @@ compose.override.yaml
 .claude/
 rule.txt
 AGENTS.md
+
+.omo/

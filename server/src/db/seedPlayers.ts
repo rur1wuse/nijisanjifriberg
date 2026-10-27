@@ -1,25 +1,20 @@
 import type { Knex } from 'knex';
 import { db } from './knex';
 import playersData from './seeds/players.json';
-import { serializeTeamHistory } from '../services/teamHistory';
 
 interface SeedPlayer {
   nickname: string;
-  nationality: string;
-  region: string;
-  team?: string;
-  team_history?: string[];
-  age: number;
-  role?: string;
-  major_championships?: number;
-  major_appearances?: number;
+  gender: string;
+  debut_date: string;
+  height_cm: string;
+  age_text: string;
+  race: string;
+  collab_groups: string[];
   difficulties?: string[];
-  is_active?: boolean;
   is_enabled?: boolean;
 }
 
 const seedPlayers = playersData as SeedPlayer[];
-const normalizeNickname = (value: string) => value.toLocaleLowerCase('en-US').replace(/[_-]/g, '');
 
 function difficulties(player: SeedPlayer): string[] {
   return player.difficulties?.length ? [...new Set(player.difficulties)] : ['normal'];
@@ -27,35 +22,27 @@ function difficulties(player: SeedPlayer): string[] {
 
 export async function insertMissingSeedPlayers(instance: Knex = db): Promise<number> {
   const existing = new Set(
-    (await instance('players').select('nickname'))
-      .map((player) => normalizeNickname(String(player.nickname)))
+    (await instance('players').select('nickname')).map((player) => String(player.nickname))
   );
-  const additions = seedPlayers.filter(
-    (player) => !existing.has(normalizeNickname(player.nickname))
-  );
+  const additions = seedPlayers.filter((player) => !existing.has(player.nickname));
   if (!additions.length) return 0;
 
   await instance.transaction(async (trx) => {
     const inserted = await trx('players')
       .insert(additions.map((player) => ({
         nickname: player.nickname,
-        nationality: player.nationality,
-        region: player.region,
-        team: player.team ?? '',
-        team_history: serializeTeamHistory(player.team_history),
-        age: player.age,
-        role: player.role ?? 'Rifler',
-        major_championships: player.major_championships ?? 0,
-        major_appearances: player.major_appearances ?? 0,
-        is_active: player.is_active ?? true,
+        gender: player.gender ?? '',
+        debut_date: player.debut_date ?? '',
+        height_cm: player.height_cm ?? '',
+        age_text: player.age_text ?? '',
+        collab_groups: JSON.stringify(player.collab_groups ?? []),
+        race: player.race ?? '',
         is_enabled: player.is_enabled ?? true,
       })))
       .returning(['id', 'nickname']);
-    const seedByNickname = new Map(
-      additions.map((player) => [normalizeNickname(player.nickname), player])
-    );
+    const seedByNickname = new Map(additions.map((player) => [player.nickname, player]));
     const memberships = inserted.flatMap((player) => {
-      const seed = seedByNickname.get(normalizeNickname(String(player.nickname)));
+      const seed = seedByNickname.get(String(player.nickname));
       return seed
         ? difficulties(seed).map((difficultyKey) => ({
             player_id: player.id,

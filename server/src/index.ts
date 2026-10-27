@@ -18,7 +18,6 @@ import statsRoutes from './routes/stats';
 import leaderboardRoutes from './routes/leaderboard';
 import announcementRoutes from './routes/announcements';
 import adminRoutes from './routes/admin';
-import externalPlayerRoutes, { externalPlayerAuth } from './routes/externalPlayers';
 import { setupSocket } from './socket';
 import {
   closeRedis,
@@ -184,13 +183,6 @@ async function main() {
   // Public runtime configuration is deliberately mounted before the PoW gate.
   // It contains only non-secret browser configuration such as the GeeTest ID.
   app.use('/api/runtime-config', runtimeConfigRoutes);
-  app.use('/api/external', externalPlayerAuth);
-  app.use(
-    '/api/external',
-    rejectOversizedBody(config.adminImportBodyLimitBytes),
-    parseJsonOnce(`${config.adminImportBodyLimitBytes}b`)
-  );
-  app.use('/api/external', externalPlayerRoutes);
   app.use('/api', requirePow);
   app.use('/api/admin/players/import', requireAuth, requireAdmin);
   app.use(

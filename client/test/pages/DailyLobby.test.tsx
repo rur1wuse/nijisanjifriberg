@@ -22,9 +22,7 @@ function overview() {
       startsAt: 40_000,
       nextRefreshAt: 160_000,
       challenges: [
-        { difficulty: 'beginner', status: 'not_started' },
-        { difficulty: 'easy', status: 'playing' },
-        { difficulty: 'normal', status: 'won' },
+        { difficulty: 'normal', status: 'not_started' },
       ],
     },
   };
@@ -37,15 +35,13 @@ describe('DailyLobby', () => {
     get.mockResolvedValue(overview() as never);
   });
 
-  it('shows the three daily difficulties and their current status', async () => {
+  it('shows the single daily difficulty and its current status', async () => {
     renderAtRoute(<DailyLobby />, { route: '/daily', path: '/daily' });
 
-    expect(await screen.findByText('选择每日挑战难度')).toBeInTheDocument();
+    expect(await screen.findByText('每日挑战', { selector: '.title' })).toBeInTheDocument();
     expect(get).toHaveBeenCalledWith('/daily-challenge/overview');
-    expect(screen.getByRole('button', { name: /入门版/ })).toHaveClass('active');
+    expect(screen.getByRole('button', { name: /完整版/ })).toHaveClass('active');
     expect(await screen.findByText('未开始')).toBeInTheDocument();
-    expect(screen.getByText('进行中')).toBeInTheDocument();
-    expect(screen.getByText('已完成')).toBeInTheDocument();
   });
 
   it('enters the selected difficulty route', async () => {
@@ -63,6 +59,6 @@ describe('DailyLobby', () => {
     await user.click(screen.getByRole('button', { name: '进入挑战' }));
 
     expect(await screen.findByTestId('daily-game-route')).toBeInTheDocument();
-    expect(localStorage.getItem('csgofriberg.daily-difficulty')).toBe('normal');
+    expect(localStorage.getItem('nijisanjifriberg.daily-difficulty')).toBe('normal');
   });
 });

@@ -33,16 +33,13 @@ describe('AdminPlayers', () => {
   it('downloads the complete import-compatible player JSON', async () => {
     const exportedPlayers = [{
       nickname: 'export-player',
-      nationality: '中国',
-      region: '亚洲',
-      team: 'Test',
-      team_history: ['Old Test'],
-      age: 24,
-      role: 'Rifler',
-      major_championships: 0,
-      major_appearances: 1,
-      difficulties: ['easy', 'normal'],
-      is_active: true,
+      gender: '女',
+      debut_date: '2018-02-08',
+      height_cm: '151cm',
+      age_text: '16歳',
+      collab_groups: ['JK組'],
+      race: '人类',
+      difficulties: ['normal'],
       is_enabled: true,
     }];
     vi.mocked(api.get).mockImplementation(async (url) => {

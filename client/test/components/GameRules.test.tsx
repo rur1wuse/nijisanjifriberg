@@ -10,13 +10,16 @@ describe('GameRules', () => {
     await i18n.changeLanguage('zh');
   });
 
-  it('explains historical-team yellow feedback and current-team priority', async () => {
+  it('explains the five feedback levels and the seven compared fields', async () => {
     const user = userEvent.setup();
     renderWithProviders(<GameRules />);
 
-    await user.click(screen.getByRole('button', { name: '游戏规则' }));
+    await user.click(screen.getByRole('button', { name: '\u6e38\u620f\u89c4\u5219' }));
 
-    expect(screen.getByText('命中历史队伍、赛区相同或数值接近')).toBeInTheDocument();
-    expect(screen.getByText(/当前队伍相同显示绿色/)).toHaveTextContent('当前队伍判定优先');
+    expect(screen.getByText(/\u51fa\u9053\u65e5\u76f8\u5dee\u4e00\u5e74\u5185/)).toBeInTheDocument();
+    expect(screen.getByText('\u7d2b\u8272 \u00b7 \u5e74\u9f84\u4e0d\u8be6')).toBeInTheDocument();
+    expect(screen.getByText(/\u540d\u5b57\u3001\u6027\u522b\u3001\u79cd\u65cf/)).toBeInTheDocument();
+    expect(screen.getByText(/\u6027\u522b \u00b7 \u76f8\u540c\u7eff/)).toBeInTheDocument();
+    expect(screen.getByText(/\u5173\u7cfb \u00b7 \u6709\u5171\u540c\u7ec4\u5408\u7eff/)).toBeInTheDocument();
   });
 });

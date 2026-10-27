@@ -21,7 +21,6 @@ export default function SingleLobby() {
 
   const selectedDifficulty = useMemo(
     () => difficulties.find((item) => item.key === selected)
-      ?? difficulties.find((item) => item.recommended)
       ?? difficulties[0],
     [difficulties, selected]
   );
@@ -72,9 +71,6 @@ export default function SingleLobby() {
                     </small>
                   </span>
                   <span className="single-difficulty-check" aria-hidden="true">{active && <Check size={17} />}</span>
-                  {difficulty.recommended && (
-                    <span className="single-difficulty-badge">{t('singleLobby.recommended')}</span>
-                  )}
                 </button>
               );
             })}

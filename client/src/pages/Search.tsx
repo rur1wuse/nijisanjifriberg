@@ -44,21 +44,21 @@ export default function Search() {
         {player ? (
           <div className="card">
             <h3>
-              <CircleDot size={15} color={player.isActive ? '#16a34a' : '#9aa3b2'} />
+              <CircleDot size={15} color="#16a34a" />
               {player.nickname}
               <span className="muted" style={{ fontWeight: 400 }}>
-                {player.isActive ? t('common.active') : t('common.retired')} · {t('search.age', { age: player.age })}
+                {player.race}
               </span>
             </h3>
             <PlayerInfoTable
               answer={{
                 nickname: player.nickname,
-                team: player.team,
-                nationality: player.nationality,
-                region: player.region,
-                role: player.role,
-                majorChampionships: player.majorChampionships,
-                majorAppearances: player.majorAppearances,
+                gender: player.gender,
+                debutDate: player.debutDate,
+                height: player.height,
+                age: player.age,
+                collab: player.collab,
+                race: player.race,
                 difficulties: player.difficulties,
               }}
             />

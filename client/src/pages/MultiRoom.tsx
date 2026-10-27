@@ -268,13 +268,12 @@ function PlayerBoard({
 function CompactFeedback({ feedback }: { feedback: MultiplayerGuessFeedback | undefined }) {
   const attributes = feedback ? [
     { level: feedback.correct ? 'correct' : 'wrong' },
-    feedback.attributes.team,
-    feedback.attributes.nationality,
+    feedback.attributes.gender,
+    feedback.attributes.debutDate,
+    feedback.attributes.height,
     feedback.attributes.age,
-    feedback.attributes.role,
-    feedback.attributes.majorChampionships,
-    feedback.attributes.majorAppearances,
-    feedback.attributes.isActive,
+    feedback.attributes.collab,
+    feedback.attributes.race,
   ] : [];
   return (
     <span className="compact-feedback" aria-hidden="true">

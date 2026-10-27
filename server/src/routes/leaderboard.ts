@@ -14,7 +14,7 @@ router.use(optionalAuth);
 const difficultyKeySchema = z.string().trim().regex(/^[a-z0-9][a-z0-9_-]{0,31}$/);
 const leaderboardQuery = z.object({
   mode: z.enum(['single', 'multi']).default('single'),
-  difficulty: difficultyKeySchema.default('beginner'),
+  difficulty: difficultyKeySchema.default('normal'),
 });
 
 /** 排行榜: 单人和多人均按难度分组，再按胜场排序。 */

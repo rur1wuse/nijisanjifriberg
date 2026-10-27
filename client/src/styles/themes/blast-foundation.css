@@ -18,7 +18,9 @@
   --accent: #a281ff;
   --correct: #38bd78;
   --close: #d59632;
-  --wrong: #675563;
+  --wrong: #e2455e;
+  --gray: #675563;
+  --unknown: #a281ff;
   --shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
   --shadow-lg: 0 28px 80px rgba(0, 0, 0, 0.48);
   --radius: 4px;

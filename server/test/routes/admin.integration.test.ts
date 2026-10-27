@@ -91,7 +91,7 @@ describe('admin user management', () => {
           session_id: `${sessionPrefix}-won`,
           user_id: targetUser.id,
           target_player_id: targetPlayer.id,
-          mode: 'easy',
+          mode: 'normal',
           guesses: JSON.stringify([analysisGuess.id, targetPlayer.id]),
           first_guess_player_id: analysisGuess.id,
           status: 'won',
@@ -114,7 +114,7 @@ describe('admin user management', () => {
         const [inserted] = await db('match_records')
           .insert({
             room_id: `${matchPrefix}-${index}`,
-            db_type: 'easy',
+            db_type: 'normal',
             bo_type: 3,
             winner_id: won ? targetUser.id : null,
             winner_key: won ? `u:${targetUser.id}` : null,
@@ -192,29 +192,19 @@ describe('admin user management', () => {
       const leaderboards = await request(`/api/admin/users/${targetUser.id}/leaderboards`, adminSession);
       expect(leaderboards.response.status).toBe(200);
       expect(leaderboards.data).toMatchObject({ leaderboardHidden: true, entries: expect.any(Array) });
-      expect(leaderboards.data.entries).toHaveLength(6);
-      expect(leaderboards.data.entries.find((entry: { mode: string; difficulty: string }) => entry.mode === 'single' && entry.difficulty === 'easy')).toMatchObject({
-        total: 1,
-        wins: 1,
-        winRate: 1,
-        rank: expect.any(Number),
-      });
-      expect(leaderboards.data.entries.find((entry: { mode: string; difficulty: string }) => entry.mode === 'multi' && entry.difficulty === 'easy')).toMatchObject({
+      expect(leaderboards.data.entries).toHaveLength(2);
+      expect(leaderboards.data.entries.find((entry: { mode: string; difficulty: string }) => entry.mode === 'single' && entry.difficulty === 'normal')).toMatchObject({
         total: 2,
         wins: 1,
         winRate: 0.5,
         rank: expect.any(Number),
       });
-
-      const analysisConfig = { ...config.cheatAnalysis };
-      Object.assign(config.cheatAnalysis, { apiUrl: '', apiToken: '' });
-      const analysis = await request(`/api/admin/users/${targetUser.id}/analysis`, adminSession, {
-        method: 'POST',
-        body: { locale: 'zh-CN' },
+      expect(leaderboards.data.entries.find((entry: { mode: string; difficulty: string }) => entry.mode === 'multi' && entry.difficulty === 'normal')).toMatchObject({
+        total: 2,
+        wins: 1,
+        winRate: 0.5,
+        rank: expect.any(Number),
       });
-      Object.assign(config.cheatAnalysis, analysisConfig);
-      expect(analysis.response.status).toBe(503);
-      expect(analysis.data).toEqual({ code: 'ANALYSIS_SERVICE_NOT_CONFIGURED' });
 
       const invalidVisibility = await request(
         `/api/admin/users/${targetUser.id}/leaderboard-visibility`,
@@ -336,7 +326,7 @@ describe('admin user management', () => {
     const roomId = `admin-report-room-${stamp}`;
     const [insertedMatch] = await db('match_records').insert({
       room_id: roomId,
-      db_type: 'easy',
+      db_type: 'normal',
       bo_type: 3,
       replay: '[]',
     }).returning('id');
@@ -376,7 +366,7 @@ describe('admin user management', () => {
           id: reportId,
           matchId,
           roomId,
-          mode: 'easy',
+          mode: 'normal',
           boType: 3,
           reporter: userNameFromUsername(reporterUsername),
           reported: guestNameFromKey(reportedGuestKey),
@@ -494,7 +484,7 @@ describe('admin user management', () => {
       for (const roomId of [roomA, roomB, roomC, roomD]) {
         const [insertedMatch] = await db('match_records').insert({
           room_id: roomId,
-          db_type: 'easy',
+          db_type: 'normal',
           bo_type: 3,
           replay: '[]',
         }).returning('id');
@@ -653,15 +643,12 @@ describe('admin user management', () => {
     const [insertedPlayer] = await db('players')
       .insert({
         nickname,
-        nationality: 'China',
-        region: 'Asia',
-        team: 'Export Test',
-        team_history: JSON.stringify([]),
-        age: 24,
-        role: 'Rifler',
-        major_championships: 0,
-        major_appearances: 2,
-        is_active: false,
+        gender: '女',
+        debut_date: '2018-02-08',
+        height_cm: '151cm',
+        age_text: '16歳',
+        collab_groups: JSON.stringify(['JK組']),
+        race: '人类',
         is_enabled: true,
       })
       .returning('id');
@@ -669,7 +656,6 @@ describe('admin user management', () => {
     try {
       await db('player_difficulties').insert([
         { player_id: playerId, difficulty_key: 'normal' },
-        { player_id: playerId, difficulty_key: 'easy' },
       ]);
 
       const exported = await request('/api/admin/players/export', authCookie(admin));
@@ -678,16 +664,13 @@ describe('admin user management', () => {
       expect(() => playerImportSchema.parse({ players: exported.data })).not.toThrow();
       expect(exported.data.find((player: { nickname: string }) => player.nickname === nickname)).toEqual({
         nickname,
-        nationality: 'China',
-        region: 'Asia',
-        team: 'Export Test',
-        team_history: [],
-        age: 24,
-        role: 'Rifler',
-        major_championships: 0,
-        major_appearances: 2,
-        difficulties: ['easy', 'normal'],
-        is_active: false,
+        gender: '女',
+        debut_date: '2018-02-08',
+        height_cm: '151cm',
+        age_text: '16歳',
+        collab_groups: ['JK組'],
+        race: '人类',
+        difficulties: ['normal'],
         is_enabled: true,
       });
 

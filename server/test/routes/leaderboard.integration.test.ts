@@ -49,7 +49,7 @@ describe('leaderboard', () => {
       session_id: `leaderboard-${stamp}-${index}`,
       user_id: Number(row.id),
       target_player_id: Number(target.id),
-      mode: 'easy',
+      mode: 'normal',
       guesses: '[]',
       status: 'won',
       guess_count: 1,
@@ -60,7 +60,7 @@ describe('leaderboard', () => {
         session_id: `leaderboard-${stamp}-beginner-win`,
         user_id: userIds[0],
         target_player_id: Number(target.id),
-        mode: 'beginner',
+        mode: 'normal',
         guesses: '[]',
         status: 'won',
         guess_count: 1,
@@ -70,7 +70,7 @@ describe('leaderboard', () => {
         session_id: `leaderboard-${stamp}-easy-extra`,
         user_id: userIds[0],
         target_player_id: Number(target.id),
-        mode: 'easy',
+        mode: 'normal',
         guesses: '[]',
         status: 'won',
         guess_count: 1,
@@ -120,7 +120,7 @@ describe('leaderboard', () => {
     const matchRows = await db('match_records')
       .insert([0, 1, 2, 3].map((index) => ({
         room_id: `leaderboard-${stamp}-${index}`,
-        db_type: index === 3 ? 'normal' : 'easy',
+        db_type: 'normal',
         bo_type: 1,
         replay: '[]',
       })))
@@ -139,60 +139,35 @@ describe('leaderboard', () => {
     await invalidateCached(...allLeaderboardCacheKeys());
 
     try {
-      const beginnerResponse = await fetch(`${baseUrl}/api/leaderboard?mode=single&difficulty=beginner`);
-      const beginnerData = await beginnerResponse.json();
-      expect(beginnerResponse.status).toBe(200);
-      expect(beginnerData).toMatchObject({ mode: 'single', difficulty: 'beginner' });
-      expect(beginnerData.items[0]).toMatchObject({ id: userIds[0], wins: 1, total: 1 });
-
-      const response = await fetch(`${baseUrl}/api/leaderboard?mode=single&difficulty=easy`);
+      const response = await fetch(`${baseUrl}/api/leaderboard?mode=single&difficulty=normal`);
       const data = await response.json();
       expect(response.status).toBe(200);
-      expect(data).toMatchObject({ mode: 'single', difficulty: 'easy' });
+      expect(data).toMatchObject({ mode: 'single', difficulty: 'normal' });
       expect(data.items).toHaveLength(50);
-      expect(data.items[0]).toMatchObject({ id: userIds[0], wins: 2, total: 2, winRate: 1 });
+      expect(data.items[0]).toMatchObject({ id: userIds[0], wins: 5, total: 6, winRate: 5 / 6 });
       expect(data.items.every((row: any) => /^用户#[0-9A-Z]{5}$/.test(row.displayId))).toBe(true);
       expect(data.items.every((row: any) => !Object.hasOwn(row, 'username'))).toBe(true);
       expect(data.currentUser).toBeNull();
 
-      const normalResponse = await fetch(`${baseUrl}/api/leaderboard?mode=single&difficulty=normal`);
-      const normalData = await normalResponse.json();
-      expect(normalResponse.status).toBe(200);
-      expect(normalData).toMatchObject({ mode: 'single', difficulty: 'normal' });
-      expect(normalData.items[0]).toMatchObject({ id: userIds[0], wins: 2, total: 3, winRate: 2 / 3 });
-      expect(normalData.items.find((row: any) => row.id === userIds[0])).toMatchObject({
-        wins: 2,
-        total: 3,
-        winRate: 2 / 3,
-      });
-
-      const multiResponse = await fetch(`${baseUrl}/api/leaderboard?mode=multi&difficulty=easy`);
+      const multiResponse = await fetch(`${baseUrl}/api/leaderboard?mode=multi&difficulty=normal`);
       const multiData = await multiResponse.json();
       expect(multiResponse.status).toBe(200);
-      expect(multiData).toMatchObject({ mode: 'multi', difficulty: 'easy' });
+      expect(multiData).toMatchObject({ mode: 'multi', difficulty: 'normal' });
       const multiUserRows = multiData.items.filter((row: any) => userIds.includes(row.id));
       expect(multiUserRows).toHaveLength(2);
-      expect(multiData.items.findIndex((row: any) => row.id === userIds[1]))
-        .toBeLessThan(multiData.items.findIndex((row: any) => row.id === userIds[0]));
+      expect(multiData.items.findIndex((row: any) => row.id === userIds[0]))
+        .toBeLessThan(multiData.items.findIndex((row: any) => row.id === userIds[1]));
       expect(multiData.items.find((row: any) => row.id === userIds[1])).toMatchObject({
         wins: 1,
         total: 1,
         winRate: 1,
       });
       expect(multiData.items.find((row: any) => row.id === userIds[0])).toMatchObject({
-        wins: 1,
-        total: 2,
-        winRate: 1 / 2,
+        wins: 2,
+        total: 3,
+        winRate: 2 / 3,
         avgGuesses: null,
       });
-
-      const multiNormalResponse = await fetch(`${baseUrl}/api/leaderboard?mode=multi&difficulty=normal`);
-      const multiNormalData = await multiNormalResponse.json();
-      expect(multiNormalResponse.status).toBe(200);
-      expect(multiNormalData).toMatchObject({ mode: 'multi', difficulty: 'normal' });
-      expect(multiNormalData.items.filter((row: any) => userIds.includes(row.id))).toEqual([
-        expect.objectContaining({ id: userIds[0], wins: 1, total: 1, winRate: 1 }),
-      ]);
 
       const token = signToken({ id: userIds[0], token_version: 0 });
       const ownResponse = await fetch(`${baseUrl}/api/leaderboard?mode=single&difficulty=normal`, {
@@ -208,10 +183,10 @@ describe('leaderboard', () => {
       await db('users').where({ id: userIds[0] }).update({ leaderboard_hidden: true });
       await invalidateCached(...allLeaderboardCacheKeys());
       for (const [hiddenMode, hiddenDifficulty] of [
-        ['single', 'beginner'],
-        ['single', 'easy'],
         ['single', 'normal'],
-        ['multi', 'easy'],
+        ['single', 'normal'],
+        ['single', 'normal'],
+        ['multi', 'normal'],
         ['multi', 'normal'],
       ]) {
         const hiddenResponse = await fetch(

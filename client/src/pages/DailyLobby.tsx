@@ -31,7 +31,7 @@ export default function DailyLobby() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const difficulties = AVAILABLE_DIFFICULTIES;
-  const defaultDifficulty = difficulties.find((item) => item.recommended) ?? difficulties[0];
+  const defaultDifficulty = difficulties[0];
   const [selected, setSelected] = useState<string | null>(getStoredDailyDifficulty);
   const [statuses, setStatuses] = useState<Record<string, DailyStatus>>({});
   const [loading, setLoading] = useState(true);

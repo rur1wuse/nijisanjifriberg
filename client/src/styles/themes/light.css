@@ -244,7 +244,7 @@ html:not([data-theme='blast']) .game-table th {
   background: var(--card-soft);
 }
 
-html:not([data-theme='blast']) .game-table td:not(.correct):not(.close):not(.wrong) {
+html:not([data-theme='blast']) .game-table td:not(.correct):not(.close):not(.wrong):not(.gray):not(.unknown) {
   border-color: rgba(32, 17, 24, 0.1);
   border-radius: 2px;
   background: #ffffff;
@@ -253,7 +253,8 @@ html:not([data-theme='blast']) .game-table td:not(.correct):not(.close):not(.wro
 
 /* 猜测行的入场动画统一在 game.css(不做垂直位移),此处不再重复定义 */
 html:not([data-theme='blast']) .game-table td.correct,
-html:not([data-theme='blast']) .game-table td.close { transition: filter 0.2s ease, transform 0.2s ease; }
+html:not([data-theme='blast']) .game-table td.close,
+html:not([data-theme='blast']) .game-table td.gray { transition: filter 0.2s ease, transform 0.2s ease; }
 
 html:not([data-theme='blast']) .stats-summary-table td:last-child { color: var(--primary-strong); }
 
@@ -625,7 +626,8 @@ html:not([data-theme='blast']) .resource-version-value {
     transform: translateY(-2px);
   }
   html:not([data-theme='blast']) .game-table td.correct:hover,
-  html:not([data-theme='blast']) .game-table td.close:hover {
+  html:not([data-theme='blast']) .game-table td.close:hover,
+  html:not([data-theme='blast']) .game-table td.gray:hover {
     filter: brightness(1.06);
     transform: translateY(-1px);
   }

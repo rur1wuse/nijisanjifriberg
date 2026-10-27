@@ -1,27 +1,74 @@
 import { describe, it, expect } from 'vitest';
 import { compareGuess } from '../../src/services/gameService';
 import { Player } from '../../src/types';
+import {
+  isUnknownAge,
+  parseAge,
+  parseHeightCm,
+  parseScaledNumber,
+} from '../../src/services/attributeParsing';
 
-function makePlayer(overrides: Partial<Player>): Player {
+function makePlayer(overrides: Partial<Player> = {}): Player {
   return {
     id: 1,
     nickname: 'test',
-    nationality: '瑞典',
-    region: '欧洲',
-    team: 'NIP',
-    team_history: [],
-    age: 35,
-    role: 'Rifler',
-    major_championships: 1,
-    major_appearances: 12,
-    is_active: true,
+    gender: '女',
+    debut_date: '2018-02-08',
+    height_cm: '151cm',
+    age_text: '16歳',
+    collab_groups: [],
+    race: '人类',
+    is_enabled: true,
     created_at: '',
     ...overrides,
   };
 }
 
+describe('parseScaledNumber', () => {
+  it('把億换算成真实数值，而不是截成 142', () => {
+    expect(parseScaledNumber('142億歳')).toBe(142_000_000_00);
+  });
+
+  it('支持 万 / 千', () => {
+    expect(parseScaledNumber('3万歳')).toBe(30_000);
+    expect(parseScaledNumber('2千歳')).toBe(2_000);
+  });
+
+  it('取第一个数值并保留小数', () => {
+    expect(parseScaledNumber('20.4歳')).toBe(20.4);
+    expect(parseScaledNumber('777.00001歳')).toBe(777.00001);
+    expect(parseScaledNumber('20代（按20算）')).toBe(20);
+    expect(parseScaledNumber('23歳？')).toBe(23);
+  });
+
+  it('无法解析时返回 null', () => {
+    expect(parseScaledNumber('')).toBeNull();
+    expect(parseScaledNumber('非公開')).toBeNull();
+  });
+});
+
+describe('age helpers', () => {
+  it('识别年龄不详', () => {
+    for (const value of ['不明', '不詳', '不详', '非公開', '秘密', '年齢不詳']) {
+      expect(isUnknownAge(value)).toBe(true);
+    }
+    expect(isUnknownAge('20代（按20算）')).toBe(false);
+  });
+
+  it('年龄不详不参与数值解析', () => {
+    expect(parseAge('不明')).toBeNull();
+    expect(parseAge('16歳')).toBe(16);
+  });
+
+  it('身高解析出厘米数值', () => {
+    expect(parseHeightCm('151cm')).toBe(151);
+    expect(parseHeightCm('158cm (＋ヒール7cm)')).toBe(158);
+    expect(parseHeightCm('')).toBeNull();
+  });
+});
+
 describe('compareGuess', () => {
-  const target = makePlayer({ id: 10, nickname: 'friberg' });
+  const target = makePlayer({ id: 10, nickname: 'target', collab_groups: ['JK組'] });
 
   it('猜中时所有属性 correct', () => {
     const fb = compareGuess(target, target);
@@ -29,82 +76,97 @@ describe('compareGuess', () => {
     expect(Object.values(fb.attributes).every((a) => a.level === 'correct')).toBe(true);
   });
 
-  it('同赛区不同国家或地区给 close', () => {
-    const guess = makePlayer({ id: 2, nationality: '丹麦', region: '欧洲' });
-    expect(compareGuess(guess, target).attributes.nationality.level).toBe('close');
+  it('性别相同绿、不同红', () => {
+    expect(compareGuess(makePlayer({ id: 2 }), target).attributes.gender.level).toBe('correct');
+    expect(compareGuess(makePlayer({ id: 2, gender: '男' }), target).attributes.gender.level)
+      .toBe('wrong');
   });
 
-  it('不同赛区的国家或地区给 wrong', () => {
-    const guess = makePlayer({ id: 2, nationality: '巴西', region: '南美' });
-    const fb = compareGuess(guess, target);
-    expect(fb.attributes.nationality.level).toBe('wrong');
-    expect(fb.attributes.region.level).toBe('wrong');
+  it('种族相同绿、不同红', () => {
+    expect(compareGuess(makePlayer({ id: 2 }), target).attributes.race.level).toBe('correct');
+    expect(compareGuess(makePlayer({ id: 2, race: '精灵' }), target).attributes.race.level)
+      .toBe('wrong');
   });
 
-  it('年龄相差 3 岁给 close 并带方向提示', () => {
-    const guess = makePlayer({ id: 2, age: target.age - 3 });
-    const fb = compareGuess(guess, target);
-    expect(fb.attributes.age.level).toBe('close');
-    // 猜的人更年轻,目标年龄更大
-    expect(fb.attributes.age.hint).toBe('higher');
+  it('出道日相同为绿', () => {
+    expect(compareGuess(makePlayer({ id: 2 }), target).attributes.debutDate.level).toBe('correct');
   });
 
-  it('年龄相差 4 岁给 wrong', () => {
-    const guess = makePlayer({ id: 2, age: target.age - 4 });
-    expect(compareGuess(guess, target).attributes.age.level).toBe('wrong');
+  it('出道日相差一年内为黄并带方向', () => {
+    const guess = makePlayer({ id: 2, debut_date: '2019-01-15' });
+    const fb = compareGuess(guess, target).attributes.debutDate;
+    expect(fb.level).toBe('close');
+    expect(fb.hint).toBe('lower');
   });
 
-  it('当前队伍相同为 correct，即使该队伍也出现在历史队伍中', () => {
-    const targetWithHistory = makePlayer({ team: 'NIP', team_history: ['NIP', 'Fnatic'] });
-    const guess = makePlayer({ id: 2, team: 'NIP' });
-    expect(compareGuess(guess, targetWithHistory).attributes.team).toEqual({
-      value: 'NIP',
-      level: 'correct',
-    });
+  it('出道日超过一年为灰并带方向', () => {
+    const guess = makePlayer({ id: 2, debut_date: '2019-06-01' });
+    const fb = compareGuess(guess, target).attributes.debutDate;
+    expect(fb.level).toBe('gray');
+    expect(fb.hint).toBe('lower');
   });
 
-  it('猜测队伍命中历史队伍时为 close', () => {
-    const targetWithHistory = makePlayer({ team: 'NIP', team_history: ['Fnatic', 'NIP'] });
-    const guess = makePlayer({ id: 2, team: 'Fnatic' });
-    expect(compareGuess(guess, targetWithHistory).attributes.team).toEqual({
-      value: 'Fnatic',
-      level: 'close',
-    });
+  it('身高相差 5cm 内为黄，超出为灰', () => {
+    const close = makePlayer({ id: 2, height_cm: '156cm' });
+    expect(compareGuess(close, target).attributes.height.level).toBe('close');
+
+    const far = makePlayer({ id: 2, height_cm: '160cm' });
+    const fb = compareGuess(far, target).attributes.height;
+    expect(fb.level).toBe('gray');
+    expect(fb.hint).toBe('lower');
   });
 
-  it('Major 参赛次数相差 1 给 close 并带方向提示', () => {
-    const guess = makePlayer({ id: 2, major_appearances: target.major_appearances - 1 });
-    const fb = compareGuess(guess, target);
-    expect(fb.attributes.majorAppearances.level).toBe('close');
-    expect(fb.attributes.majorAppearances.hint).toBe('higher');
+  it('身高无法解析时为灰且不带方向', () => {
+    const guess = makePlayer({ id: 2, height_cm: '' });
+    const fb = compareGuess(guess, target).attributes.height;
+    expect(fb.level).toBe('gray');
+    expect(fb.hint).toBeUndefined();
   });
 
-  it('Major 参赛次数相差 2 给 wrong 并带方向提示', () => {
-    const guess = makePlayer({ id: 2, major_appearances: target.major_appearances - 2 });
-    const fb = compareGuess(guess, target);
-    expect(fb.attributes.majorAppearances.level).toBe('wrong');
-    expect(fb.attributes.majorAppearances.hint).toBe('higher');
+  it('年龄相差 5 岁内为黄，超出为灰', () => {
+    const close = makePlayer({ id: 2, age_text: '21歳' });
+    expect(compareGuess(close, target).attributes.age.level).toBe('close');
+
+    const far = makePlayer({ id: 2, age_text: '22歳' });
+    const fb = compareGuess(far, target).attributes.age;
+    expect(fb.level).toBe('gray');
+    expect(fb.hint).toBe('lower');
   });
 
-  it('Major 冠军数相差 1 给 close 并带方向提示', () => {
-    const guess = makePlayer({ id: 2, major_championships: 0 });
-    const fb = compareGuess(guess, target);
-    expect(fb.attributes.majorChampionships.level).toBe('close');
-    expect(fb.attributes.majorChampionships.hint).toBe('higher');
+  it('双方任一年龄不详时显示紫色', () => {
+    const guessUnknown = makePlayer({ id: 2, age_text: '不明' });
+    expect(compareGuess(guessUnknown, target).attributes.age.level).toBe('unknown');
+
+    const targetUnknown = makePlayer({ id: 11, age_text: '非公開' });
+    expect(compareGuess(makePlayer({ id: 2 }), targetUnknown).attributes.age.level)
+      .toBe('unknown');
   });
 
-  it('Major 冠军数相差 2 给 wrong', () => {
-    const guess = makePlayer({ id: 2, major_championships: target.major_championships + 2 });
-    expect(compareGuess(guess, target).attributes.majorChampionships.level).toBe('wrong');
+  it('142億歳 与普通年龄比较时方向正确', () => {
+    const bigAge = makePlayer({ id: 12, age_text: '142億歳' });
+    const fb = compareGuess(makePlayer({ id: 2, age_text: '16歳' }), bigAge).attributes.age;
+    expect(fb.level).toBe('gray');
+    expect(fb.hint).toBe('higher');
   });
 
-  it('位置不同时给 wrong', () => {
-    const guess = makePlayer({ id: 2, role: 'AWPer' });
-    expect(compareGuess(guess, target).attributes.role.level).toBe('wrong');
+  it('有共同组合为绿，没有则为红', () => {
+    const a = makePlayer({ id: 2, collab_groups: ['JK組', 'さんばかJK組'] });
+    const b = makePlayer({ id: 3, collab_groups: ['さんばかJK組', 'Twinkle'] });
+    expect(compareGuess(a, b).attributes.collab.level).toBe('correct');
+
+    const c = makePlayer({ id: 4, collab_groups: ['Twinkle'] });
+    expect(compareGuess(a, c).attributes.collab.level).toBe('wrong');
   });
 
-  it('现役状态不同给 wrong', () => {
-    const guess = makePlayer({ id: 2, is_active: false });
-    expect(compareGuess(guess, target).attributes.isActive.level).toBe('wrong');
+  it('组合交集会列出共同组合', () => {
+    const a = makePlayer({ id: 2, collab_groups: ['JK組', 'さんばかJK組'] });
+    const b = makePlayer({ id: 3, collab_groups: ['さんばかJK組', 'Twinkle'] });
+    expect(compareGuess(a, b).attributes.collab.value).toBe('さんばかJK組');
+  });
+
+  it('没有共同组合时组合值为空', () => {
+    const a = makePlayer({ id: 2, collab_groups: ['JK組'] });
+    const c = makePlayer({ id: 4, collab_groups: ['Twinkle'] });
+    expect(compareGuess(a, c).attributes.collab.value).toBe('');
   });
 });

@@ -110,14 +110,12 @@ function answerView(target: Player) {
   return {
     id: target.id,
     nickname: target.nickname,
-    team: target.team,
-    nationality: target.nationality,
-    region: target.region,
-    age: target.age,
-    role: target.role,
-    majorChampionships: target.major_championships,
-    majorAppearances: target.major_appearances,
-    isActive: Boolean(target.is_active),
+    gender: target.gender,
+    debutDate: target.debut_date,
+    height: target.height_cm,
+    age: target.age_text,
+    collab: target.collab_groups.join('、'),
+    race: target.race,
   };
 }
 

@@ -1,7 +1,6 @@
-export const MAX_TEAM_HISTORY_ITEMS = 50;
-export const MAX_TEAM_HISTORY_NAME_LENGTH = 64;
+const MAX_COLLAB_GROUPS = 300;
 
-export function normalizeTeamHistory(value: unknown): string[] {
+export function normalizeCollabGroups(value: unknown): string[] {
   let parsed: unknown = value;
   if (typeof value === 'string') {
     try {
@@ -12,12 +11,12 @@ export function normalizeTeamHistory(value: unknown): string[] {
   }
   if (!Array.isArray(parsed)) return [];
   return parsed
-    .filter((team): team is string => typeof team === 'string')
-    .map((team) => team.trim())
+    .filter((group): group is string => typeof group === 'string')
+    .map((group) => group.trim())
     .filter(Boolean)
-    .slice(0, MAX_TEAM_HISTORY_ITEMS);
+    .slice(0, MAX_COLLAB_GROUPS);
 }
 
-export function serializeTeamHistory(value: unknown): string {
-  return JSON.stringify(normalizeTeamHistory(value));
+export function serializeCollabGroups(value: unknown): string {
+  return JSON.stringify(normalizeCollabGroups(value));
 }

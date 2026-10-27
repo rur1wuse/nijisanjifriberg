@@ -76,17 +76,17 @@ describe('daily challenge routes', () => {
       serverNow: expect.any(Number),
     });
     expect(overview.data.nextRefreshAt - overview.data.serverNow).toBeGreaterThan(0);
-    expect(overview.data.challenges).toHaveLength(3);
+    expect(overview.data.challenges).toHaveLength(1);
     expect(overview.data.challenges.every((item: any) => (
       Object.keys(item).sort().join(',') === 'difficulty,status'
     ))).toBe(true);
 
-    const hiddenLeaderboard = await request('/api/daily-challenge/beginner/leaderboard', cookie);
+    const hiddenLeaderboard = await request('/api/daily-challenge/normal/leaderboard', cookie);
     expect(hiddenLeaderboard.response.status).toBe(409);
     expect(hiddenLeaderboard.data).toEqual({ code: 'DAILY_CHALLENGE_INCOMPLETE' });
 
     const challenge = await db('daily_challenges')
-      .where({ challenge_date: date, difficulty_key: 'beginner' })
+      .where({ challenge_date: date, difficulty_key: 'normal' })
       .first('id', 'solved_count as solvedCount');
     const challengeId = Number(challenge.id);
     const initialSolvedCount = Number(challenge.solvedCount);
@@ -95,12 +95,12 @@ describe('daily challenge routes', () => {
 
     try {
       const [started, secondStarted] = await Promise.all([
-        request('/api/daily-challenge/start', cookie, 'POST', { difficulty: 'beginner' }),
-        request('/api/daily-challenge/start', secondCookie, 'POST', { difficulty: 'beginner' }),
+        request('/api/daily-challenge/start', cookie, 'POST', { difficulty: 'normal' }),
+        request('/api/daily-challenge/start', secondCookie, 'POST', { difficulty: 'normal' }),
       ]);
       expect(started.response.status).toBe(200);
       expect(secondStarted.response.status).toBe(200);
-      expect(started.data).toMatchObject({ difficulty: 'beginner', status: 'playing' });
+      expect(started.data).toMatchObject({ difficulty: 'normal', status: 'playing' });
       firstGameId = String(started.data.gameId);
       secondGameId = String(secondStarted.data.gameId);
       const gameKey = redisKey(`single:game:${firstGameId}`);
@@ -110,12 +110,12 @@ describe('daily challenge routes', () => {
       expect(stored).toMatchObject({ kind: 'daily', targetPlayerId: expect.any(Number) });
       expect(secondStored.targetPlayerId).toBe(stored.targetPlayerId);
 
-      const playingDetail = await request('/api/daily-challenge/beginner', cookie);
+      const playingDetail = await request('/api/daily-challenge/normal', cookie);
       expect(playingDetail.response.status).toBe(200);
       expect(playingDetail.data.serverNow).toEqual(expect.any(Number));
       expect(playingDetail.data.nextRefreshAt - playingDetail.data.serverNow).toBeGreaterThan(0);
       expect(playingDetail.data.challenge).toMatchObject({
-        difficulty: 'beginner',
+        difficulty: 'normal',
         status: 'playing',
         gameId: firstGameId,
       });
@@ -144,7 +144,7 @@ describe('daily challenge routes', () => {
       expect(await redis()!.get(secondGameKey)).toBeNull();
 
       const restarted = await request('/api/daily-challenge/start', cookie, 'POST', {
-        difficulty: 'beginner',
+        difficulty: 'normal',
       });
       expect(restarted.response.status).toBe(409);
       expect(restarted.data).toEqual({ code: 'DAILY_CHALLENGE_COMPLETED' });
@@ -177,21 +177,21 @@ describe('daily challenge routes', () => {
         .update({ solved_count: initialSolvedCount + 2 + extraRows.length });
 
       const refreshedOverview = await request('/api/daily-challenge/overview', cookie);
-      const beginnerStatus = refreshedOverview.data.challenges.find(
-        (item: any) => item.difficulty === 'beginner'
+      const normalStatus = refreshedOverview.data.challenges.find(
+        (item: any) => item.difficulty === 'normal'
       );
-      expect(beginnerStatus).toEqual({ difficulty: 'beginner', status: 'won' });
+      expect(normalStatus).toEqual({ difficulty: 'normal', status: 'won' });
 
-      const completedDetail = await request('/api/daily-challenge/beginner', cookie);
+      const completedDetail = await request('/api/daily-challenge/normal', cookie);
       expect(completedDetail.response.status).toBe(200);
       expect(completedDetail.data.challenge.status).toBe('won');
       expect(completedDetail.data.challenge.answer).toMatchObject({ id: stored.targetPlayerId });
       expect(completedDetail.data.challenge.solveOrder).toBe(solved.data.solveOrder);
       expect(completedDetail.data.challenge).not.toHaveProperty('leaderboard');
 
-      const leaderboard = await request('/api/daily-challenge/beginner/leaderboard', cookie);
+      const leaderboard = await request('/api/daily-challenge/normal/leaderboard', cookie);
       expect(leaderboard.response.status).toBe(200);
-      expect(leaderboard.data).toMatchObject({ difficulty: 'beginner' });
+      expect(leaderboard.data).toMatchObject({ difficulty: 'normal' });
       expect(leaderboard.data.leaderboard).toHaveLength(10);
       expect(leaderboard.data.leaderboard.every((row: any) => !row.isCurrent)).toBe(true);
       expect(leaderboard.data.leaderboard[0].guessCount).toBe(2);
@@ -210,9 +210,9 @@ describe('daily challenge routes', () => {
       await db('daily_challenges')
         .where({ id: challengeId })
         .update({ solved_count: initialSolvedCount });
-      await invalidateCached(dailyLeaderboardCacheKey(date, 'beginner'));
-      await redis()?.del(redisKey(`single:active:g:${guestKey}:daily:${date}:beginner`));
-      await redis()?.del(redisKey(`single:active:g:${secondGuestKey}:daily:${date}:beginner`));
+      await invalidateCached(dailyLeaderboardCacheKey(date, 'normal'));
+    await redis()?.del(redisKey(`single:active:g:${guestKey}:daily:${date}:normal`));
+    await redis()?.del(redisKey(`single:active:g:${secondGuestKey}:daily:${date}:normal`));
       if (firstGameId) await redis()?.del(redisKey(`single:game:${firstGameId}`));
       if (secondGameId) await redis()?.del(redisKey(`single:game:${secondGameId}`));
     }

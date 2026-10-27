@@ -4,9 +4,8 @@ import { db } from '../db/knex';
 import { isKnownDifficultyKey } from '../difficulties';
 import { HttpError } from '../middleware/common';
 import { invalidatePlayerCache } from './playerCache';
-import { MAX_TEAM_HISTORY_ITEMS, MAX_TEAM_HISTORY_NAME_LENGTH, serializeTeamHistory } from './teamHistory';
+import { normalizeCollabGroups, serializeCollabGroups } from './teamHistory';
 
-const playerRoles = ['Rifler', 'AWPer', 'Coach'] as const;
 const difficultyKeySchema = z.string().trim().regex(/^[a-z0-9][a-z0-9_-]{0,31}$/);
 const difficultyListSchema = z.array(difficultyKeySchema)
   .min(1)
@@ -14,24 +13,19 @@ const difficultyListSchema = z.array(difficultyKeySchema)
   .refine((keys) => new Set(keys).size === keys.length);
 
 export const playerSchema = z.object({
-  nickname: z.string().trim().min(1).max(64),
-  nationality: z.string().trim().min(1).max(64),
-  region: z.string().trim().max(32).default(''),
-  team: z.string().trim().max(64).default(''),
-  team_history: z.array(z.string().trim().min(1).max(MAX_TEAM_HISTORY_NAME_LENGTH))
-    .max(MAX_TEAM_HISTORY_ITEMS)
-    .default([]),
-  age: z.number().int().min(10).max(100),
-  role: z.enum(playerRoles).default('Rifler'),
-  major_championships: z.number().int().min(0).default(0),
-  major_appearances: z.number().int().min(0).default(0),
-  is_active: z.boolean().default(true),
+  nickname: z.string().trim().min(1).max(128),
+  gender: z.string().trim().max(32).default(''),
+  debut_date: z.string().trim().max(10).default(''),
+  height_cm: z.string().trim().max(64).default(''),
+  age_text: z.string().trim().max(64).default(''),
+  collab_groups: z.array(z.string().trim().min(1)).default([]),
+  race: z.string().trim().max(64).default(''),
   is_enabled: z.boolean().default(true),
   difficulties: difficultyListSchema.optional(),
 });
 
 export const importedPlayerSchema = playerSchema.extend({
-  team_history: playerSchema.shape.team_history.optional(),
+  collab_groups: playerSchema.shape.collab_groups.optional(),
   is_enabled: z.boolean().optional(),
 });
 
@@ -75,10 +69,10 @@ export async function createPlayer(input: PlayerInput): Promise<number> {
   if (exists) throw new HttpError(409, 'NICKNAME_TAKEN');
   const difficulties = input.difficulties ?? ['normal'];
   assertDifficultyKeys(difficulties);
-  const { difficulties: _difficulties, team_history, ...values } = input;
+  const { difficulties: _difficulties, collab_groups, ...values } = input;
   const id = await db.transaction(async (trx) => {
     const [createdId] = await trx('players')
-      .insert({ ...values, team_history: serializeTeamHistory(team_history) })
+      .insert({ ...values, collab_groups: serializeCollabGroups(collab_groups) })
       .returning('id')
       .then((rows) => rows.map((row: unknown) => (
         typeof row === 'object' && row !== null && 'id' in row ? row.id : row
@@ -105,11 +99,11 @@ export async function applyPlayerUpdate(
   id: number,
   input: PlayerUpdateInput
 ): Promise<void> {
-  const { difficulties, team_history, ...values } = input;
+  const { difficulties, collab_groups, ...values } = input;
   if (difficulties) assertDifficultyKeys(difficulties);
   const updates = {
     ...values,
-    ...(team_history === undefined ? {} : { team_history: serializeTeamHistory(team_history) }),
+    ...(collab_groups === undefined ? {} : { collab_groups: serializeCollabGroups(collab_groups) }),
   };
   if (Object.keys(updates).length) await executor('players').where({ id }).update(updates);
   if (difficulties) await replacePlayerDifficulties(executor, id, difficulties);
@@ -138,26 +132,28 @@ export async function importPlayers(
     const nicknames = players.map((player) => player.nickname);
     const existing = await trx('players')
       .whereIn('nickname', nicknames)
-      .select('id', 'nickname', 'is_enabled', 'team_history');
+      .select('id', 'nickname', 'is_enabled', 'collab_groups');
     const existingNames = new Set(existing.map((player) => String(player.nickname)));
     const existingEnabled = new Map(
       existing.map((player) => [String(player.nickname), Boolean(player.is_enabled)])
     );
-    const existingTeamHistory = new Map(
-      existing.map((player) => [String(player.nickname), serializeTeamHistory(player.team_history)])
+    const existingCollabGroups = new Map(
+      existing.map((player) => [String(player.nickname), normalizeCollabGroups(player.collab_groups)])
     );
     updated = players.filter((player) => existingNames.has(player.nickname)).length;
     created = players.length - updated;
     const desiredDifficulties = new Map<string, string[] | null>();
     const importedPlayers = players.map((player) => {
-      const { difficulties, team_history, ...values } = player;
+      const { difficulties, collab_groups, ...values } = player;
       const desired = difficulties ?? (existingNames.has(player.nickname) ? null : ['normal']);
       desiredDifficulties.set(player.nickname, desired);
       return {
         ...values,
-        team_history: team_history === undefined && existingNames.has(player.nickname)
-          ? existingTeamHistory.get(player.nickname) ?? '[]'
-          : serializeTeamHistory(team_history ?? []),
+        collab_groups: serializeCollabGroups(
+          collab_groups === undefined && existingNames.has(player.nickname)
+            ? existingCollabGroups.get(player.nickname) ?? []
+            : collab_groups ?? []
+        ),
         is_enabled: player.is_enabled ?? existingEnabled.get(player.nickname) ?? true,
       };
     });

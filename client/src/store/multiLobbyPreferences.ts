@@ -1,5 +1,5 @@
-const STORAGE_KEY = 'csgofriberg.multi-lobby-preferences';
-const PRESETS_STORAGE_KEY = 'csgofriberg.multi-lobby-presets';
+const STORAGE_KEY = 'nijisanjifriberg.multi-lobby-preferences';
+const PRESETS_STORAGE_KEY = 'nijisanjifriberg.multi-lobby-presets';
 const BO_OPTIONS = new Set([1, 3, 5, 7]);
 export const MIN_MULTI_PLAYERS = 2;
 export const MAX_CLASSIC_MULTI_PLAYERS = 8;

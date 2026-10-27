@@ -60,7 +60,7 @@ describe('single-player settlement soft limit', () => {
     const gameIds: string[] = [];
     try {
       for (let index = 0; index < 5; index += 1) {
-        const started = await post('/api/game/start', cookie, { mode: 'beginner' });
+        const started = await post('/api/game/start', cookie, { mode: 'normal' });
         expect(started.response.status).toBe(200);
         gameIds.push(started.data.gameId);
 
@@ -107,18 +107,18 @@ describe('single-player settlement soft limit', () => {
     const guestKey = `target-history-${Date.now()}`;
     const identityKey = `g:${guestKey}`;
     const cookie = guestCookie(guestKey);
-    const historyKey = redisKey(`target-history:beginner:${identityKey}`);
-    const first = await post('/api/game/start', cookie, { mode: 'beginner' });
+    const historyKey = redisKey(`target-history:normal:${identityKey}`);
+    const first = await post('/api/game/start', cookie, { mode: 'normal' });
     expect(first.response.status).toBe(200);
     const firstRaw = await redis()!.get(redisKey(`single:game:${first.data.gameId}`));
     const firstTarget = Number(JSON.parse(firstRaw!).targetPlayerId);
     try {
-      const resumed = await post('/api/game/start', cookie, { mode: 'beginner' });
+      const resumed = await post('/api/game/start', cookie, { mode: 'normal' });
       expect(resumed.data.gameId).toBe(first.data.gameId);
       expect(await redis()!.zCard(historyKey)).toBe(1);
 
       expect((await post(`/api/game/${first.data.gameId}/giveup`, cookie)).response.status).toBe(200);
-      const second = await post('/api/game/start', cookie, { mode: 'beginner' });
+      const second = await post('/api/game/start', cookie, { mode: 'normal' });
       const secondRaw = await redis()!.get(redisKey(`single:game:${second.data.gameId}`));
       const secondTarget = Number(JSON.parse(secondRaw!).targetPlayerId);
       expect(secondTarget).not.toBe(firstTarget);
@@ -135,7 +135,7 @@ describe('single-player settlement soft limit', () => {
   it('persists accepted guess times relative to the game start', async () => {
     const guestKey = `guess-times-${Date.now()}`;
     const cookie = guestCookie(guestKey);
-    const started = await post('/api/game/start', cookie, { mode: 'beginner' });
+    const started = await post('/api/game/start', cookie, { mode: 'normal' });
     expect(started.response.status).toBe(200);
     const activeRaw = await redis()!.get(redisKey(`single:game:${started.data.gameId}`));
     const targetPlayerId = Number(JSON.parse(activeRaw!).targetPlayerId);
@@ -145,7 +145,7 @@ describe('single-player settlement soft limit', () => {
       });
       expect(guessed.response.status).toBe(200);
       expect(guessed.data.status).toBe('won');
-      expect(guessed.data.answer.region).toEqual(expect.any(String));
+      expect(guessed.data.answer.race).toEqual(expect.any(String));
       expect(guessed.data).not.toHaveProperty('guessTimes');
 
       const stored = await db('games').where({ session_id: started.data.gameId }).first();

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { api } from '../api/client';
 import ModalPortal from './ModalPortal';
 
-const ACKNOWLEDGED_STORAGE_KEY = 'csgofriberg.acknowledged-popup-announcements';
+const ACKNOWLEDGED_STORAGE_KEY = 'nijisanjifriberg.acknowledged-popup-announcements';
 const MAX_ACKNOWLEDGED_IDS = 50;
 
 interface PopupAnnouncement {

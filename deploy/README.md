@@ -3,7 +3,7 @@
 生产镜像仅支持 PostgreSQL，由 GitHub Actions 发布到：
 
 ```text
-ghcr.io/shnlfriberg/csgofriberg
+ghcr.io/shnlfriberg/nijisanjifriberg
 ```
 
 运行镜像基于 distroless Node.js，仅包含生产 Node 依赖、编译后的服务端
@@ -39,11 +39,11 @@ deploy/update.sh
 例如：
 
 ```bash
-sudo mkdir -p /opt/csgofriberg
-sudo cp compose.yaml /opt/csgofriberg/compose.yaml
-sudo cp deploy/.env.example /opt/csgofriberg/.env
-sudo cp deploy/update.sh /opt/csgofriberg/update.sh
-cd /opt/csgofriberg
+sudo mkdir -p /opt/nijisanjifriberg
+sudo cp compose.yaml /opt/nijisanjifriberg/compose.yaml
+sudo cp deploy/.env.example /opt/nijisanjifriberg/.env
+sudo cp deploy/update.sh /opt/nijisanjifriberg/update.sh
+cd /opt/nijisanjifriberg
 sudo chmod 600 .env
 sudo chmod 700 update.sh
 sudo editor .env
@@ -141,7 +141,7 @@ HTTP 与 Socket.IO 的限流都以最近一跳可信代理为准。
 upstream 配置示例：
 
 ```nginx
-upstream csgofriberg_backend {
+upstream nijisanjifriberg_backend {
     least_conn;
     server 127.0.0.1:3000 max_fails=1 fail_timeout=5s;
     server 127.0.0.1:3001 max_fails=1 fail_timeout=5s;
@@ -149,7 +149,7 @@ upstream csgofriberg_backend {
 }
 
 location /assets/ {
-    proxy_pass http://csgofriberg_backend;
+    proxy_pass http://nijisanjifriberg_backend;
     proxy_http_version 1.1;
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
@@ -161,7 +161,7 @@ location /assets/ {
 }
 
 location / {
-    proxy_pass http://csgofriberg_backend;
+    proxy_pass http://nijisanjifriberg_backend;
     proxy_http_version 1.1;
     proxy_set_header Host $host;
     proxy_set_header X-Real-IP $remote_addr;
@@ -171,7 +171,7 @@ location / {
 }
 
 location /socket.io/ {
-    proxy_pass http://csgofriberg_backend;
+    proxy_pass http://nijisanjifriberg_backend;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
     proxy_set_header Connection "upgrade";
@@ -217,7 +217,7 @@ docker compose run --rm \
 常规滚动更新使用自带的更新脚本：
 
 ```bash
-cd /opt/csgofriberg
+cd /opt/nijisanjifriberg
 sudo ./update.sh
 ```
 
@@ -267,7 +267,7 @@ docker compose stop app-1 app-2
 例如：
 
 ```text
-IMAGE=ghcr.io/shnlfriberg/csgofriberg:sha-0123456
+IMAGE=ghcr.io/shnlfriberg/nijisanjifriberg:sha-0123456
 ```
 
 回滚时把 `IMAGE` 改回上一个标签并执行：
@@ -288,7 +288,7 @@ PostgreSQL：
 
 ```bash
 docker compose exec -T postgres \
-  pg_dump -U csgofriberg -d csgofriberg -Fc > csgofriberg.dump
+  pg_dump -U nijisanjifriberg -d nijisanjifriberg -Fc > nijisanjifriberg.dump
 ```
 
 Redis 存放进行中的对局、房间、队列和缓存，PostgreSQL 是持久的历史数据

@@ -35,14 +35,14 @@ describe('AnnouncementDialog', () => {
 
     await user.click(screen.getByRole('button', { name: '我已知晓' }));
     expect(await screen.findByText('第一条内容')).toBeInTheDocument();
-    expect(localStorage.getItem('csgofriberg.acknowledged-popup-announcements')).toContain('2');
+    expect(localStorage.getItem('nijisanjifriberg.acknowledged-popup-announcements')).toContain('2');
 
     await user.click(screen.getByRole('button', { name: '我已知晓' }));
     await waitFor(() => expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument());
   });
 
   it('does not show an announcement that was already acknowledged', async () => {
-    localStorage.setItem('csgofriberg.acknowledged-popup-announcements', '[7]');
+    localStorage.setItem('nijisanjifriberg.acknowledged-popup-announcements', '[7]');
     get.mockResolvedValue({
       data: [{ id: 7, title: '已确认', content: '不会再弹', is_popup: true }],
     } as never);

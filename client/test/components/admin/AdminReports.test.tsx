@@ -134,34 +134,6 @@ describe('AdminReports', () => {
     });
   });
 
-  it('runs external analysis only after the admin requests it', async () => {
-    const user = userEvent.setup();
-    vi.mocked(api.post).mockResolvedValueOnce({
-      data: {
-        schemaVersion: 1,
-        requestId: '11111111-1111-4111-8111-111111111111',
-        analysisId: 'analysis-4',
-        modelVersion: '2026.08.1',
-        generatedAt: '2026-08-02T12:00:00.000Z',
-        decision: { level: 'high', score: 92, label: '高风险', summary: '行为与自动化求解器高度吻合' },
-        sections: [{ title: '行为特征', items: [{ type: 'metric', label: '异常回合', value: 12, displayValue: '12 次', severity: 'danger' }] }],
-      },
-    } as never);
-    renderWithProviders(<AdminReports />);
-
-    await screen.findByText('疑似自动化操作');
-    await user.click(screen.getByRole('button', { name: '处理举报' }));
-    expect(screen.getByText('尚未请求外部分析。')).toBeInTheDocument();
-    expect(api.post).not.toHaveBeenCalledWith('/admin/reports/4/analysis', expect.anything());
-
-    await user.click(screen.getByRole('button', { name: '开始分析' }));
-
-    expect(api.post).toHaveBeenCalledWith('/admin/reports/4/analysis', { locale: 'zh-CN' });
-    expect(await screen.findByText('高风险')).toBeInTheDocument();
-    expect(screen.getByText('92')).toBeInTheDocument();
-    expect(screen.getByText('12 次')).toBeInTheDocument();
-  });
-
   it('selects reports and processes the selected rows in one batch', async () => {
     const user = userEvent.setup();
     vi.mocked(api.patch).mockResolvedValueOnce({ data: { ok: true, updated: 1 } } as never);

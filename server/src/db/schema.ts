@@ -79,46 +79,18 @@ export async function ensureSchema(instance: Knex = db): Promise<void> {
     `create index${usersIndexConcurrently} if not exists "users_display_id_idx" on "users" ("display_id")`
   );
 
-  if (!(await instance.schema.hasTable('api_tokens'))) {
-    await instance.schema.createTable('api_tokens', (t) => {
-      t.increments('id').primary();
-      t.string('name', 64).notNullable();
-      t.string('token_hash', 64).notNullable().unique();
-      t.string('prefix', 16).notNullable();
-      t.integer('created_by_user_id')
-        .notNullable()
-        .references('id')
-        .inTable('users')
-        .onDelete('CASCADE');
-      t.timestamp('expires_at').notNullable();
-      t.timestamp('created_at').notNullable().defaultTo(instance.fn.now());
-    });
-  }
-  const apiTokensIndexConcurrently = instance.client.config.client === 'pg' ? ' concurrently' : '';
-  await instance.raw(
-    `create index${apiTokensIndexConcurrently} if not exists "api_tokens_owner_created_idx" on "api_tokens" ("created_by_user_id", "created_at")`
-  );
-
   if (!(await instance.schema.hasTable('players'))) {
     await instance.schema.createTable('players', (t) => {
       t.increments('id').primary();
-      t.string('nickname', 64).notNullable().unique();
-      t.string('nationality', 64).notNullable();
-      t.string('region', 32).notNullable().defaultTo('');
-      t.string('team', 64).notNullable().defaultTo('');
-      t.text('team_history').notNullable().defaultTo('[]');
-      t.integer('age').notNullable();
-      t.string('role', 32).notNullable().defaultTo('Rifler');
-      t.integer('major_championships').notNullable().defaultTo(0);
-      t.integer('major_appearances').notNullable().defaultTo(0);
-      t.boolean('is_active').notNullable().defaultTo(true);
+      t.string('nickname', 128).notNullable().unique();
+      t.string('gender', 32).notNullable().defaultTo('');
+      t.string('debut_date', 10).notNullable().defaultTo('');
+      t.string('height_cm', 64).notNullable().defaultTo('');
+      t.string('age_text', 64).notNullable().defaultTo('');
+      t.text('collab_groups').notNullable().defaultTo('[]');
+      t.string('race', 64).notNullable().defaultTo('');
       t.boolean('is_enabled').notNullable().defaultTo(true);
       t.timestamp('created_at').notNullable().defaultTo(instance.fn.now());
-    });
-  }
-  if (!(await instance.schema.hasColumn('players', 'major_championships'))) {
-    await instance.schema.alterTable('players', (t) => {
-      t.integer('major_championships').notNullable().defaultTo(0);
     });
   }
   if (!(await instance.schema.hasColumn('players', 'is_enabled'))) {
@@ -131,9 +103,6 @@ export async function ensureSchema(instance: Knex = db): Promise<void> {
     await instance.raw(
       'create index if not exists "players_nickname_trgm_idx" on "players" using gin ("nickname" gin_trgm_ops)'
     );
-    await instance.raw(
-      'create index if not exists "players_team_trgm_idx" on "players" using gin ("team" gin_trgm_ops)'
-    );
   }
 
   if (!(await instance.schema.hasTable('games'))) {
@@ -143,7 +112,7 @@ export async function ensureSchema(instance: Knex = db): Promise<void> {
       t.integer('user_id').nullable().references('id').inTable('users');
       t.string('guest_key', 64).nullable().index();
       t.integer('target_player_id').notNullable().references('id').inTable('players');
-      t.string('mode', 16).notNullable().defaultTo('easy');
+      t.string('mode', 16).notNullable().defaultTo('normal');
       t.text('guesses').notNullable().defaultTo('[]');
       t.text('guess_times').notNullable().defaultTo('[]');
       t.integer('first_guess_player_id').nullable();
@@ -155,11 +124,6 @@ export async function ensureSchema(instance: Knex = db): Promise<void> {
   }
   if (!(await instance.schema.hasColumn('games', 'session_id'))) {
     await instance.schema.alterTable('games', (t) => t.string('session_id', 64).nullable());
-  }
-  if (!(await instance.schema.hasColumn('players', 'team_history'))) {
-    await instance.schema.alterTable('players', (t) => {
-      t.text('team_history').notNullable().defaultTo('[]');
-    });
   }
   if (!(await instance.schema.hasColumn('games', 'guess_times'))) {
     await instance.schema.alterTable('games', (t) => t.text('guess_times').notNullable().defaultTo('[]'));
@@ -180,6 +144,9 @@ export async function ensureSchema(instance: Knex = db): Promise<void> {
     })))
     .onConflict('key')
     .merge(['sort_order', 'is_enabled']);
+  await instance('difficulty_levels')
+    .whereNotIn('key', DIFFICULTY_LEVELS.map((difficulty) => difficulty.key))
+    .del();
   if (!(await instance.schema.hasTable('player_difficulties'))) {
     await instance.schema.createTable('player_difficulties', (t) => {
       t.integer('player_id').notNullable().references('id').inTable('players').onDelete('CASCADE');
@@ -188,47 +155,9 @@ export async function ensureSchema(instance: Knex = db): Promise<void> {
       t.index(['difficulty_key', 'player_id']);
     });
   }
-  if (!(await instance.schema.hasTable('player_change_submissions'))) {
-    await instance.schema.createTable('player_change_submissions', (t) => {
-      t.increments('id').primary();
-      t.integer('api_token_id')
-        .nullable()
-        .references('id')
-        .inTable('api_tokens')
-        .onDelete('SET NULL');
-      t.string('api_token_name', 64).notNullable();
-      t.timestamp('created_at').notNullable().defaultTo(instance.fn.now());
-    });
-  }
-  if (!(await instance.schema.hasTable('player_change_items'))) {
-    await instance.schema.createTable('player_change_items', (t) => {
-      t.increments('id').primary();
-      t.integer('submission_id')
-        .notNullable()
-        .references('id')
-        .inTable('player_change_submissions')
-        .onDelete('CASCADE');
-      t.integer('player_id')
-        .nullable()
-        .references('id')
-        .inTable('players')
-        .onDelete('SET NULL');
-      t.string('player_nickname', 64).notNullable();
-      t.string('field', 32).notNullable();
-      t.text('old_value').notNullable();
-      t.text('new_value').notNullable();
-      t.string('status', 16).notNullable().defaultTo('pending');
-      t.integer('handled_by_user_id')
-        .nullable()
-        .references('id')
-        .inTable('users')
-        .onDelete('SET NULL');
-      t.timestamp('handled_at').nullable();
-      t.timestamp('created_at').notNullable().defaultTo(instance.fn.now());
-      t.index(['status', 'created_at'], 'player_change_items_status_created_idx');
-      t.index(['player_id', 'field', 'status'], 'player_change_items_player_field_status_idx');
-      t.index(['submission_id'], 'player_change_items_submission_idx');
-    });
+  // The external-API feature was removed; drop its leftover tables on existing databases.
+  for (const table of ['player_change_items', 'player_change_submissions', 'api_tokens']) {
+    await instance.schema.dropTableIfExists(table);
   }
   if (!(await instance.schema.hasColumn('games', 'first_guess_player_id'))) {
     await instance.schema.alterTable('games', (t) => t.integer('first_guess_player_id').nullable());
@@ -243,7 +172,7 @@ export async function ensureSchema(instance: Knex = db): Promise<void> {
     await instance.schema.createTable('match_records', (t) => {
       t.increments('id').primary();
       t.string('room_id', 64).notNullable();
-      t.string('db_type', 16).notNullable().defaultTo('easy');
+      t.string('db_type', 16).notNullable().defaultTo('normal');
       t.integer('bo_type').notNullable().defaultTo(3);
       t.string('game_mode', 16).notNullable().defaultTo('classic');
       t.integer('total_rounds').notNullable().defaultTo(3);
@@ -267,7 +196,7 @@ export async function ensureSchema(instance: Knex = db): Promise<void> {
   }
   if (!(await instance.schema.hasColumn('match_records', 'db_type'))) {
     await instance.schema.alterTable('match_records', (t) => {
-      t.string('db_type', 16).notNullable().defaultTo('easy');
+      t.string('db_type', 16).notNullable().defaultTo('normal');
     });
   }
   if (!(await instance.schema.hasColumn('match_records', 'winner_key'))) {

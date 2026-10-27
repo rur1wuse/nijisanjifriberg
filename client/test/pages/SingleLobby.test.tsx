@@ -10,22 +10,16 @@ describe('SingleLobby', () => {
     localStorage.clear();
   });
 
-  it('defaults to recommended beginner with distinct card copy', () => {
+  it('offers only the single full tier and selects it by default', () => {
     renderAtRoute(<SingleLobby />, { route: '/single', path: '/single' });
 
-    const beginner = screen.getByRole('button', { name: /入门版/ });
-    const easy = screen.getByRole('button', { name: /简单版/ });
-    const normal = screen.getByRole('button', { name: /完整版/ });
-
-    expect(beginner).toHaveClass('active');
-    expect(beginner.querySelector('.single-difficulty-badge')).toHaveTextContent('推荐');
-    expect(easy.querySelector('.single-difficulty-badge')).toBeNull();
+    const options = screen.getAllByRole('button', { name: /完整版/ });
+    expect(options).toHaveLength(1);
+    const normal = options[0];
+    expect(normal).toHaveClass('active');
+    expect(screen.queryByRole('button', { name: /入门版/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /简单版/ })).not.toBeInTheDocument();
     expect(normal.querySelector('.single-difficulty-badge')).toBeNull();
-    expect(beginner).toHaveTextContent('最大众选手池 · 熟悉规则');
-    expect(easy).toHaveTextContent('知名选手池 · 快速上手');
-    expect(normal).toHaveTextContent('完整数据库 · 终极挑战');
-    expect(beginner.style.getPropertyValue('--diff-color')).toBe('var(--primary)');
-    expect(easy.style.getPropertyValue('--diff-color')).toBe('var(--success)');
     expect(normal.style.getPropertyValue('--diff-color')).toBe('var(--accent)');
     expect(screen.getByText('选择一个难度开始游戏。你的选择会保存在本地浏览器中。')).toBeInTheDocument();
   });
@@ -43,12 +37,11 @@ describe('SingleLobby', () => {
       }
     );
 
-    await user.click(screen.getByRole('button', { name: /完整版/ }));
     expect(screen.getByRole('button', { name: /完整版/ })).toHaveClass('active');
     await user.click(screen.getByRole('button', { name: /开始游戏/ }));
 
     expect(await screen.findByTestId('game-route')).toBeInTheDocument();
-    expect(localStorage.getItem('csgofriberg.single-difficulty')).toBe('normal');
+    expect(localStorage.getItem('nijisanjifriberg.single-difficulty')).toBe('normal');
   });
 
   it('mobile start button remains a full-width primary action class', () => {

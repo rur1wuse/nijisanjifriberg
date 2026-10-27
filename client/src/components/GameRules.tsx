@@ -13,7 +13,15 @@ import {
 import ModalPortal from './ModalPortal';
 import { useTranslation } from 'react-i18next';
 
-const regions = ['europe', 'cis', 'asia', 'oceania', 'northAmerica', 'southAmerica', 'africaIsrael'] as const;
+const fields = [
+  'fieldNickname',
+  'fieldGender',
+  'fieldDebut',
+  'fieldHeight',
+  'fieldAge',
+  'fieldCollab',
+  'fieldRace',
+] as const;
 
 export default function GameRules() {
   const { t } = useTranslation();
@@ -108,6 +116,10 @@ export default function GameRules() {
                     <span className="rule-color-swatch" aria-hidden="true" />
                     <div><strong>{t('rules.grayTitle')}</strong><span>{t('rules.grayText')}</span></div>
                   </div>
+                  <div className="rule-feedback rule-feedback-unknown">
+                    <span className="rule-color-swatch" aria-hidden="true" />
+                    <div><strong>{t('rules.unknownTitle')}</strong><span>{t('rules.unknownText')}</span></div>
+                  </div>
                   <div className="rule-feedback rule-feedback-arrow">
                     <span className="rule-arrow-pair" aria-hidden="true"><ArrowUp size={16} /><ArrowDown size={16} /></span>
                     <div><strong>{t('rules.arrowTitle')}</strong><span>{t('rules.arrowText')}</span></div>
@@ -127,20 +139,28 @@ export default function GameRules() {
                         <span>{t('rules.exactText')}</span>
                       </div>
                       <div>
-                        <strong>{t('rules.teamTitle')}</strong>
-                        <span>{t('rules.teamText')}</span>
+                        <strong>{t('rules.genderTitle')}</strong>
+                        <span>{t('rules.genderText')}</span>
                       </div>
                       <div>
-                        <strong>{t('rules.regionTitle')}</strong>
-                        <span>{t('rules.regionText')}</span>
+                        <strong>{t('rules.debutTitle')}</strong>
+                        <span>{t('rules.debutText')}</span>
+                      </div>
+                      <div>
+                        <strong>{t('rules.heightTitle')}</strong>
+                        <span>{t('rules.heightText')}</span>
                       </div>
                       <div>
                         <strong>{t('rules.ageTitle')}</strong>
                         <span>{t('rules.ageText')}</span>
                       </div>
                       <div>
-                        <strong>{t('rules.majorTitle')}</strong>
-                        <span>{t('rules.majorText')}</span>
+                        <strong>{t('rules.collabTitle')}</strong>
+                        <span>{t('rules.collabText')}</span>
+                      </div>
+                      <div>
+                        <strong>{t('rules.raceTitle')}</strong>
+                        <span>{t('rules.raceText')}</span>
                       </div>
                     </div>
                     <div className="rule-result-notes">
@@ -164,14 +184,13 @@ export default function GameRules() {
                   <article className="rule-panel rule-panel-regions">
                     <div className="rule-panel-title">
                       <span aria-hidden="true"><MapPinned size={20} /></span>
-                      <div><small>03</small><h3>{t('rules.regionsTitle')}</h3></div>
+                      <div><small>03</small><h3>{t('rules.fieldsTitle')}</h3></div>
                     </div>
-                    <p>{t('rules.regionsIntro')}</p>
+                    <p>{t('rules.fieldsIntro')}</p>
                     <div className="region-list">
-                      {regions.map((region) => (
-                        <div className="region-item" key={region}>
-                          <strong>{t(`rules.regions.${region}.name`)}</strong>
-                          <span>{t(`rules.regions.${region}.countries`)}</span>
+                      {fields.map((field) => (
+                        <div className="region-item" key={field}>
+                          <span>{t(`rules.${field}`)}</span>
                         </div>
                       ))}
                     </div>

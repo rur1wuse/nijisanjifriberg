@@ -15,7 +15,6 @@ import {
   type AdminGuest,
   type AdminUser,
 } from './AdminUsers';
-import ExternalAnalysisPanel, { type ExternalAnalysisView } from './ExternalAnalysisPanel';
 
 type ReportStatus = 'pending' | 'resolved' | 'dismissed';
 
@@ -267,8 +266,6 @@ function ReportDialog({ report, onClose, onSaved }: { report: MatchReport; onClo
   const [saving, setSaving] = useState(false);
   const [applyToPending, setApplyToPending] = useState(false);
   const [whitelisting, setWhitelisting] = useState(false);
-  const [analysis, setAnalysis] = useState<ExternalAnalysisView | null>(null);
-  const [analysisLoading, setAnalysisLoading] = useState(false);
   useEffect(() => { onCloseRef.current = onClose; }, [onClose]);
   useEffect(() => {
     const oldOverflow = document.body.style.overflow;
@@ -339,20 +336,11 @@ function ReportDialog({ report, onClose, onSaved }: { report: MatchReport; onClo
     } catch (error) { toast.error(errMsg(error)); }
     finally { setWhitelisting(false); }
   };
-  const runAnalysis = async (locale: string) => {
-    setAnalysisLoading(true);
-    try {
-      const response = await api.post<ExternalAnalysisView>(`/admin/reports/${report.id}/analysis`, { locale });
-      setAnalysis(response.data);
-    } catch (error) { toast.error(errMsg(error)); }
-    finally { setAnalysisLoading(false); }
-  };
   return <ModalPortal><div className="admin-player-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><div ref={dialogRef} className="admin-player-dialog admin-report-dialog" role="dialog" aria-modal="true" aria-labelledby="admin-report-title" tabIndex={-1}>
     <div className="admin-player-dialog-heading"><div><h2 id="admin-report-title"><AlertTriangle size={20} />{t('admin.handleReport')}</h2><p>{report.reporter} → {report.reported}</p></div><button className="confirm-close" type="button" aria-label={t('common.close')} onClick={onClose}><X size={18} /></button></div>
     <div className="admin-report-detail">
       <dl><div><dt>{t('admin.reportMatch')}</dt><dd>{difficultyLabel(t, report.mode)} · BO{report.boType} · #{report.matchId}</dd></div><div><dt>{t('admin.reportCreatedAt')}</dt><dd>{formatDate(report.createdAt)}</dd></div><div><dt>{t('admin.reportDescription')}</dt><dd>{report.description || t('admin.reportNoDescription')}</dd></div></dl>
       {report.whitelisted && <p className="admin-report-whitelist-state"><ShieldCheck size={17} />{t('admin.reportWhitelisted')}</p>}
-      <ExternalAnalysisPanel view={analysis} loading={analysisLoading} onAnalyze={(locale) => void runAnalysis(locale)} />
       <label><span>{t('admin.reportStatusLabel')}</span><select className="input" value={status} onChange={(event) => setStatus(event.target.value as ReportStatus)}><option value="pending">{t('admin.reportStatus.pending')}</option><option value="resolved">{t('admin.reportStatus.resolved')}</option><option value="dismissed">{t('admin.reportStatus.dismissed')}</option></select></label>
       <label><span>{t('admin.reportAdminNote')}</span><textarea className="input" rows={4} maxLength={500} value={note} onChange={(event) => setNote(event.target.value)} placeholder={t('admin.reportAdminNotePlaceholder')} /></label>
       {report.pendingForReported > 1 && <label className="admin-report-batch-toggle"><input type="checkbox" checked={applyToPending} onChange={(event) => setApplyToPending(event.target.checked)} /><span>{t('admin.reportBatchSameReported', { count: report.pendingForReported })}</span></label>}

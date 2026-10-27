@@ -22,29 +22,27 @@ describe('Leaderboard filters', () => {
     apiGet.mockResolvedValue({
       data: {
         mode: 'single',
-        difficulty: 'beginner',
+        difficulty: 'normal',
         items: [],
         currentUser: { displayId: '用户#ABCDE', rank: 1 },
       },
     });
   });
 
-  it('filters solo and multiplayer rankings with the difficulty dropdown', async () => {
+  it('filters solo and multiplayer rankings with the single fixed difficulty', async () => {
     const user = userEvent.setup();
     renderAtRoute(<Leaderboard />);
 
     await waitFor(() => expect(apiGet).toHaveBeenLastCalledWith('/leaderboard', {
-      params: { mode: 'single', difficulty: 'beginner' },
+      params: { mode: 'single', difficulty: 'normal' },
     }));
 
-    await user.selectOptions(screen.getByRole('combobox', { name: '难度' }), 'easy');
-    await waitFor(() => expect(apiGet).toHaveBeenLastCalledWith('/leaderboard', {
-      params: { mode: 'single', difficulty: 'easy' },
-    }));
+    expect(screen.getAllByRole('option').map((option) => (option as HTMLOptionElement).value))
+      .toEqual(['normal']);
 
     await user.click(screen.getByRole('tab', { name: '多人' }));
     await waitFor(() => expect(apiGet).toHaveBeenLastCalledWith('/leaderboard', {
-      params: { mode: 'multi', difficulty: 'easy' },
+      params: { mode: 'multi', difficulty: 'normal' },
     }));
     expect(screen.getByRole('tab', { name: '多人' })).toHaveAttribute('aria-selected', 'true');
   });
@@ -55,7 +53,7 @@ describe('Leaderboard filters', () => {
       .mockResolvedValueOnce({
         data: {
           mode: 'single',
-          difficulty: 'beginner',
+          difficulty: 'normal',
           items: [],
           currentUser: { displayId: '用户#ABCDE', rank: 3 },
         },

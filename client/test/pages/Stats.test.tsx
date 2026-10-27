@@ -12,28 +12,28 @@ vi.mock('../../src/api/client', () => ({
 }));
 
 function statsSummary(difficulties: string[]) {
-  const includesBeginner = difficulties.includes('beginner');
+  const includesNormal = difficulties.includes('normal');
   return {
     difficulties,
     personal: {
-      totalGames: includesBeginner ? 6 : 5,
+      totalGames: includesNormal ? 6 : 5,
       wins: 1,
-      winRate: includesBeginner ? 1 / 6 : 0.2,
+      winRate: includesNormal ? 1 / 6 : 0.2,
       avgGuesses: 2,
       bestGuesses: 1,
       firstGuess: null,
-      multiGames: includesBeginner ? 4 : 3,
+      multiGames: includesNormal ? 4 : 3,
       multiWins: 2,
       multiAvgWinningGuesses: 1.5,
     },
     global: {
-      totalGames: includesBeginner ? 60 : 50,
+      totalGames: includesNormal ? 60 : 50,
       wins: 10,
-      winRate: includesBeginner ? 1 / 6 : 0.2,
+      winRate: includesNormal ? 1 / 6 : 0.2,
       avgGuesses: 3,
       bestGuesses: 1,
       firstGuess: null,
-      multiGames: includesBeginner ? 40 : 35,
+      multiGames: includesNormal ? 40 : 35,
       multiAvgWinningGuesses: 2.25,
       registeredUsers: 12,
     },
@@ -64,7 +64,7 @@ describe('Stats difficulty filter', () => {
     renderAtRoute(<Stats />);
 
     await waitFor(() => expect(apiGet).toHaveBeenCalledWith('/stats/me', {
-      params: { difficulties: 'beginner,easy,normal' },
+      params: { difficulties: 'normal' },
     }));
     expect(await screen.findByText('全部分级', { selector: '.difficulty-multi-select-summary' })).toBeInTheDocument();
     expect(screen.getAllByRole('heading', { name: '个人统计', level: 3 })).toHaveLength(1);
@@ -80,20 +80,10 @@ describe('Stats difficulty filter', () => {
 
     await user.click(screen.getByText('全部分级', { selector: '.difficulty-multi-select-summary' }));
     const difficultyGroup = screen.getByRole('group', { name: '统计难度' });
-    await user.click(within(difficultyGroup).getByRole('checkbox', { name: '入门版' }));
-
-    await waitFor(() => expect(apiGet).toHaveBeenCalledWith('/stats/me', {
-      params: { difficulties: 'easy,normal' },
-    }));
-    expect(screen.getByText('简单版, 完整版', { selector: '.difficulty-multi-select-summary' })).toBeInTheDocument();
-    expect(await screen.findByText('5')).toBeInTheDocument();
-    expect(screen.getByText('50')).toBeInTheDocument();
-    expect(apiGet.mock.calls.filter(([url]) => url === '/stats/me')).toHaveLength(2);
-
-    await user.click(within(difficultyGroup).getByRole('checkbox', { name: '全部分级' }));
-    await waitFor(() => expect(apiGet.mock.calls.filter(([url]) => url === '/stats/me')).toHaveLength(3));
-    expect(apiGet).toHaveBeenLastCalledWith('/stats/me', {
-      params: { difficulties: 'beginner,easy,normal' },
-    });
+    const normalCheckbox = within(difficultyGroup).getByRole('checkbox', { name: '完整版' });
+    expect(normalCheckbox).toBeChecked();
+    expect(normalCheckbox).toBeDisabled();
+    expect(within(difficultyGroup).getByRole('checkbox', { name: '全部分级' })).toBeChecked();
+    expect(apiGet.mock.calls.filter(([url]) => url === '/stats/me')).toHaveLength(1);
   });
 });

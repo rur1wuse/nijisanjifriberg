@@ -31,7 +31,7 @@ export default function Leaderboard() {
   const { t } = useTranslation();
   const difficulties = AVAILABLE_DIFFICULTIES;
   const [mode, setMode] = useState<LeaderboardMode>('single');
-  const [difficulty, setDifficulty] = useState(AVAILABLE_DIFFICULTIES[0]?.key ?? 'beginner');
+  const [difficulty, setDifficulty] = useState(AVAILABLE_DIFFICULTIES[0]?.key ?? 'normal');
   const [rows, setRows] = useState<BoardRow[]>([]);
   const [currentUser, setCurrentUser] = useState<LeaderboardResponse['currentUser']>(null);
   const [loading, setLoading] = useState(true);

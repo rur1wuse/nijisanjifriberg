@@ -172,7 +172,7 @@ export default function Home() {
       </div>
       <main className="page-scroll" id="main-content">
         <div className="home-hero">
-          <span className="hero-kicker">CS MAJOR // PLAYER GUESSING</span>
+          <span className="hero-kicker">NIJISANJI // MEMBER GUESSING</span>
           <h1>{t('common.brand')}</h1>
           <p className="hero-subtitle">{t('home.subtitle')}</p>
           <a
@@ -250,7 +250,7 @@ export default function Home() {
             {t('home.bilibili')}
           </a>
           <a
-            href="https://github.com/shnlfriberg/csgofriberg"
+            href="https://github.com/shnlfriberg/nijisanjifriberg"
             className="btn btn-github"
             target="_blank"
             rel="noopener noreferrer"

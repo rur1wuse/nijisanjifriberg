@@ -3,8 +3,25 @@ import { z } from 'zod';
 import { asyncHandler, validateQuery } from '../middleware/common';
 import { getPublicPlayerList, searchCachedPlayers } from '../services/playerCache';
 import { rateLimit } from '../middleware/rateLimit';
+import type { Player } from '../types';
 
 const router = Router();
+
+/** 客户端把 collab 当纯文本渲染，所以组合数组在这里拼成顿号分隔的字符串。 */
+function playerInfoView(player: Player) {
+  return {
+    id: player.id,
+    nickname: player.nickname,
+    gender: player.gender,
+    debutDate: player.debut_date,
+    height: player.height_cm,
+    age: player.age_text,
+    collab: player.collab_groups.join('、'),
+    race: player.race,
+    difficulties: player.difficulties ?? [],
+  };
+}
+
 const playerSearchQuery = z.object({
   search: z.string().trim().max(100).default(''),
   suggest: z.enum(['0', '1']).default('0').transform((value) => value === '1'),
@@ -25,7 +42,7 @@ router.get(
 
 /**
  * 查选手 / 自动补全。
- * - ?search=xxx 模糊搜索昵称/队伍
+ * - ?search=xxx 模糊搜索昵称/种族
  * - ?suggest=1 仅返回 id+nickname(猜测输入补全用,不泄露属性)
  */
 router.get(
@@ -45,21 +62,7 @@ router.get(
     if (suggest) {
       return res.json(players.map((p) => ({ id: p.id, nickname: p.nickname })));
     }
-    res.json(
-      players.map((p) => ({
-        id: p.id,
-        nickname: p.nickname,
-        nationality: p.nationality,
-        region: p.region,
-        team: p.team,
-        age: p.age,
-        role: p.role,
-        majorChampionships: p.major_championships,
-        majorAppearances: p.major_appearances,
-        difficulties: p.difficulties ?? [],
-        isActive: Boolean(p.is_active),
-      }))
-    );
+    res.json(players.map(playerInfoView));
   })
 );
 

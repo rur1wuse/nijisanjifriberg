@@ -44,12 +44,12 @@ function answerView(target: Player) {
   return {
     id: target.id,
     nickname: target.nickname,
-    team: target.team,
-    nationality: target.nationality,
-    region: target.region,
-    role: target.role,
-    majorChampionships: target.major_championships,
-    majorAppearances: target.major_appearances,
+    gender: target.gender,
+    debutDate: target.debut_date,
+    height: target.height_cm,
+    age: target.age_text,
+    collab: target.collab_groups.join('、'),
+    race: target.race,
   };
 }
 
@@ -113,7 +113,7 @@ router.post(
     failClosed: true,
   }),
   validateBody(z.object({
-    mode: z.string().trim().regex(/^[a-z0-9][a-z0-9_-]{0,31}$/).default('beginner'),
+    mode: z.string().trim().regex(/^[a-z0-9][a-z0-9_-]{0,31}$/).default('normal'),
   })),
   asyncHandler(async (req, res) => {
     const owner = identity(req);

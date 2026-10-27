@@ -1,48 +1,32 @@
 import { FormEvent, useEffect, useId, useRef, useState } from 'react';
 import { X } from 'lucide-react';
-import { PLAYER_ROLE_OPTIONS } from '../../utils/playerRoles';
 import ModalPortal from '../ModalPortal';
 import { toast } from '../Toast';
 import { useTranslation } from 'react-i18next';
 import DifficultyMultiSelect from './DifficultyMultiSelect';
-import {
-  COUNTRY_OPTIONS,
-  REGION_OPTIONS,
-  canonicalRegionValue,
-  countryLabel,
-  isKnownCountry,
-  isKnownRegion,
-  regionLabel,
-} from '../../utils/playerGeography';
 
 export interface PlayerForm {
   id?: number;
   nickname: string;
-  nationality: string;
-  region: string;
-  team: string;
-  team_history: string[];
-  age: number;
-  role: string;
-  major_championships: number;
-  major_appearances: number;
+  gender: string;
+  debut_date: string;
+  height_cm: string;
+  age_text: string;
+  collab_groups: string[];
+  race: string;
   difficulties: string[];
-  is_active: boolean;
   is_enabled: boolean;
 }
 
 export const emptyPlayer: PlayerForm = {
   nickname: '',
-  nationality: '',
-  region: '',
-  team: '',
-  team_history: [],
-  age: 25,
-  role: 'Rifler',
-  major_championships: 0,
-  major_appearances: 0,
+  gender: '',
+  debut_date: '',
+  height_cm: '',
+  age_text: '',
+  collab_groups: [],
+  race: '',
   difficulties: ['normal'],
-  is_active: true,
   is_enabled: true,
 };
 
@@ -55,10 +39,7 @@ interface Props {
 
 export default function PlayerEditForm({ initial, difficultyKeys, onSubmit, onCancel }: Props) {
   const { t } = useTranslation();
-  const [form, setForm] = useState<PlayerForm>(() => ({
-    ...initial,
-    region: canonicalRegionValue(initial.region),
-  }));
+  const [form, setForm] = useState<PlayerForm>(initial);
   const [saving, setSaving] = useState(false);
   const titleId = useId();
   const firstInputRef = useRef<HTMLInputElement>(null);
@@ -121,62 +102,40 @@ export default function PlayerEditForm({ initial, difficultyKeys, onSubmit, onCa
               <input ref={firstInputRef} className="input" value={form.nickname} onChange={(event) => set({ nickname: event.target.value })} required />
             </label>
             <label className="admin-player-field">
-              <span>{t('admin.nationalityRequired')}</span>
-              <select className="input" value={form.nationality} onChange={(event) => set({ nationality: event.target.value })} required>
-                <option value="" disabled>{t('admin.nationalityRequired')}</option>
-                {form.nationality && !isKnownCountry(form.nationality) && (
-                  <option value={form.nationality}>{form.nationality}</option>
-                )}
-                {COUNTRY_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>{countryLabel(t, option.value)}</option>
-                ))}
-              </select>
+              <span>{t('player.gender')}</span>
+              <input className="input" value={form.gender} onChange={(event) => set({ gender: event.target.value })} />
             </label>
             <label className="admin-player-field">
-              <span>{t('admin.region')}</span>
-              <select className="input" value={form.region} onChange={(event) => set({ region: event.target.value })}>
-                <option value="">{t('admin.regionPlaceholder')}</option>
-                {form.region && !isKnownRegion(form.region) && (
-                  <option value={form.region}>{form.region}</option>
-                )}
-                {REGION_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>{regionLabel(t, option.value)}</option>
-                ))}
-              </select>
-            </label>
-            <label className="admin-player-field">
-              <span>{t('admin.currentTeam')}</span>
-              <input className="input" value={form.team} onChange={(event) => set({ team: event.target.value })} />
-            </label>
-            <label className="admin-player-field">
-              <span>{t('admin.teamHistory')}</span>
-              <textarea
+              <span>{t('player.debutDate')}</span>
+              <input
                 className="input"
-                rows={3}
-                value={form.team_history.join('\n')}
-                onChange={(event) => set({
-                  team_history: event.target.value.split(/\r?\n/).map((team) => team.trim()).filter(Boolean),
-                })}
-                placeholder={t('admin.teamHistoryPlaceholder')}
+                placeholder="YYYY-MM-DD"
+                value={form.debut_date}
+                onChange={(event) => set({ debut_date: event.target.value })}
               />
             </label>
             <label className="admin-player-field">
-              <span>{t('admin.ageRequired')}</span>
-              <input className="input" type="number" min="10" max="100" value={form.age} onChange={(event) => set({ age: Number(event.target.value) })} required />
+              <span>{t('player.height')}</span>
+              <input className="input" value={form.height_cm} onChange={(event) => set({ height_cm: event.target.value })} />
             </label>
             <label className="admin-player-field">
-              <span>{t('admin.playerRole')}</span>
-              <select className="input" value={form.role} onChange={(event) => set({ role: event.target.value })}>
-                {PLAYER_ROLE_OPTIONS.map(({ value, labelKey }) => <option key={value} value={value}>{t(labelKey)}</option>)}
-              </select>
+              <span>{t('player.age')}</span>
+              <input className="input" value={form.age_text} onChange={(event) => set({ age_text: event.target.value })} />
             </label>
             <label className="admin-player-field">
-              <span>{t('player.majorChampionships')}</span>
-              <input className="input" type="number" min="0" value={form.major_championships} onChange={(event) => set({ major_championships: Number(event.target.value) })} />
+              <span>{t('player.race')}</span>
+              <input className="input" value={form.race} onChange={(event) => set({ race: event.target.value })} />
             </label>
             <label className="admin-player-field">
-              <span>{t('admin.majorAppearances')}</span>
-              <input className="input" type="number" min="0" value={form.major_appearances} onChange={(event) => set({ major_appearances: Number(event.target.value) })} />
+              <span>{t('player.collab')}</span>
+              <textarea
+                className="input"
+                rows={3}
+                value={form.collab_groups.join('\n')}
+                onChange={(event) => set({
+                  collab_groups: event.target.value.split(/\r?\n/).map((group) => group.trim()).filter(Boolean),
+                })}
+              />
             </label>
           </div>
 
@@ -189,7 +148,6 @@ export default function PlayerEditForm({ initial, difficultyKeys, onSubmit, onCa
                 onChange={(difficulties) => set({ difficulties })}
               />
             </div>
-            <label><input type="checkbox" checked={form.is_active} onChange={(event) => set({ is_active: event.target.checked })} />{t('admin.activePlayer')}</label>
             <label><input type="checkbox" checked={form.is_enabled} onChange={(event) => set({ is_enabled: event.target.checked })} />{t('admin.enabledPlayer')}</label>
           </div>
 

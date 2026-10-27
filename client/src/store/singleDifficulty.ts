@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'csgofriberg.single-difficulty';
+const STORAGE_KEY = 'nijisanjifriberg.single-difficulty';
 
 export function getStoredSingleDifficulty(): string | null {
   try {

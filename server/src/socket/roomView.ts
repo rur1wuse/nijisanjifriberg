@@ -24,12 +24,11 @@ export function joinRoomChannels(socket: Socket, room: StoredRoom, identity: str
 }
 
 export function visibleGuess(feedback: GuessFeedback) {
-  const { region: _region, ...attributes } = feedback.attributes;
-  return { ...feedback, attributes };
+  return feedback;
 }
 
 export function hiddenGuess(feedback: GuessFeedback) {
-  const hideAttribute = ({ level, hint }: GuessFeedback['attributes']['team']) => ({
+  const hideAttribute = ({ level, hint }: GuessFeedback['attributes']['gender']) => ({
     level,
     ...(hint ? { hint } : {}),
   });
@@ -37,13 +36,12 @@ export function hiddenGuess(feedback: GuessFeedback) {
     hidden: true as const,
     correct: feedback.correct,
     attributes: {
-      nationality: hideAttribute(feedback.attributes.nationality),
-      team: hideAttribute(feedback.attributes.team),
+      gender: hideAttribute(feedback.attributes.gender),
+      debutDate: hideAttribute(feedback.attributes.debutDate),
+      height: hideAttribute(feedback.attributes.height),
       age: hideAttribute(feedback.attributes.age),
-      role: hideAttribute(feedback.attributes.role),
-      majorChampionships: hideAttribute(feedback.attributes.majorChampionships),
-      majorAppearances: hideAttribute(feedback.attributes.majorAppearances),
-      isActive: hideAttribute(feedback.attributes.isActive),
+      collab: hideAttribute(feedback.attributes.collab),
+      race: hideAttribute(feedback.attributes.race),
     },
   };
 }
@@ -70,14 +68,12 @@ function replayAnswer(target: Player) {
   return {
     id: target.id,
     nickname: target.nickname,
-    nationality: target.nationality,
-    region: target.region,
-    team: target.team,
-    age: target.age,
-    role: target.role,
-    majorChampionships: target.major_championships,
-    majorAppearances: target.major_appearances,
-    isActive: Boolean(target.is_active),
+    gender: target.gender,
+    debutDate: target.debut_date,
+    height: target.height_cm,
+    age: target.age_text,
+    collab: (target.collab_groups ?? []).join(', '),
+    race: target.race,
   };
 }
 
@@ -199,17 +195,7 @@ function buildMatchReplay(room: StoredRoom, viewerKey: string) {
 
 function answerView(targetPlayerId: number | null) {
   const target = targetPlayerId ? getPlayer(targetPlayerId) : null;
-  return target
-    ? {
-        nickname: target.nickname,
-        team: target.team,
-        nationality: target.nationality,
-        region: target.region,
-        role: target.role,
-        majorChampionships: target.major_championships,
-        majorAppearances: target.major_appearances,
-      }
-    : null;
+  return target ? replayAnswer(target) : null;
 }
 
 export function buildPublicRoom(room: StoredRoom, viewerKey: string) {

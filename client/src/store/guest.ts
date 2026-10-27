@@ -1,5 +1,5 @@
 const GUEST_NAME = 'guestName';
-const GUEST_NAME_CHANGED = 'csgofriberg:guest-name-changed';
+const GUEST_NAME_CHANGED = 'nijisanjifriberg:guest-name-changed';
 
 export function getGuestName(): string {
   return localStorage.getItem(GUEST_NAME) ?? '访客';

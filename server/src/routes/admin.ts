@@ -27,11 +27,6 @@ import { getPlayer } from '../services/playerCache';
 import type { GuessFeedback, Player } from '../types';
 import { DIFFICULTY_LEVELS } from '../difficulties';
 import {
-  AnalysisLocale,
-  AnalysisSubject,
-  requestExternalCheatAnalysis,
-} from '../services/externalCheatAnalysis';
-import {
   createPlayer,
   deletePlayer,
   importPlayers,
@@ -40,15 +35,10 @@ import {
   playerUpdateSchema,
   updatePlayer,
 } from '../services/playerMutations';
-import { createApiToken, listApiTokens, revokeApiToken } from '../services/apiTokens';
 import { cacheMatchmakingRestriction } from '../services/matchmakingRestriction';
 import { cancelQueue, moveQueuedIdentityToPool } from '../services/roomStore';
 import { redis, redisKey } from '../redis';
-import { normalizeTeamHistory } from '../services/teamHistory';
-import {
-  listPlayerChangeItems,
-  reviewPlayerChangeItems,
-} from '../services/playerChangeSubmissions';
+import { normalizeCollabGroups } from '../services/teamHistory';
 
 const router = Router();
 router.use(requireAuth, requireAdmin);
@@ -69,13 +59,6 @@ const adminWriteLimit = rateLimit({
 const adminImportLimit = rateLimit({
   name: 'admin-import',
   limit: 10,
-  windowSeconds: 60,
-  key: requestIdentity,
-  failClosed: true,
-});
-const adminAnalysisLimit = rateLimit({
-  name: 'admin-analysis',
-  limit: 20,
   windowSeconds: 60,
   key: requestIdentity,
   failClosed: true,
@@ -106,10 +89,6 @@ const idParamsSchema = z.object({ id: z.coerce.number().int().positive() });
 const userLeaderboardVisibilitySchema = z.object({ hidden: z.boolean() });
 const userMatchmakingRestrictionSchema = z.object({ restricted: z.boolean() });
 const banSchema = z.object({ banned: z.boolean() });
-const apiTokenCreateSchema = z.object({
-  name: z.string().trim().min(1).max(64),
-  expiresInDays: z.number().int().min(1).max(365).default(90),
-});
 const userGameReplayParamsSchema = z.object({
   userId: z.coerce.number().int().positive(),
   gameId: z.coerce.number().int().positive(),
@@ -145,24 +124,10 @@ const reportWhitelistSchema = z.object({
 const reportWhitelistParamsSchema = z.object({
   reportedKey: reportIdentityKeySchema,
 });
-const analysisRequestSchema = z.object({
-  locale: z.enum(['zh-CN', 'en-US', 'ja-JP']).default('zh-CN'),
-});
 const reportQuickDismissSchema = z.object({
   adminNote: z.string().trim().min(1).max(500),
   reportedKeys: z.array(reportIdentityKeySchema).min(1).max(100),
 });
-const playerChangeListQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).default(1),
-  pageSize: z.coerce.number().int().min(10).max(100).default(50),
-  status: z.enum(['all', 'pending', 'approved', 'rejected', 'conflict']).default('pending'),
-  search: z.string().trim().max(100).default(''),
-});
-const playerChangeReviewSchema = z.object({
-  itemIds: z.array(z.number().int().positive()).min(1).max(100)
-    .refine((ids) => new Set(ids).size === ids.length),
-  decision: z.enum(['approve', 'reject']),
-}).strict();
 
 function matchPlayerDisplayId(row: { key?: unknown; name?: unknown; username?: unknown }): string {
   const key = typeof row.key === 'string' ? row.key : '';
@@ -180,14 +145,12 @@ function replayAnswer(target: Player) {
   return {
     id: target.id,
     nickname: target.nickname,
-    team: target.team,
-    nationality: target.nationality,
-    region: target.region,
-    age: target.age,
-    role: target.role,
-    majorChampionships: target.major_championships,
-    majorAppearances: target.major_appearances,
-    isActive: Boolean(target.is_active),
+    gender: target.gender,
+    debutDate: target.debut_date,
+    height: target.height_cm,
+    age: target.age_text,
+    collab: target.collab_groups.join('、'),
+    race: target.race,
   };
 }
 
@@ -489,31 +452,6 @@ router.get(
       });
     }
     throw new HttpError(404, 'USER_NOT_FOUND');
-  })
-);
-
-router.post(
-  '/reports/:reportId/analysis',
-  adminAnalysisLimit,
-  validateParams(reportParamsSchema),
-  validateBody(analysisRequestSchema),
-  asyncHandler(async (req, res) => {
-    const { reportId } = req.params as unknown as z.infer<typeof reportParamsSchema>;
-    const { locale } = req.body as z.infer<typeof analysisRequestSchema>;
-    const report = await db('match_reports').where({ id: reportId }).first('reported_key');
-    if (!report) throw new HttpError(404, 'REPORT_NOT_FOUND');
-    const identityKey = String(report.reported_key);
-    let subject: AnalysisSubject;
-    if (identityKey.startsWith('u:')) {
-      const userId = Number(identityKey.slice(2));
-      if (!Number.isInteger(userId) || userId <= 0) throw new HttpError(404, 'USER_NOT_FOUND');
-      subject = { type: 'user', userId, identityKey };
-    } else if (identityKey.startsWith('g:')) {
-      subject = { type: 'guest', guestKey: identityKey.slice(2), identityKey };
-    } else {
-      throw new HttpError(404, 'USER_NOT_FOUND');
-    }
-    res.json(await requestExternalCheatAnalysis(subject, locale as AnalysisLocale, 'report'));
   })
 );
 
@@ -877,9 +815,8 @@ router.get(
     if (search) {
       query.where((builder) => {
         builder.whereILike('nickname', `%${search}%`)
-          .orWhereILike('nationality', `%${search}%`)
-          .orWhereILike('region', `%${search}%`)
-          .orWhereILike('team', `%${search}%`);
+          .orWhereILike('race', `%${search}%`)
+          .orWhereILike('gender', `%${search}%`);
       });
     }
     const countRow = await query.clone().count({ count: 'id' }).first();
@@ -904,9 +841,9 @@ router.get(
       difficultiesByPlayer.set(Number(membership.player_id), list);
     }
     res.json({
-      players: players.map((player) => ({
+      players: players.map((player: Player) => ({
         ...player,
-        team_history: normalizeTeamHistory(player.team_history),
+        collab_groups: normalizeCollabGroups(player.collab_groups),
         difficulties: difficultiesByPlayer.get(Number(player.id)) ?? [],
       })),
       total,
@@ -976,64 +913,6 @@ router.get(
   })
 );
 
-router.post(
-  '/users/:id/analysis',
-  adminAnalysisLimit,
-  validateParams(idParamsSchema),
-  validateBody(analysisRequestSchema),
-  asyncHandler(async (req, res) => {
-    const { id } = req.params as unknown as z.infer<typeof idParamsSchema>;
-    if (!(await db('users').where({ id }).first('id'))) throw new HttpError(404, 'USER_NOT_FOUND');
-    const identityKey = `u:${id}`;
-    const { locale } = req.body as z.infer<typeof analysisRequestSchema>;
-    res.json(await requestExternalCheatAnalysis(
-      { type: 'user', userId: id, identityKey },
-      locale as AnalysisLocale,
-      'user-detail'
-    ));
-  })
-);
-
-router.post(
-  '/guests/:id/analysis',
-  adminAnalysisLimit,
-  validateParams(idParamsSchema),
-  validateBody(analysisRequestSchema),
-  asyncHandler(async (req, res) => {
-    const { id } = req.params as unknown as z.infer<typeof idParamsSchema>;
-    const guest = await db('guest_accounts').where({ id }).first('guest_key');
-    if (!guest) throw new HttpError(404, 'USER_NOT_FOUND');
-    const identityKey = `g:${guest.guest_key}`;
-    const { locale } = req.body as z.infer<typeof analysisRequestSchema>;
-    res.json(await requestExternalCheatAnalysis(
-      { type: 'guest', guestKey: String(guest.guest_key), identityKey },
-      locale as AnalysisLocale,
-      'guest-detail'
-    ));
-  })
-);
-
-router.get(
-  '/player-change-submissions',
-  adminReadLimit,
-  validateQuery(playerChangeListQuerySchema),
-  asyncHandler(async (req, res) => {
-    res.json(await listPlayerChangeItems(
-      req.query as unknown as z.infer<typeof playerChangeListQuerySchema>
-    ));
-  })
-);
-
-router.post(
-  '/player-change-submissions/review',
-  adminWriteLimit,
-  validateBody(playerChangeReviewSchema),
-  asyncHandler(async (req, res) => {
-    const { itemIds, decision } = req.body as z.infer<typeof playerChangeReviewSchema>;
-    res.json(await reviewPlayerChangeItems(itemIds, decision, req.user!.id));
-  })
-);
-
 router.get(
   '/players/export',
   adminReadLimit,
@@ -1043,15 +922,12 @@ router.get(
         .select(
           'id',
           'nickname',
-          'nationality',
-          'region',
-          'team',
-          'team_history',
-          'age',
-          'role',
-          'major_championships',
-          'major_appearances',
-          'is_active',
+          'gender',
+          'debut_date',
+          'height_cm',
+          'age_text',
+          'collab_groups',
+          'race',
           'is_enabled'
         )
         .orderBy('nickname'),
@@ -1066,18 +942,15 @@ router.get(
       difficulties.push(String(membership.difficulty_key));
       difficultiesByPlayer.set(playerId, difficulties);
     }
-    const exportedPlayers = players.map((player) => ({
+    const exportedPlayers = players.map((player: Player) => ({
       nickname: String(player.nickname),
-      nationality: String(player.nationality),
-      region: String(player.region),
-      team: String(player.team),
-      team_history: normalizeTeamHistory(player.team_history),
-      age: Number(player.age),
-      role: String(player.role),
-      major_championships: Number(player.major_championships),
-      major_appearances: Number(player.major_appearances),
+      gender: String(player.gender),
+      debut_date: String(player.debut_date),
+      height_cm: String(player.height_cm),
+      age_text: String(player.age_text),
+      collab_groups: normalizeCollabGroups(player.collab_groups),
+      race: String(player.race),
       difficulties: difficultiesByPlayer.get(Number(player.id)) ?? [],
-      is_active: Boolean(player.is_active),
       is_enabled: Boolean(player.is_enabled),
     }));
     res.attachment('players.json').json(exportedPlayers);
@@ -1293,39 +1166,6 @@ router.patch(
     const io = req.app.get('io') as Server | undefined;
     if (banned) io?.in(`identity:g:${guest.guest_key}`).disconnectSockets(true);
     res.json({ id, banned });
-  })
-);
-
-router.get(
-  '/api-tokens',
-  adminReadLimit,
-  asyncHandler(async (req, res) => {
-    res.json({ tokens: await listApiTokens(req.user!.id) });
-  })
-);
-
-router.post(
-  '/api-tokens',
-  adminWriteLimit,
-  validateBody(apiTokenCreateSchema),
-  asyncHandler(async (req, res) => {
-    const token = await createApiToken(
-      req.user!.id,
-      req.body.name,
-      req.body.expiresInDays
-    );
-    res.status(201).json(token);
-  })
-);
-
-router.delete(
-  '/api-tokens/:id',
-  adminWriteLimit,
-  validateParams(idParamsSchema),
-  asyncHandler(async (req, res) => {
-    const { id } = req.params as unknown as z.infer<typeof idParamsSchema>;
-    await revokeApiToken(req.user!.id, id);
-    res.json({ ok: true });
   })
 );
 

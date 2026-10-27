@@ -6,17 +6,18 @@ import { renderWithProviders } from '../render';
 
 const answer = {
   nickname: 'friberg',
-  team: 'NIP',
-  nationality: '瑞典',
-  role: 'Rifler',
-  majorChampionships: 1,
-  majorAppearances: 12,
+  gender: '\u5973',
+  debutDate: '2019-03-01',
+  height: '155cm',
+  age: '24',
+  collab: '\u7ec4\u5408A',
+  race: '\u4eba\u7c7b',
 };
 
 describe('AnswerOverlay', () => {
   it('exposes dialog semantics used by keyboard focus guards', () => {
     renderWithProviders(
-      <AnswerOverlay title="结算" answer={answer} actions={<button type="button">查看</button>} />
+      <AnswerOverlay title="\u7ed3\u7b97" answer={answer} actions={<button type="button">\u67e5\u770b</button>} />
     );
     const dialog = screen.getByRole('dialog');
     expect(dialog).toHaveAttribute('aria-modal', 'true');
@@ -28,10 +29,10 @@ describe('AnswerOverlay', () => {
     const onClose = vi.fn();
     const { container } = renderWithProviders(
       <AnswerOverlay
-        title="结算"
+        title="\u7ed3\u7b97"
         answer={answer}
         onClose={onClose}
-        actions={<button type="button">查看</button>}
+        actions={<button type="button">\u67e5\u770b</button>}
       />
     );
 
@@ -50,18 +51,28 @@ describe('AnswerOverlay', () => {
   it('does not close when onClose is omitted (match-over flow)', async () => {
     const user = userEvent.setup();
     renderWithProviders(
-      <AnswerOverlay title="整场结算" answer={answer} actions={<button type="button">再来</button>} />
+      <AnswerOverlay title="\u6574\u573a\u7ed3\u7b97" answer={answer} actions={<button type="button">\u518d\u6765</button>} />
     );
     await user.keyboard('{Escape}');
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
+  it('renders the seven niji fields', () => {
+    renderWithProviders(<PlayerInfoTable answer={answer} />);
+    expect(screen.getByText('\u6027\u522b')).toBeInTheDocument();
+    expect(screen.getByText('\u51fa\u9053\u65e5')).toBeInTheDocument();
+    expect(screen.getByText('\u8eab\u9ad8')).toBeInTheDocument();
+    expect(screen.getByText('\u5173\u7cfb')).toBeInTheDocument();
+    expect(screen.getByText('\u79cd\u65cf')).toBeInTheDocument();
+    expect(screen.getByText('155cm')).toBeInTheDocument();
+  });
+
   it('shows a player\'s difficulty memberships when provided', () => {
     renderWithProviders(
-      <PlayerInfoTable answer={{ ...answer, difficulties: ['beginner', 'normal'] }} />
+      <PlayerInfoTable answer={{ ...answer, difficulties: ['normal'] }} />
     );
 
-    expect(screen.getByText('所属难度')).toBeInTheDocument();
-    expect(screen.getByText('入门版, 完整版')).toBeInTheDocument();
+    expect(screen.getByText('\u6240\u5c5e\u96be\u5ea6')).toBeInTheDocument();
+    expect(screen.getByText('\u5b8c\u6574\u7248')).toBeInTheDocument();
   });
 });

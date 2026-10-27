@@ -127,11 +127,11 @@ describe('multiplayer socket integration', () => {
       socketId: `queue-socket-${stamp}`,
     };
     const client = redis()!;
-    const queueKey = redisKey('matchmaking:verified:easy');
-    const restrictedQueueKey = redisKey('matchmaking:restricted:easy');
+    const queueKey = redisKey('matchmaking:verified:normal');
+    const restrictedQueueKey = redisKey('matchmaking:restricted:normal');
     await client.zAdd(queueKey, { score: Date.now() - 301_000, value: staleIdentity });
 
-    expect(await queueOrTakeOpponent('easy', identity)).toBeNull();
+    expect(await queueOrTakeOpponent('normal', identity)).toBeNull();
     expect(await client.zScore(queueKey, staleIdentity)).toBeNull();
     expect(await client.zScore(queueKey, identity.key)).not.toBeNull();
 
@@ -142,7 +142,7 @@ describe('multiplayer socket integration', () => {
       socketId: `restricted-queue-socket-${stamp}`,
       matchmakingPool: 'restricted' as const,
     };
-    expect(await queueOrTakeOpponent('easy', restrictedIdentity)).toBeNull();
+    expect(await queueOrTakeOpponent('normal', restrictedIdentity)).toBeNull();
     expect(await client.zScore(queueKey, restrictedIdentity.key)).toBeNull();
     expect(await client.zScore(restrictedQueueKey, restrictedIdentity.key)).not.toBeNull();
     const secondRestrictedIdentity = {
@@ -151,7 +151,7 @@ describe('multiplayer socket integration', () => {
       userId: 124,
       socketId: `restricted-queue-socket-second-${stamp}`,
     };
-    expect(await queueOrTakeOpponent('easy', secondRestrictedIdentity)).toBeNull();
+    expect(await queueOrTakeOpponent('normal', secondRestrictedIdentity)).toBeNull();
     expect(await client.zScore(restrictedQueueKey, restrictedIdentity.key)).not.toBeNull();
     expect(await client.zScore(restrictedQueueKey, secondRestrictedIdentity.key)).not.toBeNull();
 
@@ -191,7 +191,7 @@ describe('multiplayer socket integration', () => {
     const token = jwt.sign({ key, typ: 'guest' }, config.jwtSecret, { expiresIn: '1h' });
     const socket = await connect(withPowCookie(`csgofriberg_guest=${token}`));
     try {
-      expect(await emit(socket, 'room:create', { dbType: 'easy', boType: 2 }))
+      expect(await emit(socket, 'room:create', { dbType: 'normal', boType: 2 }))
         .toEqual({ code: 'VALIDATION_FAILED' });
       expect(await emit(socket, 'room:join', { roomId: '../bad' }))
         .toEqual({ code: 'VALIDATION_FAILED' });
@@ -206,7 +206,7 @@ describe('multiplayer socket integration', () => {
         roundId: 1,
         eventId: 'short',
       })).toEqual({ code: 'VALIDATION_FAILED' });
-      expect(await emit(socket, 'match:start', { dbType: ['easy'] }))
+      expect(await emit(socket, 'match:start', { dbType: ['normal'] }))
         .toEqual({ code: 'VALIDATION_FAILED' });
     } finally {
       socket.disconnect();
@@ -249,14 +249,14 @@ describe('multiplayer socket integration', () => {
     }
   });
 
-  it('creates multiplayer rooms with the beginner difficulty', async () => {
+  it('creates multiplayer rooms with the only difficulty', async () => {
     const key = `beginner-room-${Date.now()}`;
     const token = jwt.sign({ key, typ: 'guest' }, config.jwtSecret, { expiresIn: '1h' });
     const socket = await connect(withPowCookie(`csgofriberg_guest=${token}`));
     try {
-      const created = await emit(socket, 'room:create', { dbType: 'beginner', boType: 1 });
+      const created = await emit(socket, 'room:create', { dbType: 'normal', boType: 1 });
       expect(created.room).toMatchObject({
-        dbType: 'beginner',
+        dbType: 'normal',
         boType: 1,
         maxGuesses: 8,
         guessIntervalMs: 1_500,
@@ -276,16 +276,16 @@ describe('multiplayer socket integration', () => {
     const unverifiedSocket = await connect(unverified.cookie);
     const verifiedSocket = await connect(verified.cookie);
     try {
-      expect(await emit(guest, 'match:start', { dbType: 'easy' }))
+      expect(await emit(guest, 'match:start', { dbType: 'normal' }))
         .toEqual({ code: 'EMAIL_VERIFICATION_REQUIRED' });
-      expect(await emit(unverifiedSocket, 'match:start', { dbType: 'easy' }))
+      expect(await emit(unverifiedSocket, 'match:start', { dbType: 'normal' }))
         .toEqual({ code: 'EMAIL_VERIFICATION_REQUIRED' });
-      expect(await emit(verifiedSocket, 'match:start', { dbType: 'easy' }))
+      expect(await emit(verifiedSocket, 'match:start', { dbType: 'normal' }))
         .toEqual({ queued: true });
       await emit(verifiedSocket, 'match:cancel');
 
       const created = await emit(guest, 'room:create', {
-        dbType: 'easy',
+        dbType: 'normal',
         boType: 1,
         verifiedOnly: true,
       });
@@ -300,7 +300,7 @@ describe('multiplayer socket integration', () => {
       await db('users').where({ id: unverified.id }).update({ email_verified_at: new Date().toISOString() });
       expect(JSON.parse((await redis()!.get(redisKey(`auth:user:${unverified.id}`)))!))
         .toMatchObject({ emailVerified: false });
-      expect(await emit(unverifiedSocket, 'match:start', { dbType: 'easy' }))
+      expect(await emit(unverifiedSocket, 'match:start', { dbType: 'normal' }))
         .toEqual({ queued: true });
       await emit(unverifiedSocket, 'match:cancel');
     } finally {
@@ -333,7 +333,7 @@ describe('multiplayer socket integration', () => {
           session_id: `${historyPrefix}-single-win`,
           guest_key: keyB,
           target_player_id: target.id,
-          mode: 'easy',
+          mode: 'normal',
           guesses: JSON.stringify([target.id]),
           first_guess_player_id: target.id,
           status: 'won',
@@ -366,7 +366,7 @@ describe('multiplayer socket integration', () => {
         const [inserted] = await db('match_records')
           .insert({
             room_id: `${historyPrefix}-multi-${index}`,
-            db_type: 'easy',
+            db_type: 'normal',
             bo_type: 3,
             winner_key: won ? `g:${keyB}` : `g:${keyA}`,
             finish_reason: 'score',
@@ -393,7 +393,7 @@ describe('multiplayer socket integration', () => {
       }
 
       const created = await emit(a, 'room:create', {
-        dbType: 'easy',
+        dbType: 'normal',
         boType: 3,
         allowSpectators: true,
       });
@@ -457,11 +457,11 @@ describe('multiplayer socket integration', () => {
     const a = await connect(userA.cookie);
     const b = await connect(userB.cookie);
     try {
-      expect(await emit(a, 'match:start', { dbType: 'easy', anonymous: true }))
+      expect(await emit(a, 'match:start', { dbType: 'normal', anonymous: true }))
         .toEqual({ queued: true });
       const foundA = onceEvent(a, 'match:found');
       const foundB = onceEvent(b, 'match:found');
-      expect(await emit(b, 'match:start', { dbType: 'easy', anonymous: true }))
+      expect(await emit(b, 'match:start', { dbType: 'normal', anonymous: true }))
         .toEqual({ queued: false });
 
       const [matchA, matchB] = await Promise.all([foundA, foundB]);
@@ -513,10 +513,10 @@ describe('multiplayer socket integration', () => {
     const a = await connect(userA.cookie);
     const b = await connect(userB.cookie);
     try {
-      expect(await emit(a, 'match:start', { dbType: 'easy', anonymous: true })).toEqual({ queued: true });
+      expect(await emit(a, 'match:start', { dbType: 'normal', anonymous: true })).toEqual({ queued: true });
       const foundA = onceEvent(a, 'match:found');
       const foundB = onceEvent(b, 'match:found');
-      expect(await emit(b, 'match:start', { dbType: 'easy', anonymous: true })).toEqual({ queued: false });
+      expect(await emit(b, 'match:start', { dbType: 'normal', anonymous: true })).toEqual({ queued: false });
       const [matched] = await Promise.all([foundA, foundB]);
       const roomId = matched.room.id;
       const recordId = (await getRoom(roomId))!.recordId;
@@ -530,11 +530,11 @@ describe('multiplayer socket integration', () => {
       expect(await getRoom(roomId)).toBeNull();
       expect(await db('match_records').where({ room_id: recordId }).first()).toBeUndefined();
 
-      expect(await emit(b, 'match:start', { dbType: 'easy', anonymous: true })).toMatchObject({
+      expect(await emit(b, 'match:start', { dbType: 'normal', anonymous: true })).toMatchObject({
         code: 'MATCHMAKING_COOLDOWN',
         retryAt: resultB.retryAt,
       });
-      expect(await emit(a, 'match:start', { dbType: 'easy', anonymous: true })).toEqual({ queued: true });
+      expect(await emit(a, 'match:start', { dbType: 'normal', anonymous: true })).toEqual({ queued: true });
       await emit(a, 'match:cancel');
     } finally {
       a.disconnect();
@@ -554,7 +554,7 @@ describe('multiplayer socket integration', () => {
       const [target] = await db('players').select('id').limit(1);
       const [inserted] = await db('match_records').insert({
         room_id: historyRoomId,
-        db_type: 'easy',
+        db_type: 'normal',
         bo_type: 1,
         winner_key: keyA,
         finish_reason: 'score',
@@ -587,10 +587,10 @@ describe('multiplayer socket integration', () => {
         },
       ]);
 
-      expect(await emit(a, 'match:start', { dbType: 'easy', anonymous: true })).toEqual({ queued: true });
+      expect(await emit(a, 'match:start', { dbType: 'normal', anonymous: true })).toEqual({ queued: true });
       const foundA = onceEvent(a, 'match:found');
       const foundB = onceEvent(b, 'match:found');
-      expect(await emit(b, 'match:start', { dbType: 'easy', anonymous: true })).toEqual({ queued: false });
+      expect(await emit(b, 'match:start', { dbType: 'normal', anonymous: true })).toEqual({ queued: false });
       const [matched] = await Promise.all([foundA, foundB]);
       const roomId = matched.room.id;
       const recordId = (await getRoom(roomId))!.recordId;
@@ -600,7 +600,7 @@ describe('multiplayer socket integration', () => {
       expect(await opponentEnded).toMatchObject({ roomId, reason: 'opponent_left', penalized: false });
       expect(await getRoom(roomId)).toBeNull();
       expect(await db('match_records').where({ room_id: recordId }).first()).toBeUndefined();
-      expect(await emit(b, 'match:start', { dbType: 'easy', anonymous: true })).toEqual({ queued: true });
+      expect(await emit(b, 'match:start', { dbType: 'normal', anonymous: true })).toEqual({ queued: true });
       await emit(b, 'match:cancel');
     } finally {
       a.disconnect();
@@ -729,7 +729,7 @@ describe('multiplayer socket integration', () => {
     const a = await connect(withPowCookie(`csgofriberg_guest=${tokenA}`));
     const b = await connect(withPowCookie(`csgofriberg_guest=${tokenB}`));
     try {
-      const created = await emit(a, 'room:create', { dbType: 'easy', boType: 1 });
+      const created = await emit(a, 'room:create', { dbType: 'normal', boType: 1 });
       createdRoomIds.push(created.room.id);
       await emit(b, 'room:join', { roomId: created.room.id });
       await emit(b, 'room:ready', { ready: true });
@@ -757,11 +757,11 @@ describe('multiplayer socket integration', () => {
     const a = await connect(userA.cookie);
     const b = await connect(userB.cookie);
     try {
-      expect(await emit(a, 'match:start', { dbType: 'easy', anonymous: true }))
+      expect(await emit(a, 'match:start', { dbType: 'normal', anonymous: true }))
         .toEqual({ queued: true });
       const foundA = onceEvent(a, 'match:found');
       const foundB = onceEvent(b, 'match:found');
-      expect(await emit(b, 'match:start', { dbType: 'easy', anonymous: true }))
+      expect(await emit(b, 'match:start', { dbType: 'normal', anonymous: true }))
         .toEqual({ queued: false });
       const [matchA] = await Promise.all([foundA, foundB]);
       createdRoomIds.push(matchA.room.id);
@@ -818,11 +818,11 @@ describe('multiplayer socket integration', () => {
     let a = await connect(userA.cookie);
     const b = await connect(userB.cookie);
     try {
-      expect(await emit(a, 'match:start', { dbType: 'easy', anonymous: true }))
+      expect(await emit(a, 'match:start', { dbType: 'normal', anonymous: true }))
         .toEqual({ queued: true });
       const foundA = onceEvent(a, 'match:found');
       const foundB = onceEvent(b, 'match:found');
-      expect(await emit(b, 'match:start', { dbType: 'easy', anonymous: true }))
+      expect(await emit(b, 'match:start', { dbType: 'normal', anonymous: true }))
         .toEqual({ queued: false });
       const [matchA] = await Promise.all([foundA, foundB]);
       createdRoomIds.push(matchA.room.id);
@@ -872,7 +872,7 @@ describe('multiplayer socket integration', () => {
     const b = await connect(withPowCookie(`csgofriberg_guest=${tokenB}`));
     try {
       const created = await emit(a, 'room:create', {
-        dbType: 'easy', boType: 1, maxGuesses: 11, guessIntervalMs: 2_500,
+        dbType: 'normal', boType: 1, maxGuesses: 11, guessIntervalMs: 2_500,
         roundDurationMs: 300_000,
       });
       createdRoomIds.push(created.room.id);
@@ -950,7 +950,7 @@ describe('multiplayer socket integration', () => {
     const [a, b, c] = sockets;
     try {
       const created = await emit(a, 'room:create', {
-        dbType: 'easy', boType: 1, maxPlayers: 3, guessIntervalMs: 0,
+        dbType: 'normal', boType: 1, maxPlayers: 3, guessIntervalMs: 0,
       });
       createdRoomIds.push(created.room.id);
       await emit(b, 'room:join', { roomId: created.room.id });
@@ -1000,7 +1000,7 @@ describe('multiplayer socket integration', () => {
     const [a, b, c] = sockets;
     try {
       const created = await emit(a, 'room:create', {
-        dbType: 'easy', boType: 3, maxPlayers: 3, guessIntervalMs: 0,
+        dbType: 'normal', boType: 3, maxPlayers: 3, guessIntervalMs: 0,
       });
       createdRoomIds.push(created.room.id);
       expect(created.room.maxPlayers).toBe(3);
@@ -1011,7 +1011,7 @@ describe('multiplayer socket integration', () => {
       expect((await emit(a, 'game:start')).ok).toBe(true);
 
       const active = await getRoom(created.room.id);
-      const wrongGuess = getDifficultyPlayers('easy').find((player) => player.id !== active!.targetPlayerId)!;
+      const wrongGuess = getDifficultyPlayers('normal').find((player) => player.id !== active!.targetPlayerId)!;
       const hiddenEvent = onceEvent(b, 'game:guess:applied');
       await emit(a, 'game:guess', {
         playerId: wrongGuess.id,
@@ -1047,10 +1047,10 @@ describe('multiplayer socket integration', () => {
     const socketByPlayerKey = new Map(keys.map((key, index) => [`g:${key}`, sockets[index]]));
     try {
       expect(await emit(a, 'room:create', {
-        dbType: 'easy', gameMode: 'relay', totalRounds: 1, maxPlayers: 5,
+        dbType: 'normal', gameMode: 'relay', totalRounds: 1, maxPlayers: 5,
       })).toEqual({ code: 'VALIDATION_FAILED' });
       const created = await emit(a, 'room:create', {
-        dbType: 'easy', gameMode: 'relay', totalRounds: 1, maxPlayers: 4,
+        dbType: 'normal', gameMode: 'relay', totalRounds: 1, maxPlayers: 4,
         maxGuesses: 5, guessIntervalMs: 0,
       });
       createdRoomIds.push(created.room.id);
@@ -1070,7 +1070,7 @@ describe('multiplayer socket integration', () => {
       const turnOrder = active!.players.map((player) => player.key).sort();
       const firstTurnKey = active!.currentTurnKey!;
       const firstTurnIndex = turnOrder.indexOf(firstTurnKey);
-      const wrongGuesses = getDifficultyPlayers('easy')
+      const wrongGuesses = getDifficultyPlayers('normal')
         .filter((player) => player.id !== active!.targetPlayerId)
         .slice(0, 4);
       expect(wrongGuesses).toHaveLength(4);
@@ -1162,7 +1162,7 @@ describe('multiplayer socket integration', () => {
     const socketByPlayerKey = new Map(playerKeys.map((key, index) => [key, sockets[index]]));
     try {
       const created = await emit(a1, 'room:create', {
-        dbType: 'easy', gameMode: 'relay2v2', boType: 3, maxPlayers: 4,
+        dbType: 'normal', gameMode: 'relay2v2', boType: 3, maxPlayers: 4,
         maxGuesses: 8, guessIntervalMs: 0, allowSpectators: true,
       });
       createdRoomIds.push(created.room.id);
@@ -1183,7 +1183,7 @@ describe('multiplayer socket integration', () => {
       const active = await getRoom(created.room.id);
       const actorKey = active!.teamTurnKeys.a!;
       const actorSocket = socketByPlayerKey.get(actorKey)!;
-      const wrongGuess = getDifficultyPlayers('easy').find((player) => player.id !== active!.targetPlayerId)!;
+      const wrongGuess = getDifficultyPlayers('normal').find((player) => player.id !== active!.targetPlayerId)!;
       const spectatorEvent = onceEvent(spectator, 'game:guess:applied');
       const opponentEvent = onceEvent(b1, 'game:guess:applied');
 
@@ -1217,7 +1217,7 @@ describe('multiplayer socket integration', () => {
     const b = await connect(withPowCookie(`csgofriberg_guest=${tokenB}`));
     try {
       const created = await emit(a, 'room:create', {
-        dbType: 'easy', gameMode: 'relay', totalRounds: 3, maxGuesses: 8, guessIntervalMs: 0,
+        dbType: 'normal', gameMode: 'relay', totalRounds: 3, maxGuesses: 8, guessIntervalMs: 0,
       });
       createdRoomIds.push(created.room.id);
       await emit(b, 'room:join', { roomId: created.room.id });
@@ -1249,27 +1249,27 @@ describe('multiplayer socket integration', () => {
     const b = await connect(withPowCookie(`csgofriberg_guest=${tokenB}`));
     try {
       expect(await emit(a, 'room:create', {
-        dbType: 'easy', boType: 1, maxGuesses: 1, guessIntervalMs: 1_500,
+        dbType: 'normal', boType: 1, maxGuesses: 1, guessIntervalMs: 1_500,
       })).toEqual({ code: 'VALIDATION_FAILED' });
       expect(await emit(a, 'room:create', {
-        dbType: 'easy', boType: 1, maxGuesses: 8, guessIntervalMs: 10_001,
+        dbType: 'normal', boType: 1, maxGuesses: 8, guessIntervalMs: 10_001,
       })).toEqual({ code: 'VALIDATION_FAILED' });
       expect(await emit(a, 'room:create', {
-        dbType: 'easy', boType: 1, roundDurationMs: 9_999,
+        dbType: 'normal', boType: 1, roundDurationMs: 9_999,
       })).toEqual({ code: 'VALIDATION_FAILED' });
       expect(await emit(a, 'room:create', {
-        dbType: 'easy', boType: 1, roundDurationMs: 600_001,
+        dbType: 'normal', boType: 1, roundDurationMs: 600_001,
       })).toEqual({ code: 'VALIDATION_FAILED' });
 
       const upperBoundary = await emit(a, 'room:create', {
-        dbType: 'easy', boType: 1, roundDurationMs: 600_000,
+        dbType: 'normal', boType: 1, roundDurationMs: 600_000,
       });
       createdRoomIds.push(upperBoundary.room.id);
       expect(upperBoundary.room.roundDurationMs).toBe(600_000);
       expect(await emit(a, 'room:leave')).toEqual({ ok: true });
 
       const created = await emit(a, 'room:create', {
-        dbType: 'easy',
+        dbType: 'normal',
         boType: 1,
         maxGuesses: 2,
         guessIntervalMs: 0,
@@ -1322,11 +1322,11 @@ describe('multiplayer socket integration', () => {
     const a = await connect(userA.cookie);
     const b = await connect(userB.cookie);
     try {
-      expect(await emit(a, 'match:start', { dbType: 'easy', anonymous: true }))
+      expect(await emit(a, 'match:start', { dbType: 'normal', anonymous: true }))
         .toEqual({ queued: true });
       const foundA = onceEvent(a, 'match:found');
       const foundB = onceEvent(b, 'match:found');
-      expect(await emit(b, 'match:start', { dbType: 'easy', anonymous: true }))
+      expect(await emit(b, 'match:start', { dbType: 'normal', anonymous: true }))
         .toEqual({ queued: false });
       const [matchedA] = await Promise.all([foundA, foundB]);
       createdRoomIds.push(matchedA.room.id);
@@ -1417,7 +1417,7 @@ describe('multiplayer socket integration', () => {
     a.on('game:guess:applied', () => { appliedEvents += 1; });
     a.on('round:over', () => { roundOverEvents += 1; });
     try {
-      const created = await emit(a, 'room:create', { dbType: 'easy', boType: 1, allowSpectators: true });
+      const created = await emit(a, 'room:create', { dbType: 'normal', boType: 1, allowSpectators: true });
       createdRoomIds.push(created.room.id);
       expect(created.room.spectatorCount).toBe(0);
       expect(created.room).not.toHaveProperty('spectators');
@@ -1468,7 +1468,7 @@ describe('multiplayer socket integration', () => {
       expect(matchOver.serverNow).toEqual(expect.any(Number));
       expect(matchOver.room.matchResult).toMatchObject({ reason: 'score' });
       expect(matchOver.room.matchReplay).toMatchObject({
-        mode: 'easy',
+        mode: 'normal',
         boType: 1,
         rounds: [{ round: 1 }],
       });
@@ -1564,16 +1564,16 @@ describe('multiplayer socket integration', () => {
       expect(hiddenUpdate.guessCount).toBeUndefined();
       expect(hiddenUpdate.feedback).not.toHaveProperty('playerId');
       expect(hiddenUpdate.feedback).not.toHaveProperty('nickname');
-      expect(hiddenUpdate.feedback.attributes).not.toHaveProperty('region');
-      expect(hiddenUpdate.feedback.attributes.team).not.toHaveProperty('value');
+      for (const attribute of ['gender', 'debutDate', 'height', 'age', 'collab', 'race']) {
+        expect(hiddenUpdate.feedback.attributes[attribute]).not.toHaveProperty('value');
+      }
 
       const spectatorUpdate = await spectatorEvent;
       expect(spectatorUpdate.feedback.playerId).toBe(wrongGuess.id);
       expect(spectatorUpdate.eventId).toBeUndefined();
       expect(spectatorUpdate.guessCount).toBeUndefined();
       expect(spectatorUpdate.feedback.nickname).toEqual(expect.any(String));
-      expect(spectatorUpdate.feedback.attributes).not.toHaveProperty('region');
-      expect(spectatorUpdate.feedback.attributes.team).toHaveProperty('value');
+      expect(spectatorUpdate.feedback.attributes.race).toHaveProperty('value');
 
       const syncedB = await emit(b, 'room:sync');
       expect(syncedB.room.anonymous).toBe(true);
@@ -1585,7 +1585,7 @@ describe('multiplayer socket integration', () => {
       expect(opponentView.guesses[0]).toMatchObject({ hidden: true, correct: false });
       expect(opponentView.guesses[0]).not.toHaveProperty('playerId');
       expect(opponentView.guesses[0]).not.toHaveProperty('nickname');
-      expect(opponentView.guesses[0].attributes.nationality).not.toHaveProperty('value');
+      expect(opponentView.guesses[0].attributes.race).not.toHaveProperty('value');
 
       const spectatorSync = await emit(spectator, 'room:sync');
       expect(spectatorSync.room.players.map((player: any) => player.name)).toEqual([
@@ -1597,7 +1597,7 @@ describe('multiplayer socket integration', () => {
       );
       expect(spectatorView.guesses[0].playerId).toBe(wrongGuess.id);
       expect(spectatorView.guesses[0].nickname).toEqual(expect.any(String));
-      expect(spectatorView.guesses[0].attributes.nationality).toHaveProperty('value');
+      expect(spectatorView.guesses[0].attributes.race).toHaveProperty('value');
 
       const roundOverPromise = onceEvent(b, 'round:over');
       await emit(b, 'game:guess', {
@@ -1612,7 +1612,7 @@ describe('multiplayer socket integration', () => {
       );
       expect(revealedOpponent.guesses[0].playerId).toBe(wrongGuess.id);
       expect(revealedOpponent.guesses[0].nickname).toEqual(expect.any(String));
-      expect(revealedOpponent.guesses[0].attributes.nationality).toHaveProperty('value');
+      expect(revealedOpponent.guesses[0].attributes.race).toHaveProperty('value');
     } finally {
       a.disconnect();
       b.disconnect();
@@ -1839,7 +1839,7 @@ describe('multiplayer socket integration', () => {
     const a = await connect(cookieA);
     let b = await connect(cookieB);
     try {
-      const created = await emit(a, 'room:create', { dbType: 'easy', boType: 3 });
+      const created = await emit(a, 'room:create', { dbType: 'normal', boType: 3 });
       createdRoomIds.push(created.room.id);
       await emit(b, 'room:join', { roomId: created.room.id });
       b.disconnect();
@@ -1876,7 +1876,7 @@ describe('multiplayer socket integration', () => {
     let spectator = await connect(spectatorCookie);
     try {
       const created = await emit(owner, 'room:create', {
-        dbType: 'easy', boType: 3, allowSpectators: true,
+        dbType: 'normal', boType: 3, allowSpectators: true,
       });
       createdRoomIds.push(created.room.id);
       await emit(spectator, 'room:join', { roomId: created.room.id, spectate: true });
@@ -1900,7 +1900,7 @@ describe('multiplayer socket integration', () => {
     const a = await connect(withPowCookie(`csgofriberg_guest=${tokenA}`));
     const b = await connect(withPowCookie(`csgofriberg_guest=${tokenB}`));
     try {
-      const created = await emit(a, 'room:create', { dbType: 'easy', boType: 3 });
+      const created = await emit(a, 'room:create', { dbType: 'normal', boType: 3 });
       createdRoomIds.push(created.room.id);
       await emit(b, 'room:join', { roomId: created.room.id });
       expect((await emit(b, 'room:ready', { ready: true })).ok).toBe(true);
@@ -1932,7 +1932,7 @@ describe('multiplayer socket integration', () => {
     const b = await connect(cookieB);
     let newA: ClientSocket | null = null;
     try {
-      const created = await emit(oldA, 'room:create', { dbType: 'easy', boType: 3 });
+      const created = await emit(oldA, 'room:create', { dbType: 'normal', boType: 3 });
       createdRoomIds.push(created.room.id);
       await emit(b, 'room:join', { roomId: created.room.id });
       newA = await connect(cookieA);
@@ -1955,7 +1955,7 @@ describe('multiplayer socket integration', () => {
     const tokenB = jwt.sign({ key: keyB, typ: 'guest' }, config.jwtSecret, { expiresIn: '1h' });
     const a = await connect(withPowCookie(`csgofriberg_guest=${tokenA}`));
     const b = await connect(withPowCookie(`csgofriberg_guest=${tokenB}`));
-    const created = await emit(a, 'room:create', { dbType: 'easy', boType: 3 });
+    const created = await emit(a, 'room:create', { dbType: 'normal', boType: 3 });
     createdRoomIds.push(created.room.id);
     await emit(b, 'room:join', { roomId: created.room.id });
     await emit(b, 'room:ready', { ready: true });
@@ -1988,7 +1988,7 @@ describe('multiplayer socket integration', () => {
     const a = await connect(withPowCookie(`csgofriberg_guest=${tokenA}`));
     const b = await connect(withPowCookie(`csgofriberg_guest=${tokenB}`));
     try {
-      const created = await emit(a, 'room:create', { dbType: 'easy', boType: 3 });
+      const created = await emit(a, 'room:create', { dbType: 'normal', boType: 3 });
       createdRoomIds.push(created.room.id);
       await emit(b, 'room:join', { roomId: created.room.id });
       await emit(b, 'room:ready', { ready: true });
@@ -2029,7 +2029,7 @@ describe('multiplayer socket integration', () => {
       expect(matchOver.room.status).toBe('finished');
       expect(matchOver.room.matchReplay).toMatchObject({
         id: expect.any(String),
-        mode: 'easy',
+        mode: 'normal',
         boType: 3,
         result: 'won',
         me: { score: 2 },
@@ -2087,8 +2087,8 @@ describe('multiplayer socket integration', () => {
       { key: `already-other-${stamp}`, typ: 'guest' }, config.jwtSecret, { expiresIn: '1h' }
     )}`));
     try {
-      const current = await emit(owner, 'room:create', { dbType: 'easy', boType: 3 });
-      const target = await emit(other, 'room:create', { dbType: 'easy', boType: 3 });
+      const current = await emit(owner, 'room:create', { dbType: 'normal', boType: 3 });
+      const target = await emit(other, 'room:create', { dbType: 'normal', boType: 3 });
       createdRoomIds.push(current.room.id, target.room.id);
 
       const repeatedCreate = await emit(owner, 'room:create', { dbType: 'normal', boType: 1 });
@@ -2120,7 +2120,7 @@ describe('multiplayer socket integration', () => {
       { key: keyB, typ: 'guest' }, config.jwtSecret, { expiresIn: '1h' }
     )}`));
     try {
-      const created = await emit(a, 'room:create', { dbType: 'easy', boType: 3 });
+      const created = await emit(a, 'room:create', { dbType: 'normal', boType: 3 });
       createdRoomIds.push(created.room.id);
       await emit(b, 'room:join', { roomId: created.room.id });
       await emit(b, 'room:ready', { ready: true });
@@ -2139,7 +2139,7 @@ describe('multiplayer socket integration', () => {
         score: 0,
       });
       expect(synced.room.players.find((player: any) => player.key === `g:${keyB}`).score).toBe(0);
-      const guessPlayer = getDifficultyPlayers('easy')[0];
+      const guessPlayer = getDifficultyPlayers('normal')[0];
       expect((await emit(a, 'game:guess', {
         playerId: guessPlayer.id,
         roundId: active.room.roundId,
@@ -2163,7 +2163,7 @@ describe('multiplayer socket integration', () => {
       { key: keyB, typ: 'guest' }, config.jwtSecret, { expiresIn: '1h' }
     )}`));
     try {
-      const created = await emit(a, 'room:create', { dbType: 'easy', boType: 3 });
+      const created = await emit(a, 'room:create', { dbType: 'normal', boType: 3 });
       createdRoomIds.push(created.room.id);
       await emit(b, 'room:join', { roomId: created.room.id });
       await emit(b, 'room:ready', { ready: true });
@@ -2198,7 +2198,7 @@ describe('multiplayer socket integration', () => {
       { key: keyB, typ: 'guest' }, config.jwtSecret, { expiresIn: '1h' }
     )}`));
     try {
-      const created = await emit(a, 'room:create', { dbType: 'easy', boType: 1 });
+      const created = await emit(a, 'room:create', { dbType: 'normal', boType: 1 });
       createdRoomIds.push(created.room.id);
       await emit(b, 'room:join', { roomId: created.room.id });
       await emit(b, 'room:ready', { ready: true });
@@ -2235,7 +2235,7 @@ describe('multiplayer socket integration', () => {
       { key: keyB, typ: 'guest' }, config.jwtSecret, { expiresIn: '1h' }
     )}`));
     try {
-      const created = await emit(a, 'room:create', { dbType: 'easy', boType: 3 });
+      const created = await emit(a, 'room:create', { dbType: 'normal', boType: 3 });
       createdRoomIds.push(created.room.id);
       await emit(b, 'room:join', { roomId: created.room.id });
       await emit(b, 'room:ready', { ready: true });
@@ -2245,7 +2245,7 @@ describe('multiplayer socket integration', () => {
 
       const stored = await getRoom(created.room.id);
       const target = getPlayer(stored!.targetPlayerId!)!;
-      const wrongPool = getDifficultyPlayers('easy')
+      const wrongPool = getDifficultyPlayers('normal')
         .filter((player) => player.id !== target.id)
       expect(wrongPool.length).toBeGreaterThan(1);
       const finalWrong = wrongPool[wrongPool.length - 1];
@@ -2290,7 +2290,7 @@ describe('multiplayer socket integration', () => {
       { key: keyB, typ: 'guest' }, config.jwtSecret, { expiresIn: '1h' }
     )}`));
     try {
-      const first = await emit(a, 'room:create', { dbType: 'easy', boType: 1 });
+      const first = await emit(a, 'room:create', { dbType: 'normal', boType: 1 });
       createdRoomIds.push(first.room.id);
       await emit(b, 'room:join', { roomId: first.room.id });
       await emit(b, 'room:ready', { ready: true });
@@ -2304,7 +2304,7 @@ describe('multiplayer socket integration', () => {
       await emit(a, 'room:leave');
       await emit(b, 'room:leave');
 
-      const second = await emit(a, 'room:create', { dbType: 'easy', boType: 3 });
+      const second = await emit(a, 'room:create', { dbType: 'normal', boType: 3 });
       createdRoomIds.push(second.room.id);
       await emit(b, 'room:join', { roomId: second.room.id });
       await emit(b, 'room:ready', { ready: true });
@@ -2396,7 +2396,7 @@ describe('multiplayer socket integration', () => {
     );
     const socket = await connect(withPowCookie(`csgofriberg_guest=${guestToken}`));
     try {
-      const created = await emit(socket, 'room:create', { dbType: 'easy', boType: 1 });
+      const created = await emit(socket, 'room:create', { dbType: 'normal', boType: 1 });
       createdRoomIds.push(created.room.id);
       expect(await redis()!.zScore(redisKey('presence:rooms'), created.room.id)).not.toBeNull();
       await emit(socket, 'room:leave');

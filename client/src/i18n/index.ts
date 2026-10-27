@@ -5,7 +5,7 @@ import { resources } from './resources';
 export const supportedLanguages = ['zh', 'en', 'ja'] as const;
 export type AppLanguage = (typeof supportedLanguages)[number];
 
-const STORAGE_KEY = 'csgofriberg_language';
+const STORAGE_KEY = 'nijisanjifriberg_language';
 
 function normalizeLanguage(value: string | null | undefined): AppLanguage | null {
   const language = value?.toLowerCase().split('-')[0];

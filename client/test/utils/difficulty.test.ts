@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Flame, Gamepad2, GraduationCap } from 'lucide-react';
+import { Flame } from 'lucide-react';
 import i18n from '../../src/i18n';
 import {
   difficultyColor,
@@ -9,24 +9,18 @@ import {
 } from '../../src/utils/difficulty';
 
 describe('difficulty helpers', () => {
-  it('maps known difficulties to distinct icons and colors', () => {
-    expect(difficultyIcon('beginner')).toBe(GraduationCap);
-    expect(difficultyIcon('easy')).toBe(Gamepad2);
+  it('maps the single normal tier to a stable icon and colour', () => {
     expect(difficultyIcon('normal')).toBe(Flame);
-    expect(difficultyIcon('unknown')).toBe(Gamepad2);
-
-    expect(difficultyColor('beginner')).toBe('var(--primary)');
-    expect(difficultyColor('easy')).toBe('var(--success)');
+    expect(difficultyIcon('unknown')).toBe(Flame);
     expect(difficultyColor('normal')).toBe('var(--accent)');
-    expect(difficultyColor('unknown')).toBe('var(--primary)');
+    expect(difficultyColor('unknown')).toBe('var(--accent)');
   });
 
-  it('resolves localized labels and descriptions', () => {
+  it('resolves the localized label and description', () => {
     const t = i18n.t.bind(i18n);
-    expect(difficultyLabel(t, 'beginner')).toBe('入门版');
-    expect(difficultyDescription(t, 'beginner')).toBe('最大众选手池 · 熟悉规则');
-    expect(difficultyLabel(t, 'easy')).toBe('简单版');
-    expect(difficultyDescription(t, 'easy')).toBe('知名选手池 · 快速上手');
+    expect(difficultyLabel(t, 'normal')).toBe('\u5b8c\u6574\u7248');
+    expect(difficultyDescription(t, 'normal')).not.toBe('');
     expect(difficultyDescription(t, 'missing')).toBe('');
+    expect(difficultyLabel(t, 'missing')).toBe('missing');
   });
 });

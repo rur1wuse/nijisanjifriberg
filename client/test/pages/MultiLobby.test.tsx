@@ -54,8 +54,8 @@ describe('MultiLobby matchmaking', () => {
     const user = userEvent.setup();
     const first = renderAtRoute(<MultiLobby />, { route: '/multi', path: '/multi' });
 
-    const easyButtons = await screen.findAllByRole('button', { name: '简单版' });
-    await user.click(easyButtons[0]);
+    const difficultyButtons = await screen.findAllByRole('button', { name: '完整版' });
+    expect(difficultyButtons).toHaveLength(2);
     await user.click(screen.getByRole('button', { name: 'BO5' }));
     await user.selectOptions(screen.getByRole('combobox', { name: '房间人数上限' }), '4');
     await user.click(screen.getByText('更多设置'));
@@ -67,14 +67,13 @@ describe('MultiLobby matchmaking', () => {
     fireEvent.change(maxGuesses, { target: { value: '12' } });
     fireEvent.change(guessInterval, { target: { value: '2.5' } });
     fireEvent.change(roundDuration, { target: { value: '300' } });
-    await user.click(easyButtons[1]);
 
     await waitFor(() => {
-      expect(JSON.parse(localStorage.getItem('csgofriberg.multi-lobby-preferences') ?? '{}'))
+      expect(JSON.parse(localStorage.getItem('nijisanjifriberg.multi-lobby-preferences') ?? '{}'))
         .toEqual({
         gameMode: 'classic',
         totalRounds: 3,
-        createDifficulty: 'easy',
+        createDifficulty: 'normal',
         boType: 5,
         maxPlayers: 4,
         allowSpectators: true,
@@ -82,15 +81,15 @@ describe('MultiLobby matchmaking', () => {
         maxGuesses: 12,
         guessIntervalSeconds: 2.5,
         roundDurationSeconds: 300,
-        matchmakingDifficulty: 'easy',
+        matchmakingDifficulty: 'normal',
         });
     });
 
     first.unmount();
     renderAtRoute(<MultiLobby />, { route: '/multi', path: '/multi' });
-    const restoredEasyButtons = await screen.findAllByRole('button', { name: '简单版' });
-    expect(restoredEasyButtons[0]).toHaveClass('active');
-    expect(restoredEasyButtons[1]).toHaveClass('active');
+    const restoredDifficultyButtons = await screen.findAllByRole('button', { name: '完整版' });
+    expect(restoredDifficultyButtons[0]).toHaveClass('active');
+    expect(restoredDifficultyButtons[1]).toHaveClass('active');
     expect(screen.getByRole('button', { name: 'BO5' })).toHaveClass('active');
     expect(screen.getByRole('combobox', { name: '房间人数上限' })).toHaveValue('4');
     await user.click(screen.getByText('更多设置'));
@@ -118,7 +117,7 @@ describe('MultiLobby matchmaking', () => {
       totalRounds: 5,
       maxPlayers: 4,
     }), expect.any(Function));
-    expect(JSON.parse(localStorage.getItem('csgofriberg.multi-lobby-preferences') ?? '{}'))
+    expect(JSON.parse(localStorage.getItem('nijisanjifriberg.multi-lobby-preferences') ?? '{}'))
       .toMatchObject({ gameMode: 'relay', totalRounds: 5, maxPlayers: 4 });
   });
 
@@ -138,7 +137,7 @@ describe('MultiLobby matchmaking', () => {
     expect(presetSelect).toBeEnabled();
     expect(presetSelect).toHaveValue('比赛规则');
     expect(presetName).toHaveValue('比赛规则');
-    expect(JSON.parse(localStorage.getItem('csgofriberg.multi-lobby-presets') ?? '[]'))
+    expect(JSON.parse(localStorage.getItem('nijisanjifriberg.multi-lobby-presets') ?? '[]'))
       .toEqual([expect.objectContaining({ name: '比赛规则', maxGuesses: 8 })]);
 
     fireEvent.change(screen.getByRole('spinbutton', { name: '最大猜测次数' }), {
@@ -146,7 +145,7 @@ describe('MultiLobby matchmaking', () => {
     });
     expect(presetSelect).toHaveValue('比赛规则');
     await user.click(savePreset);
-    expect(JSON.parse(localStorage.getItem('csgofriberg.multi-lobby-presets') ?? '[]'))
+    expect(JSON.parse(localStorage.getItem('nijisanjifriberg.multi-lobby-presets') ?? '[]'))
       .toEqual([expect.objectContaining({ name: '比赛规则', maxGuesses: 12 })]);
 
     fireEvent.change(screen.getByRole('spinbutton', { name: '最大猜测次数' }), {
@@ -158,7 +157,7 @@ describe('MultiLobby matchmaking', () => {
     await user.click(screen.getByRole('button', { name: '删除预设: 比赛规则' }));
     expect(presetSelect).toBeDisabled();
     expect(presetName).toHaveValue('');
-    expect(localStorage.getItem('csgofriberg.multi-lobby-presets')).toBe('[]');
+    expect(localStorage.getItem('nijisanjifriberg.multi-lobby-presets')).toBe('[]');
   });
 
   it('requires a verified email before starting quick match', () => {

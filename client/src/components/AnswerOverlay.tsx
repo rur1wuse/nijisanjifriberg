@@ -1,35 +1,30 @@
 import { ReactNode, useEffect } from 'react';
-import { Globe, Crosshair, Calendar, Shield, Trophy, Layers3 } from 'lucide-react';
-import { playerRoleLabel } from '../utils/playerRoles';
-import { countryLabel, regionLabel } from '../utils/playerGeography';
+import { Cake, Globe2, Layers3, Ruler, Tag, Users, UserRound } from 'lucide-react';
 import ModalPortal from './ModalPortal';
 import { useTranslation } from 'react-i18next';
 import { difficultyLabel } from '../utils/difficulty';
 
 export interface AnswerInfo {
   nickname: string;
-  team: string;
-  nationality: string;
-  region?: string;
-  role?: string;
-  majorChampionships?: number;
-  majorAppearances?: number;
+  gender?: string;
+  debutDate?: string;
+  height?: string;
+  age?: string;
+  collab?: string;
+  race?: string;
   difficulties?: string[];
 }
 
-/** 选手信息表(答案卡片/查询结果共用) */
+/** 选手信息卡(答案卡片/查询结果共用) */
 export function PlayerInfoTable({ answer }: { answer: AnswerInfo }) {
   const { t } = useTranslation();
-  const nationality = countryLabel(t, answer.nationality);
-  const geography = answer.region
-    ? `${nationality} (${regionLabel(t, answer.region)})`
-    : nationality;
   const rows: [ReactNode, string, ReactNode][] = [
-    [<Shield size={14} key="i" />, t('player.team'), answer.team || '-'],
-    [<Globe size={14} key="i" />, t('player.nationality'), geography],
-    [<Crosshair size={14} key="i" />, t('player.role'), answer.role ? playerRoleLabel(answer.role) : '-'],
-    [<Trophy size={14} key="i" />, t('player.majorChampionships'), answer.majorChampionships ?? 0],
-    [<Calendar size={14} key="i" />, t('player.majorAppearances'), answer.majorAppearances ?? '-'],
+    [<UserRound size={14} key="i" />, t('player.gender'), answer.gender || '-'],
+    [<Cake size={14} key="i" />, t('player.debutDate'), answer.debutDate || '-'],
+    [<Ruler size={14} key="i" />, t('player.height'), answer.height || '-'],
+    [<Tag size={14} key="i" />, t('player.age'), answer.age || '-'],
+    [<Users size={14} key="i" />, t('player.collab'), answer.collab || '-'],
+    [<Globe2 size={14} key="i" />, t('player.race'), answer.race || '-'],
   ];
   if (answer.difficulties) {
     rows.push([

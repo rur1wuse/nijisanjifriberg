@@ -28,14 +28,12 @@ vi.mock('../../src/api/playerList', () => ({
 const answer: PlayerInfo = {
   id: 1,
   nickname: 'Answer',
-  nationality: 'CN',
-  region: 'Asia',
-  team: 'Team',
-  age: 24,
-  role: 'Rifler',
-  majorChampionships: 1,
-  majorAppearances: 4,
-  isActive: true,
+  gender: '女',
+  debutDate: '2019-03-01',
+  height: '155cm',
+  age: '24',
+  collab: '组合A',
+  race: '人类',
 };
 
 function guess(playerId: number, nickname: string, correct = false): GuessFeedback {
@@ -45,13 +43,12 @@ function guess(playerId: number, nickname: string, correct = false): GuessFeedba
     nickname,
     correct,
     attributes: {
-      nationality: attribute,
-      team: attribute,
-      age: { value: 24, level: attribute.level },
-      role: attribute,
-      majorChampionships: { value: 1, level: attribute.level },
-      majorAppearances: { value: 4, level: attribute.level },
-      isActive: { value: true, level: attribute.level },
+      gender: attribute,
+      debutDate: attribute,
+      height: attribute,
+      age: attribute,
+      collab: attribute,
+      race: attribute,
     },
   };
 }
@@ -62,7 +59,7 @@ const room: RoomState = {
   status: 'finished',
   matchmaking: false,
   readyCheckEndsAt: null,
-  dbType: 'easy',
+  dbType: 'normal',
   boType: 3,
   maxPlayers: 2,
   rematchAllowed: false,
@@ -88,20 +85,12 @@ const room: RoomState = {
   matchResult: {
     winnerKey: 'g:me',
     reason: 'score',
-    answer: {
-      nickname: answer.nickname,
-      team: answer.team,
-      nationality: answer.nationality,
-      region: answer.region,
-      role: answer.role,
-      majorChampionships: answer.majorChampionships,
-      majorAppearances: answer.majorAppearances,
-    },
+    answer,
   },
   reportSubmitted: false,
   matchReplay: {
     id: 'record',
-    mode: 'easy',
+    mode: 'normal',
     boType: 3,
     finishedAt: '2026-07-26T00:00:00.000Z',
     result: 'won',
@@ -561,7 +550,7 @@ describe('MultiRoom replay', () => {
     const relayBoard = heading.closest('.relay-board');
     expect(relayBoard).not.toBeNull();
     const table = within(relayBoard as HTMLElement).getByRole('table');
-    expect(within(table).getAllByRole('columnheader')).toHaveLength(8);
+    expect(within(table).getAllByRole('columnheader')).toHaveLength(7);
     expect(within(table).getAllByRole('row')).toHaveLength(3);
     expect(within(table).getByText('Me')).toHaveClass('guess-row-actor-self');
     expect(within(table).getByText('Opponent')).toHaveClass('guess-row-actor-other');
@@ -769,7 +758,7 @@ describe('MultiRoom replay', () => {
       ...room,
       status: 'waiting',
       matchmaking: false,
-      dbType: 'easy',
+      dbType: 'normal',
       boType: 5,
       maxGuesses: 12,
       guessIntervalMs: 2_500,
@@ -796,7 +785,7 @@ describe('MultiRoom replay', () => {
     renderAtRoute(<MultiRoom />, { route: '/multi/room', path: '/multi/room' });
 
     const attributes = await screen.findByRole('region', { name: '房间设置' });
-    expect(within(attributes).getByText('数据库：简单版')).toBeInTheDocument();
+    expect(within(attributes).getByText('数据库：完整版')).toBeInTheDocument();
     expect(within(attributes).getByText('赛制：BO5')).toBeInTheDocument();
     expect(within(attributes).getByText('每局最多 12 次 · 最大猜测时间 300 秒 · 猜测间隔 2.5 秒'))
       .toBeInTheDocument();

@@ -1,4 +1,4 @@
-export type FeedbackLevel = 'correct' | 'close' | 'wrong';
+export type FeedbackLevel = 'correct' | 'close' | 'wrong' | 'gray' | 'unknown';
 
 export interface AttributeFeedback {
   value: string | number | boolean;
@@ -11,13 +11,12 @@ export interface GuessFeedback {
   nickname: string;
   correct: boolean;
   attributes: {
-    nationality: AttributeFeedback;
-    team: AttributeFeedback;
+    gender: AttributeFeedback;
+    debutDate: AttributeFeedback;
+    height: AttributeFeedback;
     age: AttributeFeedback;
-    role: AttributeFeedback;
-    majorChampionships: AttributeFeedback;
-    majorAppearances: AttributeFeedback;
-    isActive: AttributeFeedback;
+    collab: AttributeFeedback;
+    race: AttributeFeedback;
   };
 }
 
@@ -27,13 +26,12 @@ export interface HiddenGuessFeedback {
   hidden: true;
   correct: boolean;
   attributes: {
-    nationality: HiddenAttributeFeedback;
-    team: HiddenAttributeFeedback;
+    gender: HiddenAttributeFeedback;
+    debutDate: HiddenAttributeFeedback;
+    height: HiddenAttributeFeedback;
     age: HiddenAttributeFeedback;
-    role: HiddenAttributeFeedback;
-    majorChampionships: HiddenAttributeFeedback;
-    majorAppearances: HiddenAttributeFeedback;
-    isActive: HiddenAttributeFeedback;
+    collab: HiddenAttributeFeedback;
+    race: HiddenAttributeFeedback;
   };
 }
 
@@ -50,15 +48,13 @@ export interface UserInfo {
 export interface PlayerInfo {
   id: number;
   nickname: string;
-  nationality: string;
-  region: string;
-  team: string;
-  age: number;
-  role: string;
-  majorChampionships: number;
-  majorAppearances: number;
+  gender: string;
+  debutDate: string;
+  height: string;
+  age: string;
+  collab: string;
+  race: string;
   difficulties?: string[];
-  isActive: boolean;
 }
 
 export interface RoomPlayer {
@@ -213,30 +209,14 @@ export interface RoomState {
     winnerTeam?: 'a' | 'b' | null;
     reason: string;
     nextRoundAt: number | null;
-    answer: {
-      nickname: string;
-      team: string;
-      nationality: string;
-      region: string;
-      role: string;
-      majorChampionships: number;
-      majorAppearances: number;
-    } | null;
+    answer: PlayerInfo | null;
   } | null;
   matchResult: {
     winnerKey: string | null;
     winnerTeam?: 'a' | 'b' | null;
     winnerKeys?: string[];
     reason: string;
-    answer: {
-      nickname: string;
-      team: string;
-      nationality: string;
-      region: string;
-      role: string;
-      majorChampionships: number;
-      majorAppearances: number;
-    } | null;
+    answer: PlayerInfo | null;
   } | null;
   reportSubmitted: boolean;
   matchReplay?: MatchReplay;

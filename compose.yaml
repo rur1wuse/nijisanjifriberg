@@ -1,4 +1,4 @@
-name: csgofriberg
+name: nijisanjifriberg
 
 x-app-environment: &app-environment
   NODE_ENV: production
@@ -9,12 +9,12 @@ x-app-environment: &app-environment
   GUEST_ID_SALT: ${GUEST_ID_SALT:?set GUEST_ID_SALT in .env}
   DISPLAY_ID_FORBIDDEN_TOKENS: "${DISPLAY_ID_FORBIDDEN_TOKENS:-}"
   DB_CLIENT: pg
-  DB_URL: postgres://${POSTGRES_USER:-csgofriberg}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@postgres:5432/${POSTGRES_DB:-csgofriberg}
+  DB_URL: postgres://${POSTGRES_USER:-nijisanjifriberg}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@postgres:5432/${POSTGRES_DB:-nijisanjifriberg}
   DB_POOL_MIN: ${DB_POOL_MIN:-0}
   DB_POOL_MAX: ${DB_POOL_MAX:-10}
   DB_ACQUIRE_TIMEOUT_MS: ${DB_ACQUIRE_TIMEOUT_MS:-3000}
   REDIS_URL: redis://redis:6379
-  REDIS_PREFIX: ${REDIS_PREFIX:-csgofriberg:}
+  REDIS_PREFIX: ${REDIS_PREFIX:-nijisanjifriberg:}
   REDIS_REQUIRED: "true"
   REDIS_COMMAND_TIMEOUT_MS: ${REDIS_COMMAND_TIMEOUT_MS:-1500}
   ROOM_LOCK_WAIT_MS: ${ROOM_LOCK_WAIT_MS:-1000}
@@ -35,9 +35,6 @@ x-app-environment: &app-environment
   GEETEST_PRIVATE_KEY: ${GEETEST_PRIVATE_KEY:?set GEETEST_PRIVATE_KEY in .env}
   GEETEST_VALIDATE_URL: ${GEETEST_VALIDATE_URL:-https://gcaptcha4.geetest.com/validate}
   GEETEST_TIMEOUT_MS: ${GEETEST_TIMEOUT_MS:-3000}
-  CHEAT_ANALYSIS_API_URL: ${CHEAT_ANALYSIS_API_URL:-}
-  CHEAT_ANALYSIS_API_TOKEN: ${CHEAT_ANALYSIS_API_TOKEN:-}
-  CHEAT_ANALYSIS_TIMEOUT_MS: ${CHEAT_ANALYSIS_TIMEOUT_MS:-15000}
   DISCONNECT_FORFEIT_MS: ${DISCONNECT_FORFEIT_MS:-30000}
   CORS_ORIGINS: ${CORS_ORIGINS:?set CORS_ORIGINS in .env}
   POW_DIFFICULTY: ${POW_DIFFICULTY:-17}
@@ -49,7 +46,7 @@ x-app-environment: &app-environment
   UMAMI_SCRIPT_URL: ${UMAMI_SCRIPT_URL:-https://cloud.umami.is/script.js}
 
 x-app-service: &app-service
-  image: ${IMAGE:-ghcr.io/xinhai-ai/csgofriberg:latest}
+  image: ${IMAGE:-ghcr.io/xinhai-ai/nijisanjifriberg:latest}
   restart: unless-stopped
   init: true
   stop_grace_period: 30s
@@ -78,7 +75,7 @@ x-app-service: &app-service
 
 services:
   migrate:
-    image: ${IMAGE:-ghcr.io/xinhai-ai/csgofriberg:latest}
+    image: ${IMAGE:-ghcr.io/xinhai-ai/nijisanjifriberg:latest}
     restart: "no"
     init: true
     depends_on:
@@ -107,8 +104,8 @@ services:
     image: postgres:17-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-csgofriberg}
-      POSTGRES_USER: ${POSTGRES_USER:-csgofriberg}
+      POSTGRES_DB: ${POSTGRES_DB:-nijisanjifriberg}
+      POSTGRES_USER: ${POSTGRES_USER:-nijisanjifriberg}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
     command:
       - postgres

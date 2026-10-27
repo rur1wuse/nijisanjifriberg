@@ -20,7 +20,7 @@ function exitGame(gameId: string): Promise<unknown> {
 
 export default function SingleGame() {
   const { t } = useTranslation();
-  const { mode = 'beginner' } = useParams();
+  const { mode = 'normal' } = useParams();
   const navigate = useNavigate();
   const confirm = useConfirm();
   const isValidMode = AVAILABLE_DIFFICULTIES.some((d) => d.key === mode);

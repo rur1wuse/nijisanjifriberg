@@ -136,7 +136,7 @@ export function buildVerificationEmail(input: {
   return [
     '您好：',
     '',
-    '感谢您使用「弗一把」。',
+    '感谢您使用「虹一把」。',
     '',
     '您正在为账号绑定邮箱：',
     '',
@@ -151,8 +151,8 @@ export function buildVerificationEmail(input: {
     '此邮件由系统自动发送，请勿直接回复。',
     '',
     '------------------------------',
-    '弗一把',
-    'CS:GO / CS2 Major 选手猜测游戏',
+    '虹一把',
+    '彩虹社 VTuber 猜测游戏',
   ].join('\n');
 }
 
@@ -212,7 +212,7 @@ export async function issueEmailVerification(
     });
     await sendEmail(
       email,
-      '您的邮箱验证码｜弗一把',
+      '您的邮箱验证码｜虹一把',
       buildVerificationEmail({
         code,
         ttlSeconds: config.email.verifyTtlSeconds,

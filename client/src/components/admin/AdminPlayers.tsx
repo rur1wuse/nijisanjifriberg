@@ -4,13 +4,11 @@ import DataTable, { Column } from '../DataTable';
 import PlayerEditForm, { PlayerForm, emptyPlayer } from './PlayerEditForm';
 import { api, errMsg } from '../../api/client';
 import { useConfirm } from '../ConfirmDialog';
-import { playerRoleLabel } from '../../utils/playerRoles';
 import { clearPlayerListCache } from '../../api/playerList';
 import { toast } from '../Toast';
 import { useTranslation } from 'react-i18next';
 import { difficultyLabel } from '../../utils/difficulty';
 import { AVAILABLE_DIFFICULTIES } from '../../config/difficulties';
-import { countryLabel, regionLabel } from '../../utils/playerGeography';
 
 interface AdminPlayer extends PlayerForm {
   id: number;
@@ -50,9 +48,8 @@ export default function AdminPlayers() {
       if (currentRequest !== requestId.current) return;
       setPlayers(res.data.players.map((p) => ({
         ...p,
-        team_history: p.team_history ?? [],
+        collab_groups: p.collab_groups ?? [],
         difficulties: p.difficulties ?? [],
-        is_active: Boolean(p.is_active),
         is_enabled: Boolean(p.is_enabled),
       })));
       setTotal(res.data.total);
@@ -172,15 +169,13 @@ export default function AdminPlayers() {
 
   const columns: Column<AdminPlayer>[] = [
     { key: 'nickname', title: t('admin.nickname') },
-    { key: 'nationality', title: t('admin.nationality'), render: (p) => countryLabel(t, p.nationality) },
-    { key: 'region', title: t('admin.region'), render: (p) => regionLabel(t, p.region) },
-    { key: 'team', title: t('admin.team') },
-    { key: 'age', title: t('admin.age') },
-    { key: 'role', title: t('admin.role'), render: (p) => playerRoleLabel(p.role) },
-    { key: 'major_championships', title: t('admin.majorTitles') },
-    { key: 'major_appearances', title: t('admin.major') },
+    { key: 'gender', title: t('player.gender') },
+    { key: 'debut_date', title: t('player.debutDate') },
+    { key: 'height_cm', title: t('player.height') },
+    { key: 'age_text', title: t('player.age') },
+    { key: 'race', title: t('player.race') },
+    { key: 'collab_groups', title: t('player.collab'), render: (p) => (p.collab_groups ?? []).length },
     { key: 'difficulties', title: t('admin.difficulties'), render: (p) => p.difficulties.map((key) => difficultyLabel(t, key)).join(', ') },
-    { key: 'is_active', title: t('admin.status'), render: (p) => (p.is_active ? t('common.active') : t('common.retired')) },
     { key: 'is_enabled', title: t('admin.pool'), render: (p) => (p.is_enabled ? t('admin.available') : t('admin.disabled')) },
     {
       key: 'actions',

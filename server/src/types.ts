@@ -15,21 +15,18 @@ export interface User {
 export interface Player {
   id: number;
   nickname: string;
-  nationality: string;
-  region: string;
-  team: string;
-  team_history: string[];
-  age: number;
-  role: string;
-  major_championships: number;
-  major_appearances: number;
+  gender: string;
+  debut_date: string;
+  height_cm: string;
+  age_text: string;
+  collab_groups: string[];
+  race: string;
   difficulties?: string[];
-  is_active: boolean | number;
   is_enabled: boolean | number;
   created_at: string;
 }
 
-export type FeedbackLevel = 'correct' | 'close' | 'wrong';
+export type FeedbackLevel = 'correct' | 'close' | 'wrong' | 'gray' | 'unknown';
 
 export interface AttributeFeedback {
   value: string | number | boolean;
@@ -43,13 +40,11 @@ export interface GuessFeedback {
   nickname: string;
   correct: boolean;
   attributes: {
-    nationality: AttributeFeedback;
-    region: AttributeFeedback;
-    team: AttributeFeedback;
+    gender: AttributeFeedback;
+    debutDate: AttributeFeedback;
+    height: AttributeFeedback;
     age: AttributeFeedback;
-    role: AttributeFeedback;
-    majorChampionships: AttributeFeedback;
-    majorAppearances: AttributeFeedback;
-    isActive: AttributeFeedback;
+    collab: AttributeFeedback;
+    race: AttributeFeedback;
   };
 }

@@ -498,6 +498,7 @@
 .rule-feedback-correct .rule-color-swatch { background: var(--correct); }
 .rule-feedback-close .rule-color-swatch { background: var(--close); }
 .rule-feedback-wrong .rule-color-swatch { background: var(--wrong); }
+.rule-feedback-unknown .rule-color-swatch { background: var(--unknown); }
 .rule-arrow-pair { display: grid; color: var(--rule-accent); }
 .rule-sections {
   display: grid;
@@ -1245,7 +1246,7 @@
 /* 列宽按放大后的实际内容重调(仅多人双栏,单人宽表沿用 game.css 的比例)。
    列宽是 % 、字号是 cqw,两者都随容器等比变化 —— 所以这套比例调一次
    在任何缩放档下都成立,不会像固定 px 那样在某个宽度上突然放不下。
-   数字列原先各占 12%(Major 冠军只有 1 位数),把富余让给选手名与战队。 */
+   数字列原先各占 12%,把富余让给选手名与关系列。 */
 .player-board .game-table th:nth-child(1),
 .player-board .game-table td:nth-child(1) { width: 21%; }
 .player-board .game-table th:nth-child(2),

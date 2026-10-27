@@ -50,8 +50,15 @@ describe('database schema initialization', () => {
     expect(await instance.schema.hasTable('daily_challenge_attempts')).toBe(true);
     expect(await instance.schema.hasColumn('guest_accounts', 'matchmaking_restricted')).toBe(false);
 
-    expect(await instance.schema.hasColumn('players', 'age')).toBe(true);
-    expect(await instance.schema.hasColumn('players', 'team_history')).toBe(true);
+    expect(await instance.schema.hasColumn('players', 'gender')).toBe(true);
+    expect(await instance.schema.hasColumn('players', 'debut_date')).toBe(true);
+    expect(await instance.schema.hasColumn('players', 'height_cm')).toBe(true);
+    expect(await instance.schema.hasColumn('players', 'age_text')).toBe(true);
+    expect(await instance.schema.hasColumn('players', 'collab_groups')).toBe(true);
+    expect(await instance.schema.hasColumn('players', 'race')).toBe(true);
+    expect(await instance.schema.hasColumn('players', 'nationality')).toBe(false);
+    expect(await instance.schema.hasColumn('players', 'team_history')).toBe(false);
+    expect(await instance.schema.hasColumn('players', 'major_championships')).toBe(false);
     expect(await instance.schema.hasColumn('games', 'first_guess_player_id')).toBe(true);
     expect(await instance.schema.hasColumn('games', 'guess_times')).toBe(true);
     expect(await instance.schema.hasColumn('match_records', 'winner_key')).toBe(true);
@@ -69,7 +76,7 @@ describe('database schema initialization', () => {
     expect(await instance.schema.hasColumn('daily_challenge_attempts', 'solve_order')).toBe(true);
 
     const difficulties = await instance('difficulty_levels').orderBy('sort_order').pluck('key');
-    expect(difficulties).toEqual(['beginner', 'easy', 'normal']);
+    expect(difficulties).toEqual(['normal']);
   });
 
   it('backfills solve order when upgrading existing daily challenge tables', async () => {
