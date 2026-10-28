@@ -43,10 +43,12 @@ function debutAttr(guess: Player, target: Player): AttributeFeedback {
     return { value: guess.debut_date, level: 'gray' };
   }
   if (guessDay === targetDay) return { value: guess.debut_date, level: 'correct' };
+  // 出道日的箭头按时间先后而非数值大小显示: ↑ 表示答案出道更早(更早的日子),
+  // ↓ 表示答案出道更晚。因此方向与"日期数值"相反。
   return {
     value: guess.debut_date,
     level: Math.abs(guessDay - targetDay) <= DEBUT_CLOSE_DAYS ? 'close' : 'gray',
-    hint: targetDay > guessDay ? 'higher' : 'lower',
+    hint: targetDay < guessDay ? 'higher' : 'lower',
   };
 }
 

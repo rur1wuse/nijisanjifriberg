@@ -102,13 +102,18 @@ describe('compareGuess', () => {
     const guess = makePlayer({ id: 2, debut_date: '2019-01-15' });
     const fb = compareGuess(guess, target).attributes.debutDate;
     expect(fb.level).toBe('close');
-    expect(fb.hint).toBe('lower');
+    expect(fb.hint).toBe('higher');
   });
 
   it('出道日超过一年为灰并带方向', () => {
     const guess = makePlayer({ id: 2, debut_date: '2019-06-01' });
     const fb = compareGuess(guess, target).attributes.debutDate;
     expect(fb.level).toBe('gray');
+    expect(fb.hint).toBe('higher');
+  });
+
+  it('答案出道更晚时箭头向下', () => {
+    const fb = compareGuess(target, makePlayer({ id: 3, debut_date: '2019-01-15' })).attributes.debutDate;
     expect(fb.hint).toBe('lower');
   });
 
