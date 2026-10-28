@@ -89,6 +89,7 @@ export async function ensureSchema(instance: Knex = db): Promise<void> {
     await instance.schema.createTable('players', (t) => {
       t.increments('id').primary();
       t.string('nickname', 128).notNullable().unique();
+      t.string('name_zh', 128).notNullable().defaultTo('');
       t.string('gender', 32).notNullable().defaultTo('');
       t.string('debut_date', 10).notNullable().defaultTo('');
       t.string('height_cm', 64).notNullable().defaultTo('');
@@ -102,6 +103,12 @@ export async function ensureSchema(instance: Knex = db): Promise<void> {
   if (!(await instance.schema.hasColumn('players', 'is_enabled'))) {
     await instance.schema.alterTable('players', (t) => {
       t.boolean('is_enabled').notNullable().defaultTo(true);
+    });
+  }
+  // 中文译名:中文界面用 name_zh 展示与搜索,留空时回退到 nickname。
+  if (!(await instance.schema.hasColumn('players', 'name_zh'))) {
+    await instance.schema.alterTable('players', (t) => {
+      t.string('name_zh', 128).notNullable().defaultTo('');
     });
   }
   if (instance.client.config.client === 'pg') {

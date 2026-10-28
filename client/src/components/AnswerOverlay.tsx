@@ -9,9 +9,11 @@ import { Cake, Globe2, Layers3, Ruler, Tag, Users, UserRound } from 'lucide-reac
 import ModalPortal from './ModalPortal';
 import { useTranslation } from 'react-i18next';
 import { difficultyLabel } from '../utils/difficulty';
+import { localizedName } from '../utils/playerName';
 
 export interface AnswerInfo {
   nickname: string;
+  nameZh?: string;
   gender?: string;
   debutDate?: string;
   height?: string;
@@ -70,6 +72,7 @@ interface Props {
 
 /** 结算/答案遮罩卡片 */
 export default function AnswerOverlay({ title, answer, extra, actions, onClose, tone }: Props) {
+  const { i18n } = useTranslation();
   useEffect(() => {
     const oldOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -100,7 +103,7 @@ export default function AnswerOverlay({ title, answer, extra, actions, onClose, 
           {extra}
           {answer && (
             <>
-              <p className="answer-name">{answer.nickname}</p>
+              <p className="answer-name">{localizedName(answer, i18n.language)}</p>
               <PlayerInfoTable answer={answer} />
             </>
           )}

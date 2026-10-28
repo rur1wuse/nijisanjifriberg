@@ -21,6 +21,7 @@ export interface User {
 export interface Player {
   id: number;
   nickname: string;
+  name_zh: string;
   gender: string;
   debut_date: string;
   height_cm: string;

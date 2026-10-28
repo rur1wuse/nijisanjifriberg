@@ -8,6 +8,7 @@ import { toast } from '../components/Toast';
 import ReplayDialog, { type MultiReplay, type Replay, type SingleReplay } from '../components/ReplayDialog';
 import { useTranslation } from 'react-i18next';
 import { difficultyLabel } from '../utils/difficulty';
+import { localizedName } from '../utils/playerName';
 import { currentLocale } from '../i18n';
 import type { PlayerPerformanceStats } from '../types';
 import { AVAILABLE_DIFFICULTIES } from '../config/difficulties';
@@ -18,7 +19,7 @@ interface SingleStats {
   winRate: number;
   avgGuesses: number | null;
   bestGuesses: number | null;
-  firstGuess: { playerId: number; nickname: string; percentage: number } | null;
+  firstGuess: { playerId: number; nickname: string; nameZh?: string; percentage: number } | null;
 }
 
 interface StatsResponse {
@@ -77,8 +78,9 @@ function formatAverage(value: number | null): string {
   return value == null ? '-' : value.toFixed(2);
 }
 
-function formatFirstGuess(value: SingleStats['firstGuess']): string {
-  return value ? `${value.nickname} ${(value.percentage * 100).toFixed(1)}%` : '-';
+function formatFirstGuess(value: SingleStats['firstGuess'], language: string): string {
+  if (!value) return '-';
+  return `${localizedName(value, language)} ${(value.percentage * 100).toFixed(1)}%`;
 }
 
 function StatTable({ rows }: { rows: [string, string | number][] }) {
@@ -149,7 +151,7 @@ function StatsDifficultyMultiSelect({
 }
 
 export default function Stats() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [selectedDifficulties, setSelectedDifficulties] = useState<string[]>(STATS_DIFFICULTIES);
   const [stats, setStats] = useState<StatsResponse | null>(null);
   const [type, setType] = useState<ReplayType>('single');
@@ -342,7 +344,7 @@ export default function Stats() {
                   [t('stats.singleWinRate'), `${(stats.personal.winRate * 100).toFixed(1)}%`],
                   [t('stats.avgWinningGuesses'), formatAverage(stats.personal.avgGuesses)],
                   [t('stats.bestGuess'), stats.personal.bestGuesses ?? '-'],
-                  [t('stats.topFirstGuess'), formatFirstGuess(stats.personal.firstGuess)],
+                  [t('stats.topFirstGuess'), formatFirstGuess(stats.personal.firstGuess, i18n.language)],
                   [t('stats.multiGamesWins'), `${stats.personal.multiGames} / ${stats.personal.multiWins}`],
                   [t('stats.multiAvgWinningGuesses'), formatAverage(stats.personal.multiAvgWinningGuesses)],
                 ]} />
@@ -355,7 +357,7 @@ export default function Stats() {
                   [t('stats.singleWins'), stats.global.wins],
                   [t('stats.globalWinRate'), `${(stats.global.winRate * 100).toFixed(1)}%`],
                   [t('stats.avgWinningGuesses'), formatAverage(stats.global.avgGuesses)],
-                  [t('stats.topFirstGuess'), formatFirstGuess(stats.global.firstGuess)],
+                  [t('stats.topFirstGuess'), formatFirstGuess(stats.global.firstGuess, i18n.language)],
                   [t('stats.multiGames'), stats.global.multiGames],
                   [t('stats.multiAvgWinningGuesses'), formatAverage(stats.global.multiAvgWinningGuesses)],
                 ]} />

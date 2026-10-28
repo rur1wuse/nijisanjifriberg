@@ -1,6 +1,7 @@
 [
   {
     "nickname": "月ノ美兎",
+    "name_zh": "月之美兔",
     "gender": "女",
     "debut_date": "2018-02-08",
     "height_cm": "151cm",
@@ -47,6 +48,7 @@
   },
   {
     "nickname": "える",
+    "name_zh": "艾露",
     "gender": "女",
     "debut_date": "2018-02-08",
     "height_cm": "170cm",
@@ -134,6 +136,7 @@
   },
   {
     "nickname": "樋口楓",
+    "name_zh": "樋口枫",
     "gender": "女",
     "debut_date": "2018-02-08",
     "height_cm": "167cm",
@@ -212,6 +215,7 @@
   },
   {
     "nickname": "静凛",
+    "name_zh": "静凛",
     "gender": "女",
     "debut_date": "2018-02-08",
     "height_cm": "158cm",
@@ -243,6 +247,7 @@
   },
   {
     "nickname": "渋谷ハジメ",
+    "name_zh": "涩谷初",
     "gender": "男",
     "debut_date": "2018-02-08",
     "height_cm": "180cm",
@@ -293,6 +298,7 @@
   },
   {
     "nickname": "モイラ",
+    "name_zh": "摩伊拉",
     "gender": "女",
     "debut_date": "2018-02-08",
     "height_cm": "165cm",
@@ -321,6 +327,7 @@
   },
   {
     "nickname": "宇志海いちご",
+    "name_zh": "宇志海莓",
     "gender": "女",
     "debut_date": "2018-03-15",
     "height_cm": "125cm",
@@ -363,6 +370,7 @@
   },
   {
     "nickname": "家長むぎ",
+    "name_zh": "家长麦",
     "gender": "女",
     "debut_date": "2018-03-15",
     "height_cm": "157cm",
@@ -391,6 +399,7 @@
   },
   {
     "nickname": "夕陽リリ",
+    "name_zh": "夕阳莉莉",
     "gender": "女",
     "debut_date": "2018-03-15",
     "height_cm": "164cm",
@@ -458,6 +467,7 @@
   },
   {
     "nickname": "物述有栖",
+    "name_zh": "物述有栖",
     "gender": "女",
     "debut_date": "2018-03-15",
     "height_cm": "143cm",
@@ -492,6 +502,7 @@
   },
   {
     "nickname": "文野環",
+    "name_zh": "文野环",
     "gender": "女",
     "debut_date": "2018-03-15",
     "height_cm": "157㎝",
@@ -541,6 +552,7 @@
   },
   {
     "nickname": "伏見ガク",
+    "name_zh": "伏见学",
     "gender": "男",
     "debut_date": "2018-03-06",
     "height_cm": "178cm",
@@ -607,6 +619,7 @@
   },
   {
     "nickname": "ギルザレンIII世",
+    "name_zh": "吉尔扎伦三世",
     "gender": "男",
     "debut_date": "2018-03-15",
     "height_cm": "195cm",
@@ -632,6 +645,7 @@
   },
   {
     "nickname": "剣持刀也",
+    "name_zh": "剑持刀也",
     "gender": "男",
     "debut_date": "2018-03-15",
     "height_cm": "172cm",
@@ -691,6 +705,7 @@
   },
   {
     "nickname": "森中花咲",
+    "name_zh": "森中花咲",
     "gender": "女",
     "debut_date": "2018-03-15",
     "height_cm": "135cm",
@@ -754,6 +769,7 @@
   },
   {
     "nickname": "叶",
+    "name_zh": "叶",
     "gender": "男",
     "debut_date": "2018-05-02",
     "height_cm": "175cm",
@@ -856,6 +872,7 @@
   },
   {
     "nickname": "赤羽葉子",
+    "name_zh": "赤羽叶子",
     "gender": "女",
     "debut_date": "2018-05-02",
     "height_cm": "160cm",
@@ -892,6 +909,7 @@
   },
   {
     "nickname": "笹木咲",
+    "name_zh": "笹木咲",
     "gender": "女",
     "debut_date": "2018-07-06",
     "height_cm": "143cm",
@@ -979,6 +997,7 @@
   },
   {
     "nickname": "本間ひまわり",
+    "name_zh": "本间向日葵",
     "gender": "女",
     "debut_date": "2018-07-06",
     "height_cm": "153cm",
@@ -1079,6 +1098,7 @@
   },
   {
     "nickname": "魔界ノりりむ",
+    "name_zh": "魔界之莉莉姆",
     "gender": "女",
     "debut_date": "2018-07-30",
     "height_cm": "138cm",
@@ -1156,6 +1176,7 @@
   },
   {
     "nickname": "葛葉",
+    "name_zh": "葛葉",
     "gender": "男",
     "debut_date": "2018-03-08",
     "height_cm": "178cm",
@@ -1268,6 +1289,7 @@
   },
   {
     "nickname": "椎名唯華",
+    "name_zh": "椎名唯华",
     "gender": "女",
     "debut_date": "2018-07-30",
     "height_cm": "153cm",
@@ -1390,6 +1412,7 @@
   },
   {
     "nickname": "ドーラ",
+    "name_zh": "多拉",
     "gender": "女",
     "debut_date": "2018-06-05",
     "height_cm": "175cm",
@@ -1431,6 +1454,7 @@
   },
   {
     "nickname": "轟京子",
+    "name_zh": "轰京子",
     "gender": "女",
     "debut_date": "2018-06-05",
     "height_cm": "165.1cm",
@@ -1467,6 +1491,7 @@
   },
   {
     "nickname": "シスター・クレア",
+    "name_zh": "修女・克蕾雅",
     "gender": "女",
     "debut_date": "2018-06-05",
     "height_cm": "150cm",
@@ -1521,6 +1546,7 @@
   },
   {
     "nickname": "花畑チャイカ",
+    "name_zh": "花畑嘉依卡",
     "gender": "男",
     "debut_date": "2018-06-05",
     "height_cm": "186.5cm",
@@ -1633,6 +1659,7 @@
   },
   {
     "nickname": "社築",
+    "name_zh": "社筑",
     "gender": "男",
     "debut_date": "2018-06-05",
     "height_cm": "180.3cm",
@@ -1723,6 +1750,7 @@
   },
   {
     "nickname": "鈴木勝",
+    "name_zh": "铃木胜",
     "gender": "男",
     "debut_date": "2018-06-05",
     "height_cm": "153cm",
@@ -1764,6 +1792,7 @@
   },
   {
     "nickname": "緑仙",
+    "name_zh": "绿仙",
     "gender": "性别不明",
     "debut_date": "2018-06-05",
     "height_cm": "164.3cm",
@@ -1820,6 +1849,7 @@
   },
   {
     "nickname": "卯月コウ",
+    "name_zh": "卯月光",
     "gender": "男",
     "debut_date": "2018-06-05",
     "height_cm": "157cm",
@@ -1869,6 +1899,7 @@
   },
   {
     "nickname": "神田笑一",
+    "name_zh": "神田笑一",
     "gender": "男",
     "debut_date": "2018-08-09",
     "height_cm": "175㎝",
@@ -1928,6 +1959,7 @@
   },
   {
     "nickname": "飛鳥ひな",
+    "name_zh": "飞鸟雏",
     "gender": "女",
     "debut_date": "2018-08-09",
     "height_cm": "145cm",
@@ -1952,6 +1984,7 @@
   },
   {
     "nickname": "春崎エアル",
+    "name_zh": "春崎艾尔",
     "gender": "男",
     "debut_date": "2018-06-08",
     "height_cm": "180cm",
@@ -1992,6 +2025,7 @@
   },
   {
     "nickname": "雨森小夜",
+    "name_zh": "雨森小夜",
     "gender": "女",
     "debut_date": "2018-08-09",
     "height_cm": "157cm",
@@ -2008,6 +2042,7 @@
   },
   {
     "nickname": "鷹宮リオン",
+    "name_zh": "鹰宫莉音",
     "gender": "女",
     "debut_date": "2018-08-09",
     "height_cm": "158cm",
@@ -2091,6 +2126,7 @@
   },
   {
     "nickname": "舞元啓介",
+    "name_zh": "舞元启介",
     "gender": "男",
     "debut_date": "2018-08-09",
     "height_cm": "178cm",
@@ -2159,6 +2195,7 @@
   },
   {
     "nickname": "竜胆尊",
+    "name_zh": "龙胆尊",
     "gender": "女",
     "debut_date": "2018-08-31",
     "height_cm": "130cm",
@@ -2208,6 +2245,7 @@
   },
   {
     "nickname": "でびでび・でびる",
+    "name_zh": "德比德比・德比鲁",
     "gender": "性别不明",
     "debut_date": "2018-08-31",
     "height_cm": "50cm",
@@ -2280,6 +2318,7 @@
   },
   {
     "nickname": "桜凛月",
+    "name_zh": "樱凛月",
     "gender": "女",
     "debut_date": "2018-08-31",
     "height_cm": "150cm",
@@ -2349,6 +2388,7 @@
   },
   {
     "nickname": "町田ちま",
+    "name_zh": "町田千麻",
     "gender": "女",
     "debut_date": "2018-08-31",
     "height_cm": "150cm",
@@ -2382,6 +2422,7 @@
   },
   {
     "nickname": "ジョー・力一",
+    "name_zh": "周・力一",
     "gender": "男",
     "debut_date": "2018-08-31",
     "height_cm": "181cm",
@@ -2442,6 +2483,7 @@
   },
   {
     "nickname": "ベルモンド・バンデラス",
+    "name_zh": "贝尔蒙德・班德拉斯",
     "gender": "男",
     "debut_date": "2018-09-25",
     "height_cm": "191cm",
@@ -2516,6 +2558,7 @@
   },
   {
     "nickname": "矢車りね",
+    "name_zh": "矢车理音",
     "gender": "女",
     "debut_date": "2018-09-25",
     "height_cm": "141cm",
@@ -2540,6 +2583,7 @@
   },
   {
     "nickname": "夢追翔",
+    "name_zh": "梦追翔",
     "gender": "男",
     "debut_date": "2018-09-25",
     "height_cm": "175cm",
@@ -2596,6 +2640,7 @@
   },
   {
     "nickname": "黒井しば",
+    "name_zh": "黑井柴",
     "gender": "女",
     "debut_date": "2018-09-25",
     "height_cm": "40cm",
@@ -2633,6 +2678,7 @@
   },
   {
     "nickname": "夢月ロア",
+    "name_zh": "梦月萝娅",
     "gender": "女",
     "debut_date": "2019-01-17",
     "height_cm": "141cm",
@@ -2668,6 +2714,7 @@
   },
   {
     "nickname": "語部紡",
+    "name_zh": "语部纺",
     "gender": "女",
     "debut_date": "2019-01-28",
     "height_cm": "165cm",
@@ -2681,6 +2728,7 @@
   },
   {
     "nickname": "戌亥とこ",
+    "name_zh": "戌亥床",
     "gender": "女",
     "debut_date": "2019-03-22",
     "height_cm": "162cm",
@@ -2728,6 +2776,7 @@
   },
   {
     "nickname": "アンジュ・カトリーナ",
+    "name_zh": "安洁・卡特莉娜",
     "gender": "女",
     "debut_date": "2019-03-22",
     "height_cm": "160cm",
@@ -2779,6 +2828,7 @@
   },
   {
     "nickname": "リゼ・ヘルエスタ",
+    "name_zh": "莉泽・赫露艾斯塔",
     "gender": "女",
     "debut_date": "2019-03-22",
     "height_cm": "158cm",
@@ -2833,6 +2883,7 @@
   },
   {
     "nickname": "三枝明那",
+    "name_zh": "三枝明那",
     "gender": "男",
     "debut_date": "2019-04-02",
     "height_cm": "168cm",
@@ -2913,6 +2964,7 @@
   },
   {
     "nickname": "愛園愛美",
+    "name_zh": "爱园爱美",
     "gender": "女",
     "debut_date": "2019-04-02",
     "height_cm": "154cm",
@@ -2957,6 +3009,7 @@
   },
   {
     "nickname": "鈴原るる",
+    "name_zh": "铃原露露",
     "gender": "女",
     "debut_date": "2019-04-29",
     "height_cm": "162cm",
@@ -2978,6 +3031,7 @@
   },
   {
     "nickname": "雪城眞尋",
+    "name_zh": "雪城真寻",
     "gender": "女",
     "debut_date": "2019-04-29",
     "height_cm": "152cm",
@@ -3028,6 +3082,7 @@
   },
   {
     "nickname": "エクス・アルビオ",
+    "name_zh": "艾克斯·阿尔比欧",
     "gender": "男",
     "debut_date": "2019-05-17",
     "height_cm": "183cm",
@@ -3103,6 +3158,7 @@
   },
   {
     "nickname": "レヴィ・エリファ",
+    "name_zh": "利维·艾莉法",
     "gender": "女",
     "debut_date": "2019-05-17",
     "height_cm": "165cm",
@@ -3153,6 +3209,7 @@
   },
   {
     "nickname": "葉山舞鈴",
+    "name_zh": "叶山舞铃",
     "gender": "女",
     "debut_date": "2019-06-19",
     "height_cm": "158cm",
@@ -3211,6 +3268,7 @@
   },
   {
     "nickname": "ニュイ・ソシエール",
+    "name_zh": "纽伊·索西艾瑞",
     "gender": "女",
     "debut_date": "2019-06-19",
     "height_cm": "165cm",
@@ -3254,6 +3312,7 @@
   },
   {
     "nickname": "葉加瀬冬雪",
+    "name_zh": "叶加濑冬雪",
     "gender": "女",
     "debut_date": "2019-07-03",
     "height_cm": "152cm",
@@ -3305,6 +3364,7 @@
   },
   {
     "nickname": "加賀美ハヤト",
+    "name_zh": "加贺美隼人",
     "gender": "男",
     "debut_date": "2019-07-03",
     "height_cm": "182cm",
@@ -3376,6 +3436,7 @@
   },
   {
     "nickname": "夜見れな",
+    "name_zh": "夜见蕾娜",
     "gender": "女",
     "debut_date": "2019-07-03",
     "height_cm": "154cm",
@@ -3453,6 +3514,7 @@
   },
   {
     "nickname": "アルス・アルマル",
+    "name_zh": "阿露丝·阿尔玛",
     "gender": "女",
     "debut_date": "2019-07-24",
     "height_cm": "143cm",
@@ -3517,6 +3579,7 @@
   },
   {
     "nickname": "天宮こころ",
+    "name_zh": "天宫心",
     "gender": "女",
     "debut_date": "2019-08-08",
     "height_cm": "150cm",
@@ -3600,6 +3663,7 @@
   },
   {
     "nickname": "エリー・コニファー",
+    "name_zh": "艾莉·柯妮法",
     "gender": "女",
     "debut_date": "2019-08-08",
     "height_cm": "154.5cm",
@@ -3644,6 +3708,7 @@
   },
   {
     "nickname": "ラトナ・プティ",
+    "name_zh": "拉特娜·葡蒂",
     "gender": "女",
     "debut_date": "2019-08-08",
     "height_cm": "150.5cm",
@@ -3695,6 +3760,7 @@
   },
   {
     "nickname": "早瀬走",
+    "name_zh": "早濑走",
     "gender": "女",
     "debut_date": "2019-09-19",
     "height_cm": "169.9cm",
@@ -3733,6 +3799,7 @@
   },
   {
     "nickname": "健屋花那",
+    "name_zh": "健屋花那",
     "gender": "女",
     "debut_date": "2019-09-19",
     "height_cm": "163cm",
@@ -3781,6 +3848,7 @@
   },
   {
     "nickname": "シェリン・バーガンディ",
+    "name_zh": "谢林·伯艮第",
     "gender": "男",
     "debut_date": "2019-09-19",
     "height_cm": "183cm",
@@ -3813,6 +3881,7 @@
   },
   {
     "nickname": "フミ",
+    "name_zh": "文美",
     "gender": "女",
     "debut_date": "2019-10-17",
     "height_cm": "176cm",
@@ -3867,6 +3936,7 @@
   },
   {
     "nickname": "星川サラ",
+    "name_zh": "星川莎拉",
     "gender": "女",
     "debut_date": "2019-10-17",
     "height_cm": "147cm",
@@ -3933,6 +4003,7 @@
   },
   {
     "nickname": "山神カルタ",
+    "name_zh": "山神歌流多",
     "gender": "女",
     "debut_date": "2019-10-17",
     "height_cm": "158cm",
@@ -3979,6 +4050,7 @@
   },
   {
     "nickname": "えま★おうがすと",
+    "name_zh": "艾玛★奥加斯特",
     "gender": "女",
     "debut_date": "2019-10-31",
     "height_cm": "138cm",
@@ -4019,6 +4091,7 @@
   },
   {
     "nickname": "ルイス・キャミー",
+    "name_zh": "路易斯・嘉米",
     "gender": "女",
     "debut_date": "2019-10-31",
     "height_cm": "168cm",
@@ -4073,6 +4146,7 @@
   },
   {
     "nickname": "魔使マオ",
+    "name_zh": "魔使真央",
     "gender": "女",
     "debut_date": "2019-10-31",
     "height_cm": "142cm",
@@ -4121,6 +4195,7 @@
   },
   {
     "nickname": "不破湊",
+    "name_zh": "不破湊",
     "gender": "男",
     "debut_date": "2019-11-28",
     "height_cm": "173cm",
@@ -4240,6 +4315,7 @@
   },
   {
     "nickname": "白雪巴",
+    "name_zh": "白雪巴",
     "gender": "女",
     "debut_date": "2019-11-28",
     "height_cm": "174cm",
@@ -4279,6 +4355,7 @@
   },
   {
     "nickname": "ましろ",
+    "name_zh": "真白爻",
     "gender": "男",
     "debut_date": "2019-12-26",
     "height_cm": "158cm",
@@ -4311,6 +4388,7 @@
   },
   {
     "nickname": "来栖夏芽",
+    "name_zh": "来栖夏芽",
     "gender": "女",
     "debut_date": "2019-12-26",
     "height_cm": "171cm",
@@ -4340,6 +4418,7 @@
   },
   {
     "nickname": "フレン・E・ルスタリオ",
+    "name_zh": "芙莲·E·露丝塔莉欧",
     "gender": "女",
     "debut_date": "2020-01-30",
     "height_cm": "163cm",
@@ -4403,6 +4482,7 @@
   },
   {
     "nickname": "イブラヒム",
+    "name_zh": "伊卜拉新",
     "gender": "男",
     "debut_date": "2020-01-30",
     "height_cm": "177㎝",
@@ -4488,6 +4568,7 @@
   },
   {
     "nickname": "長尾景",
+    "name_zh": "长尾景",
     "gender": "男",
     "debut_date": "2020-04-02",
     "height_cm": "175cm",
@@ -4563,6 +4644,7 @@
   },
   {
     "nickname": "弦月藤士郎",
+    "name_zh": "弦月藤士郎",
     "gender": "男",
     "debut_date": "2020-04-02",
     "height_cm": "176cm",
@@ -4619,6 +4701,7 @@
   },
   {
     "nickname": "甲斐田晴",
+    "name_zh": "甲斐田晴",
     "gender": "男",
     "debut_date": "2020-04-02",
     "height_cm": "180cm",
@@ -4669,6 +4752,7 @@
   },
   {
     "nickname": "空星きらめ",
+    "name_zh": "空星煌",
     "gender": "女",
     "debut_date": "2020-06-30",
     "height_cm": "147cm",
@@ -4708,6 +4792,7 @@
   },
   {
     "nickname": "周央サンゴ",
+    "name_zh": "周央珊瑚",
     "gender": "女",
     "debut_date": "2020-08-06",
     "height_cm": "148cm",
@@ -4752,6 +4837,7 @@
   },
   {
     "nickname": "東堂コハク",
+    "name_zh": "东堂琥珀",
     "gender": "女",
     "debut_date": "2020-08-06",
     "height_cm": "162㎝",
@@ -4790,6 +4876,7 @@
   },
   {
     "nickname": "北小路ヒスイ",
+    "name_zh": "北小路翡翠",
     "gender": "女",
     "debut_date": "2020-08-06",
     "height_cm": "160cm",
@@ -4832,6 +4919,7 @@
   },
   {
     "nickname": "西園チグサ",
+    "name_zh": "西园千草",
     "gender": "女",
     "debut_date": "2020-08-06",
     "height_cm": "157cm",
@@ -4884,6 +4972,7 @@
   },
   {
     "nickname": "ローレン・イロアス",
+    "name_zh": "劳伦·伊罗斯",
     "gender": "男",
     "debut_date": "2021-07-19",
     "height_cm": "176cm",
@@ -4930,6 +5019,7 @@
   },
   {
     "nickname": "レオス・ヴィンセント",
+    "name_zh": "雷奥斯·文森特",
     "gender": "男",
     "debut_date": "2021-07-19",
     "height_cm": "180cm",
@@ -4988,6 +5078,7 @@
   },
   {
     "nickname": "オリバー・エバンス",
+    "name_zh": "奥利弗·埃文斯",
     "gender": "男",
     "debut_date": "2021-07-19",
     "height_cm": "191cm",
@@ -5041,6 +5132,7 @@
   },
   {
     "nickname": "レイン・パターソン",
+    "name_zh": "兰·帕特森",
     "gender": "女",
     "debut_date": "2021-07-19",
     "height_cm": "163cm",
@@ -5097,6 +5189,7 @@
   },
   {
     "nickname": "天ヶ瀬むゆ",
+    "name_zh": "天瀬梦愈",
     "gender": "女",
     "debut_date": "2022-03-16",
     "height_cm": "167cm",
@@ -5126,6 +5219,7 @@
   },
   {
     "nickname": "先斗寧",
+    "name_zh": "先斗宁",
     "gender": "女",
     "debut_date": "2022-03-16",
     "height_cm": "155cm",
@@ -5171,6 +5265,7 @@
   },
   {
     "nickname": "海妹四葉",
+    "name_zh": "海妹四叶",
     "gender": "女",
     "debut_date": "2022-03-16",
     "height_cm": "163cm",
@@ -5217,6 +5312,7 @@
   },
   {
     "nickname": "壱百満天原サロメ",
+    "name_zh": "壹百满天原莎乐美",
     "gender": "女",
     "debut_date": "2022-05-21",
     "height_cm": "159cm",
@@ -5245,6 +5341,7 @@
   },
   {
     "nickname": "風楽奏斗",
+    "name_zh": "风乐奏斗",
     "gender": "男",
     "debut_date": "2022-07-13",
     "height_cm": "177cm",
@@ -5293,6 +5390,7 @@
   },
   {
     "nickname": "渡会雲雀",
+    "name_zh": "渡会云雀",
     "gender": "男",
     "debut_date": "2022-07-13",
     "height_cm": "183cm",
@@ -5345,6 +5443,7 @@
   },
   {
     "nickname": "四季凪アキラ",
+    "name_zh": "四季凪圣来",
     "gender": "男",
     "debut_date": "2022-07-13",
     "height_cm": "174cm",
@@ -5378,6 +5477,7 @@
   },
   {
     "nickname": "セラフ・ダズルガーデン",
+    "name_zh": "塞拉弗・迪滋加登",
     "gender": "男",
     "debut_date": "2022-07-13",
     "height_cm": "186cm",
@@ -5413,6 +5513,7 @@
   },
   {
     "nickname": "Hana Macchia",
+    "name_zh": "Hana Macchia",
     "gender": "女",
     "debut_date": "2019-09-13",
     "height_cm": "158cm",
@@ -5429,6 +5530,7 @@
   },
   {
     "nickname": "Rai Galilei",
+    "name_zh": "Rai Galilei",
     "gender": "男",
     "debut_date": "2019-12-18",
     "height_cm": "158cm",
@@ -5450,6 +5552,7 @@
   },
   {
     "nickname": "Layla Alstroemeria",
+    "name_zh": "Layla Alstroemeria",
     "gender": "女",
     "debut_date": "2020-03-13",
     "height_cm": "152cm",
@@ -5467,6 +5570,7 @@
   },
   {
     "nickname": "Etna Crimson",
+    "name_zh": "Etna Crimson",
     "gender": "女",
     "debut_date": "2020-08-07",
     "height_cm": "154cm",
@@ -5482,6 +5586,7 @@
   },
   {
     "nickname": "Nagisa Arcinia",
+    "name_zh": "Nagisa Arcinia",
     "gender": "女",
     "debut_date": "2020-11-11",
     "height_cm": "134cm",
@@ -5497,6 +5602,7 @@
   },
   {
     "nickname": "Derem Kado",
+    "name_zh": "Derem Kado",
     "gender": "女",
     "debut_date": "2020-11-11",
     "height_cm": "156cm",
@@ -5513,6 +5619,7 @@
   },
   {
     "nickname": "ミン・スゥーハ",
+    "name_zh": "Min Suha",
     "gender": "男",
     "debut_date": "2020-01-23",
     "height_cm": "180cm",
@@ -5545,6 +5652,7 @@
   },
   {
     "nickname": "ガオン",
+    "name_zh": "Gaon",
     "gender": "男",
     "debut_date": "2020-01-25",
     "height_cm": "170cm",
@@ -5564,6 +5672,7 @@
   },
   {
     "nickname": "ソ・ナギ",
+    "name_zh": "So Nagi",
     "gender": "女",
     "debut_date": "2020-05-22",
     "height_cm": "160cm",
@@ -5587,6 +5696,7 @@
   },
   {
     "nickname": "明楽レイ",
+    "name_zh": "Akira Ray",
     "gender": "女",
     "debut_date": "2020-07-31",
     "height_cm": "159.8cm",
@@ -5604,6 +5714,7 @@
   },
   {
     "nickname": "イ・ロハ",
+    "name_zh": "Lee Roha",
     "gender": "女",
     "debut_date": "2020-07-31",
     "height_cm": "165cm",
@@ -5625,6 +5736,7 @@
   },
   {
     "nickname": "ヤン・ナリ",
+    "name_zh": "Yang Nari",
     "gender": "女",
     "debut_date": "2020-10-09",
     "height_cm": "142cm",
@@ -5656,6 +5768,7 @@
   },
   {
     "nickname": "リュ・ハリ",
+    "name_zh": "Ryu Hari",
     "gender": "女",
     "debut_date": "2020-10-09",
     "height_cm": "157cm",
@@ -5675,6 +5788,7 @@
   },
   {
     "nickname": "オ・ジユ",
+    "name_zh": "Oh Jiyu",
     "gender": "女",
     "debut_date": "2020-10-09",
     "height_cm": "171cm",
@@ -5694,6 +5808,7 @@
   },
   {
     "nickname": "セフィナ",
+    "name_zh": "Seffyna",
     "gender": "女",
     "debut_date": "2021-04-30",
     "height_cm": "160cm",
@@ -5720,6 +5835,7 @@
   },
   {
     "nickname": "ハ・ユン",
+    "name_zh": "Ha Yun",
     "gender": "男",
     "debut_date": "2021-08-25",
     "height_cm": "178cm",
@@ -5754,6 +5870,7 @@
   },
   {
     "nickname": "ナ・セラ",
+    "name_zh": "Na Sera",
     "gender": "女",
     "debut_date": "2021-08-25",
     "height_cm": "155cm",
@@ -5778,6 +5895,7 @@
   },
   {
     "nickname": "小清水透",
+    "name_zh": "小清水透",
     "gender": "女",
     "debut_date": "2023-01-16",
     "height_cm": "159cm",
@@ -5810,6 +5928,7 @@
   },
   {
     "nickname": "獅子堂あかり",
+    "name_zh": "狮子堂灯",
     "gender": "女",
     "debut_date": "2023-01-16",
     "height_cm": "149cm",
@@ -5854,6 +5973,7 @@
   },
   {
     "nickname": "鏑木ろこ",
+    "name_zh": "镝木露恋",
     "gender": "女",
     "debut_date": "2023-01-16",
     "height_cm": "165cm",
@@ -5905,6 +6025,7 @@
   },
   {
     "nickname": "五十嵐梨花",
+    "name_zh": "五十岚梨花",
     "gender": "女",
     "debut_date": "2023-01-16",
     "height_cm": "152cm",
@@ -5947,6 +6068,7 @@
   },
   {
     "nickname": "石神のぞみ",
+    "name_zh": "石神望",
     "gender": "女",
     "debut_date": "2023-01-16",
     "height_cm": "157cm",
@@ -5990,6 +6112,7 @@
   },
   {
     "nickname": "ソフィア・ヴァレンタイン",
+    "name_zh": "苏菲娅・瓦纶玎",
     "gender": "女",
     "debut_date": "2023-01-16",
     "height_cm": "153cm",
@@ -6031,6 +6154,7 @@
   },
   {
     "nickname": "倉持めると",
+    "name_zh": "仓持妹路特",
     "gender": "女",
     "debut_date": "2023-01-16",
     "height_cm": "154cm",
@@ -6081,6 +6205,7 @@
   },
   {
     "nickname": "佐伯イッテツ",
+    "name_zh": "佐伯一彻",
     "gender": "男",
     "debut_date": "2023-03-30",
     "height_cm": "174cm",
@@ -6116,6 +6241,7 @@
   },
   {
     "nickname": "赤城ウェン",
+    "name_zh": "赤城文",
     "gender": "男",
     "debut_date": "2023-03-30",
     "height_cm": "171cm",
@@ -6154,6 +6280,7 @@
   },
   {
     "nickname": "宇佐美リト",
+    "name_zh": "宇佐美理人",
     "gender": "男",
     "debut_date": "2023-03-30",
     "height_cm": "181cm",
@@ -6189,6 +6316,7 @@
   },
   {
     "nickname": "緋八マナ",
+    "name_zh": "绯八舞成",
     "gender": "男",
     "debut_date": "2023-03-30",
     "height_cm": "169cm",
@@ -6226,6 +6354,7 @@
   },
   {
     "nickname": "星導ショウ",
+    "name_zh": "星导霄",
     "gender": "男",
     "debut_date": "2023-04-26",
     "height_cm": "177cm",
@@ -6268,6 +6397,7 @@
   },
   {
     "nickname": "叢雲カゲツ",
+    "name_zh": "丛云花月",
     "gender": "男",
     "debut_date": "2023-04-26",
     "height_cm": "169cm",
@@ -6309,6 +6439,7 @@
   },
   {
     "nickname": "小柳ロウ",
+    "name_zh": "小柳狼",
     "gender": "男",
     "debut_date": "2023-04-26",
     "height_cm": "173cm",
@@ -6347,6 +6478,7 @@
   },
   {
     "nickname": "伊波ライ",
+    "name_zh": "伊波雷",
     "gender": "男",
     "debut_date": "2023-04-26",
     "height_cm": "169cm",
@@ -6389,6 +6521,7 @@
   },
   {
     "nickname": "立伝都々",
+    "name_zh": "立传都都",
     "gender": "女",
     "debut_date": "2023-11-21",
     "height_cm": "154cm",
@@ -6426,6 +6559,7 @@
   },
   {
     "nickname": "栞葉るり",
+    "name_zh": "栞叶琉璃",
     "gender": "女",
     "debut_date": "2023-11-21",
     "height_cm": "160cm",
@@ -6452,6 +6586,7 @@
   },
   {
     "nickname": "ミラン・ケストレル",
+    "name_zh": "米兰・凯斯特雷尔",
     "gender": "男",
     "debut_date": "2023-11-21",
     "height_cm": "180cm",
@@ -6486,6 +6621,7 @@
   },
   {
     "nickname": "北見遊征",
+    "name_zh": "北见游征",
     "gender": "男",
     "debut_date": "2024-03-12",
     "height_cm": "174cm",
@@ -6518,6 +6654,7 @@
   },
   {
     "nickname": "魁星",
+    "name_zh": "魁星",
     "gender": "男",
     "debut_date": "2024-03-12",
     "height_cm": "180cm",
@@ -6552,6 +6689,7 @@
   },
   {
     "nickname": "榊ネス",
+    "name_zh": "榊奈司",
     "gender": "男",
     "debut_date": "2024-03-12",
     "height_cm": "178cm",
@@ -6588,6 +6726,7 @@
   },
   {
     "nickname": "司賀りこ",
+    "name_zh": "司贺莉子",
     "gender": "女",
     "debut_date": "2024-06-19",
     "height_cm": "155.5cm",
@@ -6631,6 +6770,7 @@
   },
   {
     "nickname": "珠乃井ナナ",
+    "name_zh": "珠乃井南奈",
     "gender": "女",
     "debut_date": "2024-06-19",
     "height_cm": "156cm",
@@ -6663,6 +6803,7 @@
   },
   {
     "nickname": "綺沙良",
+    "name_zh": "绮沙良",
     "gender": "女",
     "debut_date": "2024-06-19",
     "height_cm": "167.5cm",
@@ -6695,6 +6836,7 @@
   },
   {
     "nickname": "梢桃音",
+    "name_zh": "梢桃音",
     "gender": "女",
     "debut_date": "2024-06-19",
     "height_cm": "159cm",
@@ -6720,6 +6862,7 @@
   },
   {
     "nickname": "ルンルン",
+    "name_zh": "仑仑",
     "gender": "性别不明",
     "debut_date": "2024-06-19",
     "height_cm": "40cm",
@@ -6751,6 +6894,7 @@
   },
   {
     "nickname": "七瀬すず菜",
+    "name_zh": "七濑铃菜",
     "gender": "女",
     "debut_date": "2024-08-13",
     "height_cm": "159cm",
@@ -6791,6 +6935,7 @@
   },
   {
     "nickname": "早乙女ベリー",
+    "name_zh": "早乙女蓓丽",
     "gender": "女",
     "debut_date": "2024-08-13",
     "height_cm": "151cm",
@@ -6841,6 +6986,7 @@
   },
   {
     "nickname": "雲母たまこ",
+    "name_zh": "云母玉子",
     "gender": "女",
     "debut_date": "2024-08-13",
     "height_cm": "139cm",
@@ -6881,7 +7027,8 @@
   },
   {
     "nickname": "酒寄颯馬",
-    "gender": "女",
+    "name_zh": "酒寄飒马",
+    "gender": "男",
     "debut_date": "2024-08-13",
     "height_cm": "178cm",
     "age_text": "22歳",
@@ -6911,6 +7058,7 @@
   },
   {
     "nickname": "渚トラウト",
+    "name_zh": "渚托劳特",
     "gender": "男",
     "debut_date": "2024-08-13",
     "height_cm": "181cm",
@@ -6947,6 +7095,7 @@
   },
   {
     "nickname": "一橋綾人",
+    "name_zh": "一桥绫人",
     "gender": "男",
     "debut_date": "2025-04-11",
     "height_cm": "182cm",
@@ -6972,6 +7121,7 @@
   },
   {
     "nickname": "五木左京",
+    "name_zh": "五木左京",
     "gender": "男",
     "debut_date": "2025-04-11",
     "height_cm": "173cm",
@@ -6999,6 +7149,7 @@
   },
   {
     "nickname": "十河ののは",
+    "name_zh": "十河野乃花",
     "gender": "女",
     "debut_date": "2025-08-14",
     "height_cm": "160cm",
@@ -7021,6 +7172,7 @@
   },
   {
     "nickname": "夜牛詩乃",
+    "name_zh": "夜牛诗乃",
     "gender": "女",
     "debut_date": "2025-08-14",
     "height_cm": "152cm",
@@ -7047,6 +7199,7 @@
   },
   {
     "nickname": "蝸堂みかる",
+    "name_zh": "蜗堂蜜卡露",
     "gender": "女",
     "debut_date": "2025-08-14",
     "height_cm": "153cm",
@@ -7073,6 +7226,7 @@
   },
   {
     "nickname": "猫屋敷美紅",
+    "name_zh": "猫屋敷美红",
     "gender": "女",
     "debut_date": "2025-08-14",
     "height_cm": "155cm",
@@ -7096,6 +7250,7 @@
   },
   {
     "nickname": "皇れお",
+    "name_zh": "皇怜音",
     "gender": "男",
     "debut_date": "2025-09-17",
     "height_cm": "172cm",
@@ -7116,6 +7271,7 @@
   },
   {
     "nickname": "篠宮ゆの",
+    "name_zh": "筱宫优之",
     "gender": "男",
     "debut_date": "2025-09-17",
     "height_cm": "176cm",
@@ -7136,6 +7292,7 @@
   },
   {
     "nickname": "城瀬いすみ",
+    "name_zh": "城濑伊澄",
     "gender": "男",
     "debut_date": "2025-09-17",
     "height_cm": "165cm",
@@ -7157,6 +7314,7 @@
   },
   {
     "nickname": "花籠つばさ",
+    "name_zh": "花笼翼",
     "gender": "男",
     "debut_date": "2025-09-17",
     "height_cm": "178cm",
@@ -7178,6 +7336,7 @@
   },
   {
     "nickname": "白砂あやね",
+    "name_zh": "白砂绫音",
     "gender": "女",
     "debut_date": "2026-01-29",
     "height_cm": "158cm",
@@ -7201,6 +7360,7 @@
   },
   {
     "nickname": "水面まどか",
+    "name_zh": "水面円香",
     "gender": "女",
     "debut_date": "2026-01-29",
     "height_cm": "162cm",
@@ -7223,6 +7383,7 @@
   },
   {
     "nickname": "男虎",
+    "name_zh": "男虎",
     "gender": "男",
     "debut_date": "2026-04-19",
     "height_cm": "174cm",
@@ -7241,6 +7402,7 @@
   },
   {
     "nickname": "九里詠太",
+    "name_zh": "九里咏太",
     "gender": "男",
     "debut_date": "2026-04-19",
     "height_cm": "175cm",
@@ -7259,6 +7421,7 @@
   },
   {
     "nickname": "小々波いるか",
+    "name_zh": "小小波衣琉花",
     "gender": "女",
     "debut_date": "2026-04-19",
     "height_cm": "152cm",
@@ -7276,6 +7439,7 @@
   },
   {
     "nickname": "千凛あゆむ",
+    "name_zh": "千凛步",
     "gender": "女",
     "debut_date": "2026-04-19",
     "height_cm": "153cm",
@@ -7294,6 +7458,7 @@
   },
   {
     "nickname": "塚原大地",
+    "name_zh": "塚原大地",
     "gender": "男",
     "debut_date": "2026-04-19",
     "height_cm": "173cm",
@@ -7313,6 +7478,7 @@
   },
   {
     "nickname": "御子神琴音",
+    "name_zh": "御子神琴音",
     "gender": "女",
     "debut_date": "2026-04-19",
     "height_cm": "157cm",
@@ -7332,6 +7498,7 @@
   },
   {
     "nickname": "Rei7",
+    "name_zh": "Rei7",
     "gender": "女",
     "debut_date": "2026-04-19",
     "height_cm": "162cm",
@@ -7352,6 +7519,7 @@
   },
   {
     "nickname": "レヨン",
+    "name_zh": "芮昂",
     "gender": "男",
     "debut_date": "2026-04-19",
     "height_cm": "170cm",
@@ -7370,6 +7538,7 @@
   },
   {
     "nickname": "ぷりん・らら・もーど",
+    "name_zh": "布琳・拉拉・莫德",
     "gender": "女",
     "debut_date": "2026-07-21",
     "height_cm": "160cm",
@@ -7387,6 +7556,7 @@
   },
   {
     "nickname": "ぽめろ・ぱんち",
+    "name_zh": "波美洛・潘趣",
     "gender": "女",
     "debut_date": "2026-07-21",
     "height_cm": "155cm",
@@ -7403,6 +7573,7 @@
   },
   {
     "nickname": "神永タイガ",
+    "name_zh": "神永大雅",
     "gender": "男",
     "debut_date": "2026-08-27",
     "height_cm": "177cm",
@@ -7418,6 +7589,7 @@
   },
   {
     "nickname": "山田龍一郎",
+    "name_zh": "山田龙一郎",
     "gender": "男",
     "debut_date": "2026-08-27",
     "height_cm": "180cm",

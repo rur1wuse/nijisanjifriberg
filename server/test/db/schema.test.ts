@@ -57,6 +57,7 @@ describe('database schema initialization', () => {
     expect(await instance.schema.hasColumn('guest_accounts', 'matchmaking_restricted')).toBe(false);
 
     expect(await instance.schema.hasColumn('players', 'gender')).toBe(true);
+    expect(await instance.schema.hasColumn('players', 'name_zh')).toBe(true);
     expect(await instance.schema.hasColumn('players', 'debut_date')).toBe(true);
     expect(await instance.schema.hasColumn('players', 'height_cm')).toBe(true);
     expect(await instance.schema.hasColumn('players', 'age_text')).toBe(true);

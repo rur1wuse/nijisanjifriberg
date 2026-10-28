@@ -92,6 +92,7 @@ function answerView(target: Player) {
   return {
     id: target.id,
     nickname: target.nickname,
+    nameZh: target.name_zh,
     gender: target.gender,
     debutDate: target.debut_date,
     height: target.height_cm,

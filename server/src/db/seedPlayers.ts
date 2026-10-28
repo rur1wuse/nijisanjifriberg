@@ -10,6 +10,7 @@ import playersData from './seeds/players.json';
 
 interface SeedPlayer {
   nickname: string;
+  name_zh?: string;
   gender: string;
   debut_date: string;
   height_cm: string;
@@ -37,6 +38,7 @@ export async function insertMissingSeedPlayers(instance: Knex = db): Promise<num
     const inserted = await trx('players')
       .insert(additions.map((player) => ({
         nickname: player.nickname,
+        name_zh: player.name_zh ?? '',
         gender: player.gender ?? '',
         debut_date: player.debut_date ?? '',
         height_cm: player.height_cm ?? '',
@@ -70,4 +72,29 @@ export async function seedPlayersIfEmpty(instance: Knex = db): Promise<number> {
   const row = await instance('players').count<{ count: number | string }[]>({ count: '*' });
   if (Number(row[0]?.count ?? 0) > 0) return 0;
   return insertMissingSeedPlayers(instance);
+}
+
+/**
+ * 为已存在的选手补写种子里的中文译名。只填当前为空的 name_zh,
+ * 不覆盖管理员在后台改过的译名;返回实际更新的行数。
+ */
+export async function backfillSeedPlayerNamesZh(instance: Knex = db): Promise<number> {
+  const rows = await instance('players').select('id', 'nickname', 'name_zh');
+  const byNickname = new Map(seedPlayers.map((player) => [player.nickname, player.name_zh ?? '']));
+  const updates = rows
+    .map((row) => ({
+      id: Number(row.id),
+      name_zh: byNickname.get(String(row.nickname)) ?? '',
+      current: String(row.name_zh ?? ''),
+    }))
+    .filter((row) => !row.current && row.name_zh);
+
+  if (!updates.length) return 0;
+
+  await instance.transaction(async (trx) => {
+    for (const update of updates) {
+      await trx('players').where({ id: update.id }).update({ name_zh: update.name_zh });
+    }
+  });
+  return updates.length;
 }

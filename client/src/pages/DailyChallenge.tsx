@@ -18,6 +18,7 @@ import DataTable, { type Column } from '../components/DataTable';
 import { api, errMsg } from '../api/client';
 import { toast } from '../components/Toast';
 import { useConfirm } from '../components/ConfirmDialog';
+import { localizedName } from '../utils/playerName';
 import type { GuessFeedback } from '../types';
 import { AVAILABLE_DIFFICULTIES } from '../config/difficulties';
 import { difficultyColor, difficultyIcon, difficultyLabel } from '../utils/difficulty';
@@ -87,7 +88,7 @@ function remainingTime(target: number, now: number): string {
 }
 
 export default function DailyChallenge() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { mode = '' } = useParams();
   const navigate = useNavigate();
   const confirm = useConfirm();
@@ -399,7 +400,7 @@ export default function DailyChallenge() {
                       {t('daily.solveOrder', { order: challenge.solveOrder })}
                     </span>
                   )}
-                  <span>{challenge.answer?.nickname}</span>
+                  <span>{challenge.answer ? localizedName(challenge.answer, i18n.language) : null}</span>
                 </div>
                 <button type="button" className="btn btn-ghost btn-sm" onClick={showStoredAnswer}>
                   {t('daily.viewAnswer')}

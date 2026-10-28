@@ -18,6 +18,7 @@ function playerInfoView(player: Player) {
   return {
     id: player.id,
     nickname: player.nickname,
+    nameZh: player.name_zh,
     gender: player.gender,
     debutDate: player.debut_date,
     height: player.height_cm,
@@ -66,7 +67,11 @@ router.get(
     const players = searchCachedPlayers(search, suggest ? 10 : 100);
 
     if (suggest) {
-      return res.json(players.map((p) => ({ id: p.id, nickname: p.nickname })));
+      return res.json(players.map((p) => ({
+        id: p.id,
+        nickname: p.nickname,
+        ...(p.name_zh ? { nameZh: p.name_zh } : {}),
+      })));
     }
     res.json(players.map(playerInfoView));
   })

@@ -3,6 +3,7 @@ import { api } from './client';
 export interface PlayerSuggestion {
   id: number;
   nickname: string;
+  nameZh?: string;
 }
 
 interface CachedPlayerList {
@@ -164,11 +165,19 @@ function matchScore(nickname: string, query: string): number {
   return Number.POSITIVE_INFINITY;
 }
 
+const ZH_MATCH_SCORE_PENALTY = 10;
+
+function bestScore(player: PlayerSuggestion, query: string): number {
+  const own = matchScore(player.nickname, query);
+  if (!player.nameZh) return own;
+  return Math.min(own, matchScore(player.nameZh, query) + ZH_MATCH_SCORE_PENALTY);
+}
+
 export function searchPlayerList(players: PlayerSuggestion[], query: string): PlayerSuggestion[] {
   const normalized = normalizeSearch(query);
   if (!normalized) return [];
   return players
-    .map((player) => ({ player, score: matchScore(player.nickname, normalized) }))
+    .map((player) => ({ player, score: bestScore(player, normalized) }))
     .filter((entry) => Number.isFinite(entry.score))
     .sort((a, b) => a.score - b.score || a.player.nickname.localeCompare(b.player.nickname))
     .map((entry) => entry.player)

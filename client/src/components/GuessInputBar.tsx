@@ -3,10 +3,12 @@ import { getPlayerList, searchPlayerList, subscribePlayerList } from '../api/pla
 import { errMsg } from '../api/client';
 import { toast } from './Toast';
 import { useTranslation } from 'react-i18next';
+import { localizedName } from '../utils/playerName';
 
 interface Suggestion {
   id: number;
   nickname: string;
+  nameZh?: string;
 }
 
 interface Props {
@@ -30,7 +32,7 @@ export default function GuessInputBar({
   placeholder,
   buttonText,
 }: Props) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [text, setText] = useState('');
   const [items, setItems] = useState<Suggestion[]>([]);
   const [active, setActive] = useState(0);
@@ -161,7 +163,7 @@ export default function GuessInputBar({
                 void pick(item);
               }}
             >
-              {item.nickname}
+              {localizedName(item, i18n.language)}
             </li>
           ))}
         </ul>
@@ -214,7 +216,7 @@ export default function GuessInputBar({
                 setOpen(false);
               }
             } else if (e.key === 'Tab' && open) {
-              if (items.length === 1 && tabCycling.current && text === items[0].nickname) {
+              if (items.length === 1 && tabCycling.current && text === localizedName(items[0], i18n.language)) {
                 tabCycling.current = false;
                 setOpen(false);
                 return;
@@ -226,7 +228,7 @@ export default function GuessInputBar({
                 : e.shiftKey
                   ? (active - 1 + items.length) % items.length
                   : active;
-              const completed = items[nextActive].nickname;
+              const completed = localizedName(items[nextActive], i18n.language);
               tabCycling.current = true;
               setActive(nextActive);
               textRef.current = completed;

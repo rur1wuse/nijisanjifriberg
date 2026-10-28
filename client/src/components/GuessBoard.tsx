@@ -13,6 +13,7 @@ import {
   MultiplayerGuessFeedback,
 } from '../types';
 import { useTranslation } from 'react-i18next';
+import { localizedName } from '../utils/playerName';
 
 function Cell({
   attr,
@@ -52,7 +53,7 @@ function GuessBoard({
   guesses: MultiplayerGuessFeedback[];
   rowAnnotations?: Array<{ content: ReactNode; title?: string; tone?: 'self' | 'other' }>;
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const columns = [
     t('guess.columns.nickname'),
     t('guess.columns.gender'),
@@ -92,7 +93,7 @@ function GuessBoard({
                       {annotation.content}
                     </span>
                   )}
-                  {'hidden' in g ? null : g.nickname}
+                  {'hidden' in g ? null : localizedName(g, i18n.language)}
                 </td>
                 <Cell attr={g.attributes.gender} label={columns[1]} />
                 <Cell attr={g.attributes.debutDate} label={columns[2]} />

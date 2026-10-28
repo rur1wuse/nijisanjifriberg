@@ -13,19 +13,23 @@ import { api, errMsg } from '../api/client';
 import { PlayerInfo } from '../types';
 import { toast } from '../components/Toast';
 import { useTranslation } from 'react-i18next';
+import { localizedName } from '../utils/playerName';
 
 /** 查选手:底部输入 + 自动补全,选中后在上方展示选手卡片(原版布局) */
 export default function Search() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [player, setPlayer] = useState<PlayerInfo | null>(null);
 
-  const lookup = async (nickname: string) => {
+  const lookup = async (nickname: string, nameZh?: string) => {
     try {
       const res = await api.get<PlayerInfo[]>('/players', {
         params: { search: nickname },
       });
+      const target = nickname.toLowerCase();
+      const targetZh = nameZh?.toLowerCase();
       const exact =
-        res.data.find((p) => p.nickname.toLowerCase() === nickname.toLowerCase()) ??
+        res.data.find((p) => p.nickname.toLowerCase() === target) ??
+        res.data.find((p) => targetZh && p.nameZh?.toLowerCase() === targetZh) ??
         res.data[0] ??
         null;
       setPlayer(exact);
@@ -40,7 +44,7 @@ export default function Search() {
       icon={<SearchIcon size={17} />}
       dock={
         <GuessInputBar
-          onPick={(p) => void lookup(p.nickname)}
+          onPick={(p) => void lookup(p.nickname, p.nameZh)}
           placeholder={t('search.placeholder')}
           buttonText={t('search.button')}
         />
@@ -51,7 +55,7 @@ export default function Search() {
           <div className="card">
             <h3>
               <CircleDot size={15} color="#16a34a" />
-              {player.nickname}
+              {localizedName(player, i18n.language)}
               <span className="muted" style={{ fontWeight: 400 }}>
                 {player.race}
               </span>
@@ -59,6 +63,7 @@ export default function Search() {
             <PlayerInfoTable
               answer={{
                 nickname: player.nickname,
+                nameZh: player.nameZh,
                 gender: player.gender,
                 debutDate: player.debutDate,
                 height: player.height,

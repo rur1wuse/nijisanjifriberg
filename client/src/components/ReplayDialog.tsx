@@ -13,6 +13,7 @@ import ModalPortal from './ModalPortal';
 import type { GuessFeedback, MatchReplay, MatchReplayRound, PlayerInfo, PlayerPerformanceStats } from '../types';
 import { useTranslation } from 'react-i18next';
 import { difficultyLabel } from '../utils/difficulty';
+import { localizedName } from '../utils/playerName';
 import PlayerStatsDialog from './PlayerStatsDialog';
 
 export interface SingleReplay {
@@ -34,13 +35,14 @@ export interface MultiReplay extends MatchReplay {
 export type Replay = SingleReplay | MultiReplay;
 
 function AnswerSection({ answer }: { answer: PlayerInfo }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   return (
     <section className="replay-answer" aria-label={t('replay.answerLabel')}>
-      <h3>{t('replay.correctAnswer', { name: answer.nickname })}</h3>
+      <h3>{t('replay.correctAnswer', { name: localizedName(answer, i18n.language) })}</h3>
       <PlayerInfoTable
         answer={{
           nickname: answer.nickname,
+          nameZh: answer.nameZh,
           gender: answer.gender,
           debutDate: answer.debutDate,
           height: answer.height,

@@ -15,7 +15,7 @@ const INVALIDATE_CHANNEL = redisKey('players:invalidate');
 const VERSION_KEY = redisKey('players:revision');
 const REFRESH_DEBOUNCE_MS = 100;
 
-type PublicPlayer = { id: number; nickname: string };
+type PublicPlayer = { id: number; nickname: string; nameZh?: string };
 type SearchablePlayer = { player: Player; search: string };
 let playersById = new Map<number, Player>();
 let allPlayers: Player[] = [];
@@ -64,11 +64,15 @@ export async function refreshPlayerCache(): Promise<void> {
       playersById = new Map(hydrated.map((player) => [player.id, player]));
       searchablePlayers = allPlayers.map((player) => ({
         player,
-        search: normalizeSearch(`${player.nickname}\0${player.race}`),
+        search: normalizeSearch(`${player.nickname}\0${player.name_zh ?? ''}\0${player.race}`),
       }));
       publicList = {
         version: pendingVersion || storedVersion || String(Date.now()),
-        players: allPlayers.map((player) => ({ id: player.id, nickname: player.nickname })),
+        players: allPlayers.map((player) => ({
+          id: player.id,
+          nickname: player.nickname,
+          ...(player.name_zh ? { nameZh: player.name_zh } : {}),
+        })),
       };
       pendingVersion = null;
       appliedGeneration = requestedGeneration;

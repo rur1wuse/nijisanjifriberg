@@ -15,6 +15,7 @@ export interface AttributeFeedback {
 export interface GuessFeedback {
   playerId: number;
   nickname: string;
+  nameZh?: string;
   correct: boolean;
   attributes: {
     gender: AttributeFeedback;
@@ -54,6 +55,7 @@ export interface UserInfo {
 export interface PlayerInfo {
   id: number;
   nickname: string;
+  nameZh?: string;
   gender: string;
   debutDate: string;
   height: string;

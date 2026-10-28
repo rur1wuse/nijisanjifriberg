@@ -139,6 +139,7 @@ describe('stats and replay', () => {
       expect(stats.data.personal.firstGuess).toEqual({
         playerId: target.id,
         nickname: target.nickname,
+        nameZh: target.name_zh,
         percentage: 1,
       });
       expect(stats.data.global.totalGames).toBeGreaterThanOrEqual(1);
@@ -360,6 +361,7 @@ describe('stats and replay', () => {
       expect(stats.data.personal.firstGuess).toEqual({
         playerId: favorite.id,
         nickname: favorite.nickname,
+        nameZh: favorite.name_zh,
         percentage: 1 / 2,
       });
     } finally {

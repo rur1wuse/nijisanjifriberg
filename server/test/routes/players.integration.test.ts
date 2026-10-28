@@ -87,13 +87,14 @@ describe('GET /api/players', () => {
     }
   });
 
-  it('returns only id and nickname when suggest=1', async () => {
+  it('returns only id, nickname, and the optional Chinese name when suggest=1', async () => {
     const response = await fetch(`${baseUrl}/api/players?suggest=1`);
     expect(response.status).toBe(200);
     const body = (await response.json()) as Array<Record<string, unknown>>;
     expect(body.length).toBeGreaterThan(0);
     for (const player of body) {
-      expect(Object.keys(player).sort()).toEqual(['id', 'nickname']);
+      const keys = Object.keys(player).sort();
+      expect(keys).toEqual(player.nameZh ? ['id', 'nameZh', 'nickname'] : ['id', 'nickname']);
     }
   });
 });

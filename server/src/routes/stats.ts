@@ -108,6 +108,7 @@ async function firstGuessSummary(query: ReturnType<typeof db>) {
   return {
     playerId: top.playerId,
     nickname: getPlayer(top.playerId)!.nickname,
+    nameZh: getPlayer(top.playerId)!.name_zh,
     percentage: top.count / total,
   };
 }
@@ -116,6 +117,7 @@ function answerView(target: Player) {
   return {
     id: target.id,
     nickname: target.nickname,
+    nameZh: target.name_zh,
     gender: target.gender,
     debutDate: target.debut_date,
     height: target.height_cm,

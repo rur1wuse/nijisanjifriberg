@@ -47,6 +47,7 @@ import { toast } from '../components/Toast';
 import { Trans, useTranslation } from 'react-i18next';
 import type { TFunction } from 'i18next';
 import { difficultyLabel } from '../utils/difficulty';
+import { localizedName } from '../utils/playerName';
 import PlayerStatsDialog, { type PlayerStatsView } from '../components/PlayerStatsDialog';
 import ModalPortal from '../components/ModalPortal';
 
@@ -351,7 +352,7 @@ function CompactPlayers({
 }
 
 export default function MultiRoom() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [room, setRoom] = useState<RoomState | null>(null);
   const [roundOver, setRoundOver] = useState<RoundOver | null>(null);
   const [matchOver, setMatchOver] = useState<MatchOver | null>(null);
@@ -1387,7 +1388,7 @@ export default function MultiRoom() {
           </button>
           <div className="multi-inline-replay-meta">
             <strong>{t('replay.roundPage', { current: replayRoundIndex + 1, total: replay.rounds.length })}</strong>
-            <span>{t('replay.correctAnswer', { name: replayRound.answer.nickname })}</span>
+            <span>{t('replay.correctAnswer', { name: localizedName(replayRound.answer, i18n.language) })}</span>
             <span className="badge">
               {room.gameMode === 'relay'
                 ? t(replayRound.reason === 'guessed' ? 'multi.relayRoundSolved' : 'multi.relayRoundMissed')
