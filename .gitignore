@@ -16,5 +16,8 @@ compose.override.yaml
 rule.txt
 AGENTS.md
 members-zh-template.*
+.agents/
+skills-lock.json
+nginx/certs/
 
 .omo/
