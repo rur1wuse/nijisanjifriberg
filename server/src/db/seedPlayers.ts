@@ -75,26 +75,38 @@ export async function seedPlayersIfEmpty(instance: Knex = db): Promise<number> {
 }
 
 /**
- * 为已存在的选手补写种子里的中文译名。只填当前为空的 name_zh,
- * 不覆盖管理员在后台改过的译名;返回实际更新的行数。
+ * 补写种子中定义但数据库里仍为空的选手属性。管理员在后台改过的非空值一律保留,
+ * 因此该函数可以安全地在每次 seed 时运行。返回实际更新的行数。
  */
-export async function backfillSeedPlayerNamesZh(instance: Knex = db): Promise<number> {
-  const rows = await instance('players').select('id', 'nickname', 'name_zh');
-  const byNickname = new Map(seedPlayers.map((player) => [player.nickname, player.name_zh ?? '']));
-  const updates = rows
-    .map((row) => ({
-      id: Number(row.id),
-      name_zh: byNickname.get(String(row.nickname)) ?? '',
-      current: String(row.name_zh ?? ''),
-    }))
-    .filter((row) => !row.current && row.name_zh);
-
-  if (!updates.length) return 0;
+export async function backfillEmptySeedPlayerAttributes(instance: Knex = db): Promise<number> {
+  const rows = await instance('players').select(
+    'id',
+    'nickname',
+    'name_zh',
+    'gender',
+    'debut_date',
+    'height_cm',
+    'age_text',
+    'race'
+  );
+  const byNickname = new Map(seedPlayers.map((player) => [player.nickname, player]));
+  let updated = 0;
 
   await instance.transaction(async (trx) => {
-    for (const update of updates) {
-      await trx('players').where({ id: update.id }).update({ name_zh: update.name_zh });
+    for (const row of rows) {
+      const seed = byNickname.get(String(row.nickname));
+      if (!seed) continue;
+      const patch: Record<string, string> = {};
+      if (!String(row.name_zh ?? '') && seed.name_zh) patch.name_zh = seed.name_zh;
+      if (!String(row.gender ?? '') && seed.gender) patch.gender = seed.gender;
+      if (!String(row.debut_date ?? '') && seed.debut_date) patch.debut_date = seed.debut_date;
+      if (!String(row.height_cm ?? '') && seed.height_cm) patch.height_cm = seed.height_cm;
+      if (!String(row.age_text ?? '') && seed.age_text) patch.age_text = seed.age_text;
+      if (!String(row.race ?? '') && seed.race) patch.race = seed.race;
+      if (!Object.keys(patch).length) continue;
+      await trx('players').where({ id: row.id }).update(patch);
+      updated += 1;
     }
   });
-  return updates.length;
+  return updated;
 }

@@ -7,7 +7,10 @@
 import knex from 'knex';
 import { afterEach, describe, expect, it } from 'vitest';
 import { ensureSchema } from '../../src/db/schema';
-import { insertMissingSeedPlayers } from '../../src/db/seedPlayers';
+import {
+  backfillEmptySeedPlayerAttributes,
+  insertMissingSeedPlayers,
+} from '../../src/db/seedPlayers';
 import seedPlayers from '../../src/db/seeds/players.json';
 
 const instances: ReturnType<typeof knex>[] = [];
@@ -41,5 +44,31 @@ describe('baseline player seeds', () => {
       .where({ player_id: player.id })
       .pluck('difficulty_key'))
       .toEqual(['normal']);
+  });
+
+  it('backfills only empty attributes and keeps values edited in the admin panel', async () => {
+    const instance = knex({
+      client: 'better-sqlite3',
+      connection: { filename: ':memory:' },
+      useNullAsDefault: true,
+    });
+    instances.push(instance);
+    await ensureSchema(instance);
+    await insertMissingSeedPlayers(instance);
+
+    const target = seedPlayers[0];
+    await instance('players').where({ nickname: target.nickname }).update({
+      height_cm: '',
+      race: '管理员改过的种族',
+    });
+
+    const updated = await backfillEmptySeedPlayerAttributes(instance);
+    expect(updated).toBe(1);
+
+    const player = await instance('players').where({ nickname: target.nickname }).first();
+    expect(player.height_cm).toBe(target.height_cm);
+    expect(player.race).toBe('管理员改过的种族');
+
+    expect(await backfillEmptySeedPlayerAttributes(instance)).toBe(0);
   });
 });
