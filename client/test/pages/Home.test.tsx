@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { api } from '../../src/api/client';
 import { useAuth } from '../../src/store/auth';
 import { renderAtRoute } from '../render';
@@ -25,14 +25,6 @@ describe('Home email verification reminder', () => {
     useAuth.setState({ user, initialized: true });
     apiGet.mockReset();
     apiGet.mockResolvedValue({ data: { user } });
-    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-      ok: true,
-      json: async () => ({ features: { leaderboard: true } }),
-    }));
-  });
-
-  afterEach(() => {
-    vi.unstubAllGlobals();
   });
 
   it('shows the reminder and opens personal settings when clicked', async () => {
@@ -53,6 +45,15 @@ describe('Home email verification reminder', () => {
 
     const daily = screen.getByRole('link', { name: /每日挑战/ });
     expect(daily.parentElement?.firstElementChild).toBe(daily);
+  });
+
+  it('does not render the removed leaderboard, announcements, friend links, or bilibili entries', () => {
+    renderAtRoute(<Home />);
+
+    expect(screen.queryByRole('link', { name: /排行榜/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /更新公告/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /友情链接/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: /B站/ })).not.toBeInTheDocument();
   });
 
   it.each([

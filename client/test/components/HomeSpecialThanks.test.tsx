@@ -11,21 +11,17 @@ describe('HomeSpecialThanks', () => {
     await i18n.changeLanguage('zh');
   });
 
-  it('renders the special thanks configured in client code', async () => {
+  it('links to the csgofriberg project this site is based on', async () => {
     const user = userEvent.setup();
 
     renderWithProviders(<HomeSpecialThanks />);
 
     await user.click(screen.getByRole('button', { name: '特别感谢' }));
     expect(screen.getByRole('heading', { name: '特别感谢' })).toBeInTheDocument();
-    expect(screen.getByText('玩机器丶Machine')).toBeInTheDocument();
-    expect(screen.getByText('对网站的冠名赞助')).toBeInTheDocument();
-    expect(screen.getByRole('img', { name: '玩机器丶Machine' })).toHaveAttribute('src', SPECIAL_THANKS[0].image);
-    expect(screen.getByRole('link', { name: /玩机器丶Machine/ })).toHaveAttribute('href', 'https://www.douyu.com/6979222');
-    expect(screen.getByText('OuseTonae | AS202355 Ciallo Networks LTD')).toBeInTheDocument();
-    expect(screen.getByText('提供了网站的服务器')).toBeInTheDocument();
-    expect(screen.getByRole('img', { name: 'OuseTonae | AS202355 Ciallo Networks LTD' })).toHaveAttribute('src', SPECIAL_THANKS[1].image);
-    expect(screen.getByRole('link', { name: /OuseTonae \| AS202355 Ciallo Networks LTD/ })).toHaveAttribute('href', 'https://ciallo.ee/');
+    expect(screen.getByText('本站所基于的原项目')).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: 'csgofriberg' })).toHaveAttribute('src', SPECIAL_THANKS[0].image);
+    expect(screen.getByRole('link', { name: /csgofriberg/ }))
+      .toHaveAttribute('href', 'https://github.com/shnlfriberg/csgofriberg');
 
     await user.keyboard('{Escape}');
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();

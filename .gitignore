@@ -15,5 +15,6 @@ compose.override.yaml
 .claude/
 rule.txt
 AGENTS.md
+members-zh-template.*
 
 .omo/

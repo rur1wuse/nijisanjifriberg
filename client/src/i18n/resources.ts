@@ -8,7 +8,7 @@ export const resources = {
   zh: {
     translation: {
       common: {
-        brand: '弗一把',
+        brand: '虹一把',
         guest: '访客',
         home: '主菜单',
         close: '关闭',
