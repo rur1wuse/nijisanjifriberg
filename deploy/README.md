@@ -10,11 +10,19 @@ ghcr.io/rur1wuse/nijisanjifriberg
 JavaScript、编译后的前端资源以及输出到 `server/dist` 的选手种子文件。镜像中
 不包含 pnpm、Rust、TypeScript、Vite、源码、测试、构建工具和 SQLite 驱动。
 
-自带的 Compose 编排会运行两个应用实例、PostgreSQL 和 Redis。反向代理与 TLS
-不在该编排范围内。两个应用端口默认都绑定在 `127.0.0.1`。
+自带的 Compose 编排会运行两个应用实例、PostgreSQL、Redis，以及一个可选的
+Nginx 前端（默认启用，用 `NGINX_*` 变量控制）。两个应用端口默认都绑定在
+`127.0.0.1`，只有 Nginx 暴露到 `80`/`443`。
+
+若已有宿主机反向代理或云负载均衡终止 TLS，可只启动应用与数据服务：
+
+```bash
+docker compose up -d postgres redis app-1 app-2
+```
 
 双实例布局请至少准备 2 GB 内存：容器内存限制合计可能超过 1 GB，宿主机、
-Docker 守护进程和文件系统缓存也需要余量。
+Docker 守护进程和文件系统缓存也需要余量。单实例部署（仅 `app-1`）可在此
+基础上再省约 256 MB。
 
 ## 1. 安装 Docker
 
@@ -27,10 +35,11 @@ docker compose version
 
 ## 2. 创建部署目录
 
-服务器上只需要仓库中的四个文件：
+服务器上只需要仓库中的这些文件：
 
 ```text
 compose.yaml
+nginx/site.conf
 deploy/.env.example
 deploy/README.md
 deploy/update.sh
@@ -39,8 +48,9 @@ deploy/update.sh
 例如：
 
 ```bash
-sudo mkdir -p /opt/nijisanjifriberg
+sudo mkdir -p /opt/nijisanjifriberg/nginx
 sudo cp compose.yaml /opt/nijisanjifriberg/compose.yaml
+sudo cp nginx/site.conf /opt/nijisanjifriberg/nginx/site.conf
 sudo cp deploy/.env.example /opt/nijisanjifriberg/.env
 sudo cp deploy/update.sh /opt/nijisanjifriberg/update.sh
 cd /opt/nijisanjifriberg
@@ -63,6 +73,18 @@ openssl rand -hex 24
 
 `CORS_ORIGINS` 必须设置为精确的公网 origin（如 `https://game.example.com`），
 末尾不带斜杠。
+
+`NODE_ENV` 默认为 `production`，此时服务端会强制校验 GeeTest、≥32 字节的
+`JWT_SECRET`、PostgreSQL 与 `REDIS_REQUIRED=true`。仅在无法满足这些条件时
+（例如还没有 GeeTest 密钥的内部试用）才显式设为 `development`，该模式会跳过
+上述生产校验，**不要用于公网正式环境**：
+
+```text
+NODE_ENV=development
+```
+
+`GEETEST_CAPTCHA_ID` 与 `GEETEST_PRIVATE_KEY` 允许为空，但不是 `production`
+模式下的豁免条件：缺少任一值会直接启动失败。
 
 设置 `SHOW_LEADERBOARD=false` 可隐藏排行榜入口并禁用排行榜 API，默认为
 `true`。
@@ -123,6 +145,41 @@ docker compose ps -a migrate app-1 app-2
 curl http://127.0.0.1:3000/api/health
 curl http://127.0.0.1:3001/api/health
 ```
+
+## 3.1 内置 Nginx 与 TLS
+
+编排中包含一个 `nginx` 服务，在第 3 节 `docker compose up -d` 时一并启动。
+它监听 `80` 并跳转到 `443`，把请求与 `/socket.io/` 的 WebSocket 升级流量
+转发到 `app-1:3000`。
+
+默认配置为 `./nginx/site.conf`，可通过以下变量覆盖：
+
+| 变量 | 默认值 | 说明 |
+| --- | --- | --- |
+| `NGINX_BIND_ADDRESS` | `0.0.0.0` | 设为 `127.0.0.1` 可只允许本机访问 |
+| `NGINX_HTTP_PORT` | `80` | 宿主机 HTTP 端口 |
+| `NGINX_HTTPS_PORT` | `443` | 宿主机 HTTPS 端口 |
+| `NGINX_CONF_PATH` | `./nginx/site.conf` | 站点配置路径 |
+| `NGINX_CERT_DIR` | `./nginx/certs` | 证书目录，需含 `fullchain.pem` 与 `privkey.pem` |
+
+证书不纳入版本控制（`nginx/certs/` 已在 `.gitignore` 中）。首次部署需自行
+准备证书。没有域名、只能用 IP 访问时可生成自签证书：
+
+```bash
+mkdir -p nginx/certs
+openssl req -x509 -nodes -newkey rsa:2048 -days 3650 \
+  -keyout nginx/certs/privkey.pem \
+  -out nginx/certs/fullchain.pem \
+  -subj "/CN=<公网IP>" -addext "subjectAltName=IP:<公网IP>"
+```
+
+自签证书会让浏览器显示「连接不是私密连接」警告，需要手动继续访问。正式
+环境应改用域名配合 Let's Encrypt 等受信任证书。
+
+> **不要把 `NODE_ENV=development` 与裸 HTTP 直连混用。** 服务端响应头包含
+> `upgrade-insecure-requests` 与 HSTS，浏览器会把页面内的 `http://` 子资源
+> 升级为 `https://`。若前面没有 TLS 终止，前端 JS 会全部加载失败并白屏。
+> 直连 IP 时务必经由本节的 Nginx，或使用域名 + 真实证书。
 
 ## 4. 反向代理
 
