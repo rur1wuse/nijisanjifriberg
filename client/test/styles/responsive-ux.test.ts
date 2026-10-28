@@ -76,7 +76,7 @@ describe('desktop/mobile layout contracts', () => {
       /@media\s*\(max-width:\s*640px\)\s*\{[\s\S]*\.single-lobby-action\s+\.btn\s*\{[^}]*width:\s*100%/
     );
     expect(home).toMatch(/\.thanks-dialog\s*\{[^}]*max-height:\s*calc\(100dvh - 40px\)/s);
-    expect(home).toMatch(/\.home-sponsor-link\s*\{[^}]*font-size:\s*0\.72rem/s);
+    expect(home).not.toMatch(/\.home-sponsor-link/);
     const game = readCss('../../src/styles/game.css');
     expect(game).not.toMatch(/\.input-dock\s*\{[^}]*backdrop-filter/s);
   });

@@ -148,15 +148,6 @@ export default function Home() {
           <span className="hero-kicker">NIJISANJI // MEMBER GUESSING</span>
           <h1>{t('common.brand')}</h1>
           <p className="hero-subtitle">{t('home.subtitle')}</p>
-          <a
-            className="home-sponsor-link"
-            href="https://www.douyu.com/6979222"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-umami-event="home-wanjiqi-sponsor"
-          >
-            {t('home.titleSponsor')}
-          </a>
           <GameRules />
           {initialized && !user && (
             <p className="muted" style={{ marginTop: 6 }}>

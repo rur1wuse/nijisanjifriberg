@@ -47,7 +47,6 @@ export const resources = {
       emailVerify: { title: '邮箱验证', loading: '正在验证邮箱…', success: '邮箱验证成功，现在可以使用已验证邮箱匹配。', error: '验证链接无效或已过期。', home: '返回首页' },
       home: {
         subtitle: '彩虹社 VTuber 竞猜',
-        titleSponsor: '玩机器丶Machine 冠名赞助',
         guestHint: '无需登录即可游玩，战绩保存在本机；登录后自动同步到账号',
         restoring: '正在恢复登录状态',
         admin: '管理员',
@@ -283,7 +282,6 @@ export const resources = {
       },
       home: {
         subtitle: 'Nijisanji VTuber guessing game', guestHint: 'Play without signing in. Results stay on this device and sync after login.',
-        titleSponsor: '玩机器冠名赞助',
         restoring: 'Restoring your session', admin: 'Admin', adminPanel: 'Admin panel', manage: 'Manage', logout: 'Log out', logoutTitle: 'Log out?',
         logoutMessage: 'You will switch to a guest session and any active multiplayer connection will be closed.', logoutConfirm: 'Log out',
         loginRegister: 'Log in / Sign up', singleMode: 'Solo mode', singleModeDescription: 'Start a solo Nijisanji guessing game',
@@ -461,7 +459,6 @@ export const resources = {
       },
       home: {
         subtitle: 'にじさんじ VTuber 当てゲーム', guestHint: 'ログインなしでプレイできます。戦績は端末に保存され、ログイン後にアカウントに同期されます。',
-        titleSponsor: '玩机器冠名赞助',
         restoring: 'ログイン状態を復元中', admin: '管理者', adminPanel: '管理画面', manage: '管理', logout: 'ログアウト', logoutTitle: 'ログアウトしますか？',
         logoutMessage: 'ゲスト状態に切り替わり、進行中のマルチプレイ接続は終了します。', logoutConfirm: 'ログアウト', loginRegister: 'ログイン / 登録', singleMode: 'ソロモード', singleModeDescription: '難易度を選んでソロゲームを開始',
         dailyChallenge: 'デイリーチャレンジ', dailyChallengeDescription: '3 難易度の固定ターゲットを少ない予想数で競います',

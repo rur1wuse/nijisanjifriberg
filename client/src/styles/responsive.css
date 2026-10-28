@@ -57,7 +57,6 @@
   .home-brand-slashes { font-size: 1.05rem; }
   .home-brand-logo { width: 30px; height: 30px; flex-basis: 30px; border-radius: 7px; }
   .home-page .header-bar .title { max-width: none; flex-shrink: 0; overflow: visible; text-overflow: clip; }
-  .home-sponsor-link { font-size: 0.65rem; }
   .header-bar .btns { gap: 6px; }
   .header-bar .btns .btn { min-width: 36px; padding-inline: 9px; }
   .header-bar .btns .theme-toggle { width: 36px; padding-inline: 0; flex: 0 0 36px; }
