@@ -41,6 +41,13 @@ show_failure() {
   compose logs --no-color --tail 100 "${service}" >&2 || true
 }
 
+# A deployment may intentionally run only a subset of the compose services (for
+# example a single app instance on a 2 GB host). The update therefore restarts
+# exactly what is already running instead of assuming the full two-instance layout.
+running_services() {
+  compose ps --services --status running 2>/dev/null || true
+}
+
 wait_for_healthy() {
   local service="$1"
   local started_at="${SECONDS}"
@@ -58,6 +65,12 @@ wait_for_healthy() {
       case "${status}" in
         healthy)
           log "${service} is healthy."
+          return 0
+          ;;
+        running)
+          # nginx ships without a healthcheck, so a running container is the
+          # strongest signal available; the stack health is verified after it starts.
+          log "${service} is running."
           return 0
           ;;
         exited|dead)
@@ -115,21 +128,31 @@ cd "${DEPLOY_DIR}"
 log "Validating the Compose configuration..."
 compose config --quiet
 
-log "Checking the currently running application instances..."
-wait_for_healthy app-1 || fail "app-1 is not healthy; update aborted before making changes."
-wait_for_healthy app-2 || fail "app-2 is not healthy; update aborted before making changes."
+readonly RUNNING_SERVICES="$(running_services)"
+[[ -n "${RUNNING_SERVICES}" ]] || fail "no services are running; start the stack before updating."
+
+log "Services currently running: $(echo "${RUNNING_SERVICES}" | tr '\n' ' ')"
+
+readonly APP_SERVICES="$(echo "${RUNNING_SERVICES}" | grep -E '^(app-|nginx$)' || true)"
+[[ -n "${APP_SERVICES}" ]] || fail "no application or nginx service is running."
+
+for service in ${APP_SERVICES}; do
+  [[ "${service}" == "nginx" ]] && continue
+  wait_for_healthy "${service}" || fail "${service} is not healthy; update aborted before making changes."
+done
 
 log "Pulling application images..."
-compose pull migrate app-1 app-2
+compose pull migrate ${APP_SERVICES}
 
 log "Running database migrations..."
 compose run --rm migrate
 
-update_instance app-1
-update_instance app-2
+for service in ${APP_SERVICES}; do
+  update_instance "${service}"
+done
 
 log "Rolling update completed successfully."
-compose ps app-1 app-2
+compose ps
 
 if [[ "${PRUNE_OLD_IMAGES:-0}" == "1" ]]; then
   log "Pruning unused images..."
