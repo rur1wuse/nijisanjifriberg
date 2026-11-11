@@ -155,7 +155,8 @@ function replayAnswer(target: Player) {
     debutDate: target.debut_date,
     height: target.height_cm,
     age: target.age_text,
-    collab: target.collab_groups.join('、'),
+    collab: target.collab_groups.map((group) => group.name).join('、'),
+    collabGroups: target.collab_groups,
     race: target.race,
   };
 }

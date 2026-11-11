@@ -6,10 +6,16 @@
  */
 export type FeedbackLevel = 'correct' | 'close' | 'wrong' | 'gray' | 'unknown';
 
+export interface CollabGroup {
+  name: string;
+  note?: string;
+}
+
 export interface AttributeFeedback {
   value: string | number | boolean;
   level: FeedbackLevel;
   hint?: 'higher' | 'lower';
+  groups?: CollabGroup[];
 }
 
 export interface GuessFeedback {
@@ -61,6 +67,7 @@ export interface PlayerInfo {
   height: string;
   age: string;
   collab: string;
+  collabGroups?: CollabGroup[];
   race: string;
   difficulties?: string[];
 }

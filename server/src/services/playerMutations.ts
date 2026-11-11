@@ -13,6 +13,13 @@ import { invalidatePlayerCache } from './playerCache';
 import { normalizeCollabGroups, serializeCollabGroups } from './teamHistory';
 
 const difficultyKeySchema = z.string().trim().regex(/^[a-z0-9][a-z0-9_-]{0,31}$/);
+const collabGroupSchema = z.union([
+  z.string().trim().min(1).max(200),
+  z.object({
+    name: z.string().trim().min(1).max(200),
+    note: z.string().trim().max(1000).optional(),
+  }),
+]);
 const difficultyListSchema = z.array(difficultyKeySchema)
   .min(1)
   .max(20)
@@ -24,7 +31,7 @@ export const playerSchema = z.object({
   debut_date: z.string().trim().max(10).default(''),
   height_cm: z.string().trim().max(64).default(''),
   age_text: z.string().trim().max(64).default(''),
-  collab_groups: z.array(z.string().trim().min(1)).default([]),
+  collab_groups: z.array(collabGroupSchema).default([]),
   race: z.string().trim().max(64).default(''),
   is_enabled: z.boolean().default(true),
   difficulties: difficultyListSchema.optional(),

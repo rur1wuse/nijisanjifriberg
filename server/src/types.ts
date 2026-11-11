@@ -18,6 +18,11 @@ export interface User {
   created_at: string;
 }
 
+export interface CollabGroup {
+  name: string;
+  note?: string;
+}
+
 export interface Player {
   id: number;
   nickname: string;
@@ -26,7 +31,7 @@ export interface Player {
   debut_date: string;
   height_cm: string;
   age_text: string;
-  collab_groups: string[];
+  collab_groups: CollabGroup[];
   race: string;
   difficulties?: string[];
   is_enabled: boolean | number;
@@ -40,6 +45,8 @@ export interface AttributeFeedback {
   level: FeedbackLevel;
   /** 数值型属性的方向提示: higher = 目标比猜测大 */
   hint?: 'higher' | 'lower';
+  /** 关系属性的结构化组合列表, 用于区分同名但脚注不同的组合 */
+  groups?: CollabGroup[];
 }
 
 export interface GuessFeedback {

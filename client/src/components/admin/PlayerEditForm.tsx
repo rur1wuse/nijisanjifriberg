@@ -10,6 +10,7 @@ import ModalPortal from '../ModalPortal';
 import { toast } from '../Toast';
 import { useTranslation } from 'react-i18next';
 import DifficultyMultiSelect from './DifficultyMultiSelect';
+import type { CollabGroup } from '../../types';
 
 export interface PlayerForm {
   id?: number;
@@ -18,7 +19,7 @@ export interface PlayerForm {
   debut_date: string;
   height_cm: string;
   age_text: string;
-  collab_groups: string[];
+  collab_groups: CollabGroup[];
   race: string;
   difficulties: string[];
   is_enabled: boolean;
@@ -137,10 +138,19 @@ export default function PlayerEditForm({ initial, difficultyKeys, onSubmit, onCa
               <textarea
                 className="input"
                 rows={3}
-                value={form.collab_groups.join('\n')}
-                onChange={(event) => set({
-                  collab_groups: event.target.value.split(/\r?\n/).map((group) => group.trim()).filter(Boolean),
-                })}
+                value={form.collab_groups.map((group) => group.name).join('\n')}
+                onChange={(event) => {
+                  const pool = [...form.collab_groups];
+                  const groups = event.target.value
+                    .split(/\r?\n/)
+                    .map((line) => line.trim())
+                    .filter(Boolean)
+                    .map((name): CollabGroup => {
+                      const index = pool.findIndex((group) => group.name === name);
+                      return index >= 0 ? pool.splice(index, 1)[0] : { name };
+                    });
+                  set({ collab_groups: groups });
+                }}
               />
             </label>
           </div>

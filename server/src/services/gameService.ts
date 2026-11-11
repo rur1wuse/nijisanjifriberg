@@ -5,6 +5,7 @@
  * See LICENSE, NOTICE and COPYRIGHT.md for details.
  */
 import { Player, GuessFeedback, AttributeFeedback } from '../types';
+import { collabGroupKey } from './teamHistory';
 import {
   AGE_CLOSE_YEARS,
   DEBUT_CLOSE_DAYS,
@@ -70,13 +71,14 @@ function heightAttr(guess: Player, target: Player): AttributeFeedback {
 
 function collabAttr(guess: Player, target: Player): AttributeFeedback {
   const guessGroups = guess.collab_groups ?? [];
-  const targetGroups = new Set(target.collab_groups ?? []);
-  const shared = guessGroups.filter((group) => targetGroups.has(group));
+  const targetKeys = new Set((target.collab_groups ?? []).map(collabGroupKey));
+  const shared = guessGroups.filter((group) => targetKeys.has(collabGroupKey(group)));
   // 猜中目标时整行必须是绿的,即使该角色没有任何组合(如語部紡)。
   const matched = shared.length > 0 || guess.id === target.id;
   return {
-    value: shared.join(', '),
+    value: shared.map((group) => group.name).join(', '),
     level: matched ? 'correct' : 'wrong',
+    groups: shared,
   };
 }
 

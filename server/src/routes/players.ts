@@ -13,7 +13,7 @@ import type { Player } from '../types';
 
 const router = Router();
 
-/** 客户端把 collab 当纯文本渲染，所以组合数组在这里拼成顿号分隔的字符串。 */
+/** 客户端按顿号拆分组合名并挂脚注 tooltip，所以组合数组在这里拼成顿号分隔的字符串。 */
 function playerInfoView(player: Player) {
   return {
     id: player.id,
@@ -23,7 +23,8 @@ function playerInfoView(player: Player) {
     debutDate: player.debut_date,
     height: player.height_cm,
     age: player.age_text,
-    collab: player.collab_groups.join('、'),
+    collab: player.collab_groups.map((group) => group.name).join('、'),
+    collabGroups: player.collab_groups,
     race: player.race,
     difficulties: player.difficulties ?? [],
   };

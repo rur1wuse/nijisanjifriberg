@@ -7,6 +7,8 @@
 import type { Knex } from 'knex';
 import { db } from './knex';
 import playersData from './seeds/players.json';
+import { normalizeCollabGroups } from '../services/teamHistory';
+import type { CollabGroup } from '../types';
 
 interface SeedPlayer {
   nickname: string;
@@ -16,7 +18,7 @@ interface SeedPlayer {
   height_cm: string;
   age_text: string;
   race: string;
-  collab_groups: string[];
+  collab_groups: CollabGroup[];
   difficulties?: string[];
   is_enabled?: boolean;
 }
@@ -43,7 +45,7 @@ export async function insertMissingSeedPlayers(instance: Knex = db): Promise<num
         debut_date: player.debut_date ?? '',
         height_cm: player.height_cm ?? '',
         age_text: player.age_text ?? '',
-        collab_groups: JSON.stringify(player.collab_groups ?? []),
+        collab_groups: JSON.stringify(normalizeCollabGroups(player.collab_groups)),
         race: player.race ?? '',
         is_enabled: player.is_enabled ?? true,
       })))
@@ -105,6 +107,26 @@ export async function backfillEmptySeedPlayerAttributes(instance: Knex = db): Pr
       if (!String(row.race ?? '') && seed.race) patch.race = seed.race;
       if (!Object.keys(patch).length) continue;
       await trx('players').where({ id: row.id }).update(patch);
+      updated += 1;
+    }
+  });
+  return updated;
+}
+
+export async function normalizeStoredCollabGroups(instance: Knex = db): Promise<number> {
+  const rows = await instance('players').select('id', 'collab_groups');
+  let updated = 0;
+  await instance.transaction(async (trx) => {
+    for (const row of rows) {
+      let parsed: unknown;
+      try {
+        parsed = JSON.parse(String(row.collab_groups ?? '[]'));
+      } catch {
+        continue;
+      }
+      const normalized = normalizeCollabGroups(parsed);
+      if (JSON.stringify(parsed) === JSON.stringify(normalized)) continue;
+      await trx('players').where({ id: row.id }).update({ collab_groups: JSON.stringify(normalized) });
       updated += 1;
     }
   });

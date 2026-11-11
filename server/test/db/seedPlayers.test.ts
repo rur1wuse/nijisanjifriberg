@@ -10,8 +10,10 @@ import { ensureSchema } from '../../src/db/schema';
 import {
   backfillEmptySeedPlayerAttributes,
   insertMissingSeedPlayers,
+  normalizeStoredCollabGroups,
 } from '../../src/db/seedPlayers';
 import seedPlayers from '../../src/db/seeds/players.json';
+import NOTES from '../../src/db/seeds/collabLegacyNotes.json';
 
 const instances: ReturnType<typeof knex>[] = [];
 
@@ -70,5 +72,30 @@ describe('baseline player seeds', () => {
     expect(player.race).toBe('管理员改过的种族');
 
     expect(await backfillEmptySeedPlayerAttributes(instance)).toBe(0);
+  });
+
+  it('strips wiki footnote markers from stored collab groups', async () => {
+    const instance = knex({
+      client: 'better-sqlite3',
+      connection: { filename: ':memory:' },
+      useNullAsDefault: true,
+    });
+    instances.push(instance);
+    await ensureSchema(instance);
+    await insertMissingSeedPlayers(instance);
+
+    const target = seedPlayers[0];
+    await instance('players').where({ nickname: target.nickname }).update({
+      collab_groups: JSON.stringify(['Aチーム*22', 'Aチーム*23', '内股ガニ股*16 / やしチャイ*17']),
+    });
+
+    expect(await normalizeStoredCollabGroups(instance)).toBe(1);
+    const player = await instance('players').where({ nickname: target.nickname }).first();
+    expect(JSON.parse(player.collab_groups)).toEqual([
+      { name: 'Aチーム', note: NOTES['Aチーム*22'] },
+      { name: 'Aチーム', note: NOTES['Aチーム*23'] },
+      { name: '内股ガニ股 / やしチャイ', note: NOTES['内股ガニ股*16 / やしチャイ*17'] },
+    ]);
+    expect(await normalizeStoredCollabGroups(instance)).toBe(0);
   });
 });

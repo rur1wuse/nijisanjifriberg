@@ -4,9 +4,41 @@
  * Licensed under the GNU Affero General Public License v3.
  * See LICENSE, NOTICE and COPYRIGHT.md for details.
  */
-const MAX_COLLAB_GROUPS = 300;
+import legacyNoteData from '../db/seeds/collabLegacyNotes.json';
+import type { CollabGroup } from '../types';
 
-export function normalizeCollabGroups(value: unknown): string[] {
+const MAX_COLLAB_GROUPS = 300;
+const FOOTNOTE_MARKER = /\*\d+/g;
+const LEGACY_NOTES = legacyNoteData as Record<string, string>;
+
+function stripMarker(name: string): string {
+  return name.replace(FOOTNOTE_MARKER, '').trim();
+}
+
+function normalizeGroup(value: unknown): CollabGroup | null {
+  if (typeof value === 'string') {
+    const raw = value.trim();
+    if (!raw) return null;
+    const note = LEGACY_NOTES[raw];
+    return note ? { name: stripMarker(raw), note } : { name: stripMarker(raw) };
+  }
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const record = value as Record<string, unknown>;
+  if (typeof record.name !== 'string') return null;
+  const raw = record.name.trim();
+  if (!raw) return null;
+  const explicitNote = typeof record.note === 'string' ? record.note.trim() : '';
+  const note = explicitNote || LEGACY_NOTES[raw] || '';
+  const group: CollabGroup = { name: stripMarker(raw) };
+  if (note) group.note = note;
+  return group;
+}
+
+export function collabGroupKey(group: CollabGroup): string {
+  return `${group.name}\u0000${group.note ?? ''}`;
+}
+
+export function normalizeCollabGroups(value: unknown): CollabGroup[] {
   let parsed: unknown = value;
   if (typeof value === 'string') {
     try {
@@ -16,11 +48,18 @@ export function normalizeCollabGroups(value: unknown): string[] {
     }
   }
   if (!Array.isArray(parsed)) return [];
-  return parsed
-    .filter((group): group is string => typeof group === 'string')
-    .map((group) => group.trim())
-    .filter(Boolean)
-    .slice(0, MAX_COLLAB_GROUPS);
+  const seen = new Set<string>();
+  const groups: CollabGroup[] = [];
+  for (const entry of parsed) {
+    const group = normalizeGroup(entry);
+    if (!group) continue;
+    const key = collabGroupKey(group);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    groups.push(group);
+    if (groups.length >= MAX_COLLAB_GROUPS) break;
+  }
+  return groups;
 }
 
 export function serializeCollabGroups(value: unknown): string {

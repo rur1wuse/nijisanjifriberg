@@ -160,7 +160,7 @@ docker compose up -d          # 首次会自动跑 migrate
 | `debut_date` | 出道日 `YYYY-MM-DD` |
 | `height_cm` | 身高（保留原文，如 `151cm`、`178cm（182cm/178cm）`） |
 | `age_text` | 年龄（保留原文，如 `16歳`、`不明`、`142億歳`） |
-| `collab_groups` | 参与过的组合数组（最多 300 项） |
+| `collab_groups` | 参与过的组合数组（最多 300 项），每项为 `{ "name": "...", "note": "..." }`；`note` 为脚注，用于区分同名但成员不同的组合 |
 | `race` | 种族 |
 
 身高与年龄**保留原始字符串**，比较时由 `server/src/services/attributeParsing.ts` 解析数值，自动处理 `億`/`万`/`千` 倍率与「不详」关键字。

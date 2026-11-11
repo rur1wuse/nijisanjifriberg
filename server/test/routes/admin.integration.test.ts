@@ -674,7 +674,7 @@ describe('admin user management', () => {
         debut_date: '2018-02-08',
         height_cm: '151cm',
         age_text: '16歳',
-        collab_groups: ['JK組'],
+        collab_groups: [{ name: 'JK組' }],
         race: '人类',
         difficulties: ['normal'],
         is_enabled: true,

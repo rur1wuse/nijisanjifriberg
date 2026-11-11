@@ -74,7 +74,7 @@ describe('age helpers', () => {
 });
 
 describe('compareGuess', () => {
-  const target = makePlayer({ id: 10, nickname: 'target', collab_groups: ['JK組'] });
+  const target = makePlayer({ id: 10, nickname: 'target', collab_groups: [{ name: 'JK組' }] });
 
   it('猜中时所有属性 correct', () => {
     const fb = compareGuess(target, target);
@@ -161,23 +161,32 @@ describe('compareGuess', () => {
   });
 
   it('有共同组合为绿，没有则为红', () => {
-    const a = makePlayer({ id: 2, collab_groups: ['JK組', 'さんばかJK組'] });
-    const b = makePlayer({ id: 3, collab_groups: ['さんばかJK組', 'Twinkle'] });
+    const a = makePlayer({ id: 2, collab_groups: [{ name: 'JK組' }, { name: 'さんばかJK組' }] });
+    const b = makePlayer({ id: 3, collab_groups: [{ name: 'さんばかJK組' }, { name: 'Twinkle' }] });
     expect(compareGuess(a, b).attributes.collab.level).toBe('correct');
 
-    const c = makePlayer({ id: 4, collab_groups: ['Twinkle'] });
+    const c = makePlayer({ id: 4, collab_groups: [{ name: 'Twinkle' }] });
     expect(compareGuess(a, c).attributes.collab.level).toBe('wrong');
   });
 
   it('组合交集会列出共同组合', () => {
-    const a = makePlayer({ id: 2, collab_groups: ['JK組', 'さんばかJK組'] });
-    const b = makePlayer({ id: 3, collab_groups: ['さんばかJK組', 'Twinkle'] });
+    const a = makePlayer({ id: 2, collab_groups: [{ name: 'JK組' }, { name: 'さんばかJK組' }] });
+    const b = makePlayer({ id: 3, collab_groups: [{ name: 'さんばかJK組' }, { name: 'Twinkle' }] });
     expect(compareGuess(a, b).attributes.collab.value).toBe('さんばかJK組');
   });
 
   it('没有共同组合时组合值为空', () => {
-    const a = makePlayer({ id: 2, collab_groups: ['JK組'] });
-    const c = makePlayer({ id: 4, collab_groups: ['Twinkle'] });
+    const a = makePlayer({ id: 2, collab_groups: [{ name: 'JK組' }] });
+    const c = makePlayer({ id: 4, collab_groups: [{ name: 'Twinkle' }] });
     expect(compareGuess(a, c).attributes.collab.value).toBe('');
+  });
+
+  it('同名但脚注不同的组合不合并', () => {
+    const a = makePlayer({ id: 2, collab_groups: [{ name: 'Aチーム', note: 'first' }] });
+    const b = makePlayer({ id: 3, collab_groups: [{ name: 'Aチーム', note: 'second' }] });
+    expect(compareGuess(a, b).attributes.collab.level).toBe('wrong');
+
+    const same = makePlayer({ id: 4, collab_groups: [{ name: 'Aチーム', note: 'first' }] });
+    expect(compareGuess(a, same).attributes.collab.level).toBe('correct');
   });
 });

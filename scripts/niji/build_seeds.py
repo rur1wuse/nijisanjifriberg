@@ -14,8 +14,10 @@ ROOT = Path(__file__).resolve().parents[2]
 REVIEW = ROOT / 'docs' / 'niji' / 'data-review.md'
 DATA = ROOT / 'docs' / 'niji' / '.data'
 OUT = ROOT / 'server' / 'src' / 'db' / 'seeds' / 'players.json'
+NOTES = ROOT / 'server' / 'src' / 'db' / 'seeds' / 'collabLegacyNotes.json'
 
 COLLAB_ALIASES = {'ましろ': 'ましろ爻'}
+FOOTNOTE_MARKER = re.compile(r'\*\d+')
 
 
 def read_review():
@@ -40,14 +42,32 @@ def read_review():
 
 def read_collabs():
     collabs = json.loads((DATA / 'collabs.json').read_text(encoding='utf-8'))
+    notes = json.loads(NOTES.read_text(encoding='utf-8'))
     by_member = {}
     for c in collabs:
-        for name in c['members']:
-            by_member.setdefault(name, []).append(c['name'])
+        raw_name = c['name']
+        group = {'name': FOOTNOTE_MARKER.sub('', raw_name).strip()}
+        note = notes.get(raw_name)
+        if note:
+            group['note'] = note
+        for member in c['members']:
+            by_member.setdefault(member, []).append(group)
     for old, new in COLLAB_ALIASES.items():
         if new in by_member and old not in by_member:
             by_member[old] = by_member[new]
     return by_member
+
+
+def unique_groups(groups):
+    seen = set()
+    result = []
+    for group in groups:
+        key = (group['name'], group.get('note', ''))
+        if key in seen:
+            continue
+        seen.add(key)
+        result.append(group)
+    return sorted(result, key=lambda group: (group['name'], group.get('note', '')))
 
 
 def main():
@@ -56,7 +76,7 @@ def main():
 
     players = []
     for row in rows:
-        groups = sorted(set(collabs.get(row['nickname'], [])))
+        groups = unique_groups(collabs.get(row['nickname'], []))
         players.append({
             'nickname': row['nickname'],
             'gender': row['gender'],
