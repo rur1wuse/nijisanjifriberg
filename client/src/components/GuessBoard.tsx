@@ -14,13 +14,16 @@ import {
 } from '../types';
 import { useTranslation } from 'react-i18next';
 import { localizedName } from '../utils/playerName';
+import CollabGroupNames from './CollabGroupNames';
 
 function Cell({
   attr,
   label,
+  renderValue,
 }: {
   attr: AttributeFeedback | HiddenAttributeFeedback;
   label: string;
+  renderValue?: (value: string, groups: AttributeFeedback['groups']) => ReactNode;
 }) {
   if (!('value' in attr)) {
     return (
@@ -35,7 +38,7 @@ function Cell({
   }
   return (
     <td className={attr.level} data-label={label}>
-      {String(attr.value)}
+      {renderValue ? renderValue(String(attr.value), attr.groups) : String(attr.value)}
       {attr.hint && attr.level !== 'correct' && attr.level !== 'unknown' && (
         <span className="dir">
           {attr.hint === 'higher' ? <ArrowUp size={13} /> : <ArrowDown size={13} />}
@@ -99,7 +102,11 @@ function GuessBoard({
                 <Cell attr={g.attributes.debutDate} label={columns[2]} />
                 <Cell attr={g.attributes.height} label={columns[3]} />
                 <Cell attr={g.attributes.age} label={columns[4]} />
-                <Cell attr={g.attributes.collab} label={columns[5]} />
+                <Cell
+                  attr={g.attributes.collab}
+                  label={columns[5]}
+                  renderValue={(value, groups) => <CollabGroupNames groups={groups} value={value} separator=", " />}
+                />
                 <Cell attr={g.attributes.race} label={columns[6]} />
               </tr>
             );

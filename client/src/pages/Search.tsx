@@ -69,6 +69,7 @@ export default function Search() {
                 height: player.height,
                 age: player.age,
                 collab: player.collab,
+                collabGroups: player.collabGroups,
                 race: player.race,
                 difficulties: player.difficulties,
               }}

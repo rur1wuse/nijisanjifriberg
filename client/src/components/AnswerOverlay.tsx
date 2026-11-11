@@ -10,6 +10,8 @@ import ModalPortal from './ModalPortal';
 import { useTranslation } from 'react-i18next';
 import { difficultyLabel } from '../utils/difficulty';
 import { localizedName } from '../utils/playerName';
+import CollabGroupNames from './CollabGroupNames';
+import type { CollabGroup } from '../types';
 
 export interface AnswerInfo {
   nickname: string;
@@ -19,6 +21,7 @@ export interface AnswerInfo {
   height?: string;
   age?: string;
   collab?: string;
+  collabGroups?: CollabGroup[];
   race?: string;
   difficulties?: string[];
 }
@@ -31,7 +34,13 @@ export function PlayerInfoTable({ answer }: { answer: AnswerInfo }) {
     [<Cake size={14} key="i" />, t('player.debutDate'), answer.debutDate || '-'],
     [<Ruler size={14} key="i" />, t('player.height'), answer.height || '-'],
     [<Tag size={14} key="i" />, t('player.age'), answer.age || '-'],
-    [<Users size={14} key="i" />, t('player.collab'), answer.collab || '-'],
+    [
+      <Users size={14} key="i" />,
+      t('player.collab'),
+      answer.collabGroups?.length || answer.collab
+        ? <CollabGroupNames groups={answer.collabGroups} value={answer.collab} />
+        : '-',
+    ],
     [<Globe2 size={14} key="i" />, t('player.race'), answer.race || '-'],
   ];
   if (answer.difficulties) {

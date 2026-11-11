@@ -64,6 +64,64 @@
 .game-table td.gray { background: var(--gray); border-color: var(--gray); color: #fff; }
 .game-table td.unknown { background: var(--unknown); border-color: var(--unknown); color: #fff; }
 .game-table td .dir { display: inline-flex; vertical-align: -2px; margin-left: 3px; }
+.collab-group-note {
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  cursor: help;
+}
+.collab-group-note:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+.hover-tooltip {
+  position: fixed;
+  z-index: 320;
+  width: max-content;
+  max-width: min(22rem, calc(100vw - 24px));
+  padding: 8px 11px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  font-size: var(--fs-xs);
+  line-height: 1.45;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+  animation: hover-tooltip-rise 0.14s ease-out;
+}
+.hover-tooltip[data-placement='bottom'] {
+  animation-name: hover-tooltip-drop;
+}
+.hover-tooltip-arrow {
+  position: absolute;
+  bottom: -5px;
+  width: 9px;
+  height: 9px;
+  background: var(--card);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  transform: translateX(-50%) rotate(45deg);
+}
+.hover-tooltip[data-placement='bottom'] .hover-tooltip-arrow {
+  top: -5px;
+  bottom: auto;
+  border-right: none;
+  border-bottom: none;
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+}
+@keyframes hover-tooltip-rise {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes hover-tooltip-drop {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 .game-table td.masked-cell:empty::after {
   content: '';
   display: inline-block;

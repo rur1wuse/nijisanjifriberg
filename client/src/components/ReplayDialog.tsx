@@ -48,6 +48,7 @@ function AnswerSection({ answer }: { answer: PlayerInfo }) {
           height: answer.height,
           age: answer.age,
           collab: answer.collab,
+          collabGroups: answer.collabGroups,
           race: answer.race,
         }}
       />
