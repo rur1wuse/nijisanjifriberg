@@ -1,3 +1,5 @@
+import { getCaptchaConfig } from './captcha';
+
 export interface GeeTestProof {
   lot_number: string;
   captcha_output: string;
@@ -31,24 +33,13 @@ declare global {
 
 const scriptUrl = 'https://static.geetest.com/v4/gt4.js';
 let scriptPromise: Promise<void> | null = null;
-let captchaIdPromise: Promise<string | null> | null = null;
 
 async function getCaptchaId(): Promise<string | null> {
-  if (captchaIdPromise) return captchaIdPromise;
-  captchaIdPromise = fetch('/api/runtime-config', { credentials: 'include', headers: { Accept: 'application/json' } })
-    .then(async (response) => {
-      if (!response.ok) throw new Error('GEETEST_CONFIG_FAILED');
-      const payload = await response.json() as { geetest?: { enabled?: unknown; captchaId?: unknown } };
-      if (!payload.geetest?.enabled) return null;
-      const value = typeof payload.geetest.captchaId === 'string' ? payload.geetest.captchaId.trim() : '';
-      if (!value) throw new Error('GEETEST_CONFIG_FAILED');
-      return value;
-    })
-    .catch((error) => {
-      captchaIdPromise = null;
-      throw error;
-    });
-  return captchaIdPromise;
+  const config = await getCaptchaConfig();
+  if (!config.geetest.enabled) return null;
+  const value = config.geetest.captchaId?.trim() ?? '';
+  if (!value) throw new Error('GEETEST_CONFIG_FAILED');
+  return value;
 }
 
 function loadScript(): Promise<void> {

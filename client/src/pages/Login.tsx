@@ -1,4 +1,4 @@
-import { CSSProperties, FormEvent, useState, useSyncExternalStore } from 'react';
+import { CSSProperties, FormEvent, useEffect, useState, useSyncExternalStore } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { KeyRound } from 'lucide-react';
 import Page from '../components/Page';
@@ -10,6 +10,8 @@ import { toast } from '../components/Toast';
 import { useTranslation } from 'react-i18next';
 import { getPowProgress, subscribePowProgress } from '../api/pow';
 import { requestGeeTest } from '../api/geetest';
+import { getCaptchaConfig, type CaptchaConfig } from '../api/captcha';
+import TurnstileWidget from '../components/TurnstileWidget';
 
 const INACTIVE_POW_PROGRESS = { active: false, percent: 0 };
 const USERNAME_PATTERN = /^[\w一-龥-]+$/;
@@ -17,6 +19,7 @@ const EMAIL_PATTERN = /^[^@\s]+@[^@\s]+$/;
 
 type RegisterField = 'username' | 'password' | 'confirmPassword' | 'email';
 type RegisterErrors = Partial<Record<RegisterField, string>>;
+type CaptchaMode = 'turnstile' | 'geetest' | 'none';
 
 export default function Login() {
   const { t } = useTranslation();
@@ -27,6 +30,12 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [registerErrors, setRegisterErrors] = useState<RegisterErrors>({});
   const [loading, setLoading] = useState(false);
+  const [captchaConfig, setCaptchaConfig] = useState<CaptchaConfig | null>(null);
+  const [captchaMode, setCaptchaMode] = useState<CaptchaMode>('none');
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [turnstileResetKey, setTurnstileResetKey] = useState(0);
+  const [turnstileUnavailable, setTurnstileUnavailable] = useState(false);
+  const [captchaNotice, setCaptchaNotice] = useState<string | null>(null);
   const powProgress = useSyncExternalStore(
     subscribePowProgress,
     getPowProgress,
@@ -34,6 +43,63 @@ export default function Login() {
   );
   const setUser = useAuth((s) => s.setUser);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    let cancelled = false;
+    getCaptchaConfig()
+      .then((config) => {
+        if (cancelled) return;
+        setCaptchaConfig(config);
+        setCaptchaMode(config.turnstile.enabled ? 'turnstile' : config.geetest.enabled ? 'geetest' : 'none');
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setCaptchaConfig({ turnstile: { enabled: false }, geetest: { enabled: false } });
+        setCaptchaMode('none');
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const handleTurnstileToken = (token: string | null) => {
+    setTurnstileToken(token);
+    if (token) {
+      setTurnstileUnavailable(false);
+      setCaptchaNotice(null);
+    }
+  };
+
+  const resetTurnstile = () => {
+    setTurnstileToken(null);
+    setTurnstileUnavailable(false);
+    setCaptchaNotice(null);
+    setTurnstileResetKey((key) => key + 1);
+  };
+
+  const handleTurnstileUnavailable = () => {
+    setTurnstileToken(null);
+    setTurnstileUnavailable(true);
+    if (captchaConfig?.geetest.enabled) {
+      setCaptchaMode('geetest');
+      setCaptchaNotice(t('auth.turnstileUnavailable'));
+    }
+  };
+
+  const switchToGeeTest = () => {
+    setCaptchaMode('geetest');
+    setTurnstileToken(null);
+    setTurnstileUnavailable(false);
+    setCaptchaNotice(null);
+  };
+
+  const switchToTurnstile = () => {
+    setCaptchaMode('turnstile');
+    setTurnstileToken(null);
+    setTurnstileUnavailable(false);
+    setCaptchaNotice(null);
+    setTurnstileResetKey((key) => key + 1);
+  };
 
   const clearRegisterError = (field: RegisterField) => {
     setRegisterErrors((current) => {
@@ -66,15 +132,33 @@ export default function Login() {
     }
     setLoading(true);
     try {
-      const geeTest = mode === 'register'
-        ? await requestGeeTest()
-        : { enabled: false, proof: null };
-      if (mode === 'register' && geeTest?.enabled && !geeTest.proof) return;
+      let captchaPayload: Record<string, string> = {};
+      if (mode === 'register') {
+        const config = captchaConfig ?? await getCaptchaConfig();
+        if (!captchaConfig) {
+          setCaptchaConfig(config);
+          setCaptchaMode(config.turnstile.enabled ? 'turnstile' : config.geetest.enabled ? 'geetest' : 'none');
+        }
+        const captcha = captchaMode === 'none'
+          ? (config.turnstile.enabled ? 'turnstile' : config.geetest.enabled ? 'geetest' : 'none')
+          : captchaMode;
+        if (captcha === 'turnstile' && config.turnstile.enabled) {
+          if (!turnstileToken) {
+            toast.error(t('auth.turnstileRequired'));
+            return;
+          }
+          captchaPayload = { turnstile_token: turnstileToken };
+        } else if (captcha === 'geetest' && config.geetest.enabled) {
+          const geeTest = await requestGeeTest();
+          if (geeTest.enabled && !geeTest.proof) return;
+          captchaPayload = { ...(geeTest.proof ?? {}) };
+        }
+      }
       const res = await api.post(`/auth/${mode}`, {
         username,
         password,
         ...(mode === 'register' && email ? { email } : {}),
-        ...(geeTest?.proof ?? {}),
+        ...captchaPayload,
       });
       markAuthenticated();
       setUser(res.data.user);
@@ -88,9 +172,15 @@ export default function Login() {
       }
       navigate('/');
     } catch (err) {
-      toast.error(err instanceof Error && err.message.startsWith('GEETEST_')
-        ? t('errors.GEETEST_FAILED')
-        : errMsg(err));
+      if (mode === 'register' && captchaMode === 'turnstile' && captchaConfig?.turnstile.enabled) {
+        setTurnstileToken(null);
+        setTurnstileResetKey((key) => key + 1);
+      }
+      const message = err instanceof Error ? err.message : '';
+      if (message === 'CAPTCHA_CONFIG_FAILED') toast.error(t('auth.captchaConfigFailed'));
+      else if (message.startsWith('TURNSTILE_')) toast.error(t('errors.TURNSTILE_FAILED'));
+      else if (message.startsWith('GEETEST_')) toast.error(t('errors.GEETEST_FAILED'));
+      else toast.error(errMsg(err));
     } finally {
       setLoading(false);
     }
@@ -194,7 +284,47 @@ export default function Login() {
               )}
             </div>
           )}
-          <button className="btn" disabled={loading} aria-busy={loading}>
+          {mode === 'register' && (
+            <div className="auth-captcha">
+              {captchaConfig === null && <span className="muted">{t('auth.captchaLoading')}</span>}
+              {captchaConfig?.turnstile.enabled && captchaMode === 'turnstile' && captchaConfig.turnstile.siteKey && (
+                <>
+                  <TurnstileWidget
+                    key={turnstileResetKey}
+                    siteKey={captchaConfig.turnstile.siteKey}
+                    onToken={handleTurnstileToken}
+                    onUnavailable={handleTurnstileUnavailable}
+                  />
+                  {captchaConfig.geetest.enabled && (
+                    <button type="button" className="auth-captcha-switch" onClick={switchToGeeTest}>
+                      {t('auth.useGeeTest')}
+                    </button>
+                  )}
+                  {turnstileUnavailable && !captchaConfig.geetest.enabled && (
+                    <button type="button" className="auth-captcha-switch" onClick={resetTurnstile}>
+                      {t('auth.retryTurnstile')}
+                    </button>
+                  )}
+                </>
+              )}
+              {captchaConfig?.geetest.enabled && captchaMode === 'geetest' && (
+                <>
+                  <span className="muted">{t('auth.geetestHint')}</span>
+                  {captchaConfig.turnstile.enabled && (
+                    <button type="button" className="auth-captcha-switch" onClick={switchToTurnstile}>
+                      {t('auth.useTurnstile')}
+                    </button>
+                  )}
+                </>
+              )}
+              {captchaNotice && <span className="muted">{captchaNotice}</span>}
+            </div>
+          )}
+          <button
+            className="btn"
+            disabled={loading || (mode === 'register' && (captchaConfig === null || (captchaMode === 'turnstile' && Boolean(captchaConfig?.turnstile.enabled) && !turnstileToken)))}
+            aria-busy={loading}
+          >
             {mode === 'register' && loading && powProgress.active ? (
               <span className="auth-pow-status">
                 <span
@@ -215,6 +345,15 @@ export default function Login() {
               setConfirmPassword('');
               setEmail('');
               setRegisterErrors({});
+              setTurnstileToken(null);
+              setTurnstileUnavailable(false);
+              setCaptchaNotice(null);
+              if (mode === 'login' && captchaConfig) {
+                setCaptchaMode(
+                  captchaConfig.turnstile.enabled ? 'turnstile' : captchaConfig.geetest.enabled ? 'geetest' : 'none'
+                );
+                setTurnstileResetKey((key) => key + 1);
+              }
               setMode(mode === 'login' ? 'register' : 'login');
             }}
           >

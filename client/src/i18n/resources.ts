@@ -128,6 +128,10 @@ export const resources = {
         passwordRequired: '请输入密码', passwordLength: '密码长度必须为 10-128 个字符', emailInvalid: '请输入有效的邮箱地址，例如 name@example.com',
         description: '单人和开房间无需登录即可游玩，随机匹配需要绑定并验证邮箱。',
         toRegister: '没有账号？去注册', toLogin: '已有账号？去登录',
+        captchaLoading: '正在加载验证配置…', turnstileRequired: '请先完成上方的 Cloudflare 验证', captchaConfigFailed: '验证配置加载失败，请刷新页面重试',
+        useGeeTest: '国内网络？改用 GeeTest 验证', useTurnstile: '改用 Cloudflare Turnstile 验证',
+        turnstileLoading: '正在加载人机验证…', turnstileUnavailable: 'Cloudflare 验证加载失败，请重试或改用 GeeTest。',
+        geetestHint: '点击注册后会弹出 GeeTest 验证。', retryTurnstile: '重试 Cloudflare 验证',
         claimFailed: '登录成功，但匿名战绩同步失败：{{message}}',
       },
       player: {
@@ -239,7 +243,7 @@ export const resources = {
  details: '详情', userDetail: '用户详情', detailStats: '查看战绩', detailLeaderboards: '排行榜', guestsTitle: '访客管理', noGuests: '暂无访客', lastSeenAt: '最后活动', banStatus: '封禁状态', banned: '已封禁', notBanned: '正常', ban: '封禁', unban: '解除封禁', bannedSuccess: '已封禁该身份', unbannedSuccess: '已解除封禁', emailVerified: '邮箱已验证', emailUnverified: '邮箱未验证', noEmail: '未绑定邮箱', leaderboardVisibility: '排行榜显示', leaderboardVisibilityHint: '关闭后该用户不会出现在公开排行榜中，但管理员仍可查看其理论排名。', matchmakingRestriction: '多人匹配限制', matchmakingRestricted: '已限制', matchmakingNormal: '正常匹配', matchmakingRestrictedSuccess: '该用户已进入受限匹配池', matchmakingRestoredSuccess: '该用户已恢复普通匹配', rankPopulation: '参与排名 {{count}} 人', rankRecord: '{{wins}} 胜 / {{total}} 场 · {{rate}}',
  },
       errors: {
-        GEETEST_REQUIRED: '请完成人机验证', GEETEST_FAILED: '人机验证失败，请重试', EMAIL_VERIFICATION_CODE_INVALID: '验证码无效或已过期',
+        GEETEST_REQUIRED: '请完成人机验证', GEETEST_FAILED: '人机验证失败，请重试', TURNSTILE_REQUIRED: '请完成人机验证', TURNSTILE_FAILED: '人机验证失败，请重试', EMAIL_VERIFICATION_CODE_INVALID: '验证码无效或已过期',
         EMAIL_ALREADY_VERIFIED: '邮箱验证完成后不能再次修改', VALIDATION_FAILED: '输入格式不正确', REGISTER_USERNAME_REQUIRED: '请输入用户名', REGISTER_USERNAME_LENGTH: '用户名长度必须为 2-20 个字符', REGISTER_USERNAME_CHARACTERS: '用户名只能包含字母、数字、下划线、连字符和中文', REGISTER_PASSWORD_REQUIRED: '请输入密码', REGISTER_PASSWORD_LENGTH: '密码长度必须为 10-128 个字符', INVALID_REQUEST_BODY: '请求数据不完整，请重试', PAYLOAD_TOO_LARGE: '导入数据过大，请拆分后重试',
         INTERNAL_ERROR: '服务器开小差了，请稍后再试', AUTH_REQUIRED: '请先登录', AUTH_EXPIRED: '登录状态已过期，请重新登录',
         FORBIDDEN: '没有权限执行此操作', CANNOT_BAN_SELF: '不能封禁当前管理员账号', USERNAME_TAKEN: '用户名已被注册', EMAIL_TAKEN: '邮箱已被其他账号绑定', EMAIL_NOT_CONFIGURED: '服务器尚未配置发信服务', EMAIL_VERIFICATION_COOLDOWN: '验证邮件发送过于频繁，请稍后重试', INVALID_EMAIL: '邮箱格式无效', EMAIL_ALIAS_NOT_SUPPORTED: '不支持邮箱别名（+ 或点号）', EMAIL_DOMAIN_NOT_ALLOWED: '该邮箱后缀不在允许列表中', USER_BANNED: '该身份已被封禁', EMAIL_VERIFICATION_REQUIRED: '请先验证邮箱', REPORT_NOT_AVAILABLE: '当前对局暂不可举报', REPORT_ALREADY_SUBMITTED: '您已举报过本场对局', REPORT_NOT_FOUND: '举报不存在', USER_NOT_FOUND: '用户不存在', INVALID_CREDENTIALS: '用户名或密码错误',
@@ -314,7 +318,12 @@ export const resources = {
       auth: {
         login: 'Log in', register: 'Sign up', username: 'Username', password: 'Password (at least 10 characters)', confirmPassword: 'Confirm password', emailOptional: 'Email (optional)',
         registerPowComputing: 'Running security check', mismatch: 'The passwords do not match', usernameRequired: 'Enter a username', usernameLength: 'The username must be 2-20 characters long', usernameCharacters: 'Use only letters, numbers, underscores, hyphens, or Chinese characters', passwordRequired: 'Enter a password', passwordLength: 'The password must be 10-128 characters long', emailInvalid: 'Enter a valid email address, such as name@example.com', description: 'Solo play and private rooms are available to guests; Quick Match requires a linked and verified email.',
-        toRegister: 'No account? Sign up', toLogin: 'Already have an account? Log in', claimFailed: 'Logged in, but guest results could not be synced: {{message}}',
+        toRegister: 'No account? Sign up', toLogin: 'Already have an account? Log in',
+        captchaLoading: 'Loading verification…', turnstileRequired: 'Complete the Cloudflare check above first.', captchaConfigFailed: 'Could not load verification settings. Refresh the page and try again.',
+        useGeeTest: 'On a China network? Use GeeTest', useTurnstile: 'Use Cloudflare Turnstile instead',
+        turnstileLoading: 'Loading human verification…', turnstileUnavailable: 'Cloudflare verification failed to load. Retry or use GeeTest.',
+        geetestHint: 'GeeTest opens when you submit.', retryTurnstile: 'Retry Cloudflare verification',
+        claimFailed: 'Logged in, but guest results could not be synced: {{message}}',
       },
       player: {
         gender: 'Gender', debutDate: 'Debut date', height: 'Height', age: 'Age', collab: 'Affiliations', race: 'Race', difficulties: 'Difficulties', nickname: 'Nickname',
@@ -416,7 +425,7 @@ export const resources = {
  details: 'Details', userDetail: 'User details', detailStats: 'Stats', detailLeaderboards: 'Leaderboards', guestsTitle: 'Guest management', noGuests: 'No guests', lastSeenAt: 'Last active', banStatus: 'Ban status', banned: 'Banned', notBanned: 'Active', ban: 'Ban', unban: 'Unban', bannedSuccess: 'Identity banned', unbannedSuccess: 'Ban removed', emailVerified: 'Email verified', emailUnverified: 'Email not verified', noEmail: 'No email linked', leaderboardVisibility: 'Leaderboard visibility', leaderboardVisibilityHint: 'When hidden, the user is excluded from public leaderboards, while admins can still inspect the calculated rank.', matchmakingRestriction: 'Multiplayer matchmaking restriction', matchmakingRestricted: 'Restricted', matchmakingNormal: 'Normal matching', matchmakingRestrictedSuccess: 'The user was moved to the restricted matchmaking pool', matchmakingRestoredSuccess: 'The user was restored to normal matchmaking', rankPopulation: '{{count}} ranked users', rankRecord: '{{wins}} wins / {{total}} games · {{rate}}',
  },
       errors: {
-        GEETEST_REQUIRED: 'Please complete the human verification.', GEETEST_FAILED: 'Human verification failed. Try again.', EMAIL_VERIFICATION_CODE_INVALID: 'The verification code is invalid or expired.',
+        GEETEST_REQUIRED: 'Please complete the human verification.', GEETEST_FAILED: 'Human verification failed. Try again.', TURNSTILE_REQUIRED: 'Please complete the human verification.', TURNSTILE_FAILED: 'Human verification failed. Try again.', EMAIL_VERIFICATION_CODE_INVALID: 'The verification code is invalid or expired.',
         EMAIL_ALREADY_VERIFIED: 'A verified email cannot be changed.', VALIDATION_FAILED: 'Invalid input', REGISTER_USERNAME_REQUIRED: 'Enter a username.', REGISTER_USERNAME_LENGTH: 'The username must be 2-20 characters long.', REGISTER_USERNAME_CHARACTERS: 'Use only letters, numbers, underscores, hyphens, or Chinese characters.', REGISTER_PASSWORD_REQUIRED: 'Enter a password.', REGISTER_PASSWORD_LENGTH: 'The password must be 10-128 characters long.', INVALID_REQUEST_BODY: 'The request is incomplete. Please try again.', PAYLOAD_TOO_LARGE: 'The import is too large. Split it and try again.',
         INTERNAL_ERROR: 'Something went wrong on the server. Please try again later.', AUTH_REQUIRED: 'Please log in first.', AUTH_EXPIRED: 'Your session has expired. Please log in again.',
         FORBIDDEN: 'You do not have permission to do that.', CANNOT_BAN_SELF: 'You cannot ban the current administrator account.', USERNAME_TAKEN: 'That username is already registered.', EMAIL_TAKEN: 'That email is already linked to another account.', EMAIL_NOT_CONFIGURED: 'Email delivery is not configured.', EMAIL_VERIFICATION_COOLDOWN: 'Verification emails are being sent too frequently. Try again shortly.', INVALID_EMAIL: 'Invalid email address.', EMAIL_ALIAS_NOT_SUPPORTED: 'Email aliases using + or dots are not supported.', EMAIL_DOMAIN_NOT_ALLOWED: 'That email domain is not allowed.', USER_BANNED: 'This identity has been banned.', EMAIL_VERIFICATION_REQUIRED: 'Verify your email first.', REPORT_NOT_AVAILABLE: 'This match cannot be reported now.', REPORT_ALREADY_SUBMITTED: 'You have already reported this match.', REPORT_NOT_FOUND: 'Report not found.', USER_NOT_FOUND: 'User not found.', INVALID_CREDENTIALS: 'Incorrect username or password.',
@@ -521,7 +530,12 @@ export const resources = {
       auth: {
         login: 'ログイン', register: '登録', username: 'ユーザー名', password: 'パスワード（10 文字以上）', confirmPassword: 'パスワード確認', emailOptional: 'メール（任意）',
         registerPowComputing: 'セキュリティ確認中', mismatch: 'パスワードが一致しません', usernameRequired: 'ユーザー名を入力してください', usernameLength: 'ユーザー名は 2-20 文字で入力してください', usernameCharacters: 'ユーザー名には英数字、アンダースコア、ハイフン、中国語文字のみ使用できます', passwordRequired: 'パスワードを入力してください', passwordLength: 'パスワードは 10-128 文字で入力してください', emailInvalid: 'name@example.com のような有効なメールアドレスを入力してください', description: 'ソロとルーム作成はゲストでも利用できますが、ランダムマッチにはメールの登録と確認が必要です。',
-        toRegister: 'アカウントがない場合は登録', toLogin: 'アカウントをお持ちの場合はログイン', claimFailed: 'ログインしましたが、ゲスト戦績を同期できませんでした：{{message}}',
+        toRegister: 'アカウントがない場合は登録', toLogin: 'アカウントをお持ちの場合はログイン',
+        captchaLoading: '認証設定を読み込み中…', turnstileRequired: '上の Cloudflare 認証を先に完了してください。', captchaConfigFailed: '認証設定を読み込めませんでした。ページを再読み込みしてください。',
+        useGeeTest: '中国ネットワークの場合は GeeTest を使用', useTurnstile: 'Cloudflare Turnstile に切り替える',
+        turnstileLoading: '人間確認を読み込み中…', turnstileUnavailable: 'Cloudflare 認証を読み込めませんでした。再試行するか GeeTest を使用してください。',
+        geetestHint: '登録時に GeeTest の認証が開きます。', retryTurnstile: 'Cloudflare 認証を再試行',
+        claimFailed: 'ログインしましたが、ゲスト戦績を同期できませんでした：{{message}}',
       },
       player: {
         gender: '性別', debutDate: 'デビュー日', height: '身長', age: '年齢', collab: '関係', race: '人種', difficulties: '所属難易度', nickname: 'ニックネーム',
@@ -622,7 +636,7 @@ export const resources = {
  details: '詳細', userDetail: 'ユーザー詳細', detailStats: '戦績', detailLeaderboards: 'ランキング', guestsTitle: 'ゲスト管理', noGuests: 'ゲストはいません', lastSeenAt: '最終活動', banStatus: 'BAN 状態', banned: 'BAN 済み', notBanned: '正常', ban: 'BAN', unban: 'BAN 解除', bannedSuccess: 'この ID を BAN しました', unbannedSuccess: 'BAN を解除しました', emailVerified: 'メール確認済み', emailUnverified: 'メール未確認', noEmail: 'メール未登録', leaderboardVisibility: 'ランキング表示', leaderboardVisibilityHint: '非表示にすると公開ランキングから除外されますが、管理者は計算上の順位を確認できます。', matchmakingRestriction: 'マルチプレイのマッチング制限', matchmakingRestricted: '制限中', matchmakingNormal: '通常マッチング', matchmakingRestrictedSuccess: 'ユーザーを制限マッチングプールへ移動しました', matchmakingRestoredSuccess: 'ユーザーを通常マッチングへ戻しました', rankPopulation: 'ランキング参加 {{count}} 人', rankRecord: '{{wins}} 勝 / {{total}} 試合 · {{rate}}',
  },
       errors: {
-        GEETEST_REQUIRED: '本人確認を完了してください。', GEETEST_FAILED: '本人確認に失敗しました。もう一度お試しください。', EMAIL_VERIFICATION_CODE_INVALID: '確認コードが無効または期限切れです。',
+        GEETEST_REQUIRED: '本人確認を完了してください。', GEETEST_FAILED: '本人確認に失敗しました。もう一度お試しください。', TURNSTILE_REQUIRED: '本人確認を完了してください。', TURNSTILE_FAILED: '本人確認に失敗しました。もう一度お試しください。', EMAIL_VERIFICATION_CODE_INVALID: '確認コードが無効または期限切れです。',
         EMAIL_ALREADY_VERIFIED: '確認済みメールは変更できません。', VALIDATION_FAILED: '入力形式が正しくありません', REGISTER_USERNAME_REQUIRED: 'ユーザー名を入力してください。', REGISTER_USERNAME_LENGTH: 'ユーザー名は 2-20 文字で入力してください。', REGISTER_USERNAME_CHARACTERS: 'ユーザー名には英数字、アンダースコア、ハイフン、中国語文字のみ使用できます。', REGISTER_PASSWORD_REQUIRED: 'パスワードを入力してください。', REGISTER_PASSWORD_LENGTH: 'パスワードは 10-128 文字で入力してください。', INVALID_REQUEST_BODY: 'リクエストデータが不足しています。もう一度お試しください。', PAYLOAD_TOO_LARGE: 'インポートデータが大きすぎます。分割して再試行してください。',
         INTERNAL_ERROR: 'サーバーで問題が発生しました。後でもう一度お試しください。', AUTH_REQUIRED: '先にログインしてください。', AUTH_EXPIRED: 'ログインの有効期限が切れました。再度ログインしてください。',
         FORBIDDEN: 'この操作を行う権限がありません。', CANNOT_BAN_SELF: '現在の管理者アカウントは BAN できません。', USERNAME_TAKEN: 'このユーザー名は既に登録されています。', EMAIL_TAKEN: 'このメールは既に登録されています。', EMAIL_NOT_CONFIGURED: 'メール送信が設定されていません。', EMAIL_VERIFICATION_COOLDOWN: '確認メールの送信間隔が短すぎます。しばらくしてから再試行してください。', INVALID_EMAIL: 'メールアドレスが無効です。', EMAIL_ALIAS_NOT_SUPPORTED: '+ やドットを使うメール別名は利用できません。', EMAIL_DOMAIN_NOT_ALLOWED: 'このメールドメインは許可されていません。', USER_BANNED: 'この ID は BAN されています。', EMAIL_VERIFICATION_REQUIRED: '先にメールを確認してください。', REPORT_NOT_AVAILABLE: '現在この対局は通報できません。', REPORT_ALREADY_SUBMITTED: 'この対局はすでに通報済みです。', REPORT_NOT_FOUND: '通報が見つかりません。', USER_NOT_FOUND: 'ユーザーが見つかりません。', INVALID_CREDENTIALS: 'ユーザー名またはパスワードが正しくありません。',
