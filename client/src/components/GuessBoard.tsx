@@ -14,6 +14,7 @@ import {
 } from '../types';
 import { useTranslation } from 'react-i18next';
 import { localizedName } from '../utils/playerName';
+import { localizedRace } from '../config/raceJa';
 import CollabGroupNames from './CollabGroupNames';
 
 function Cell({
@@ -107,7 +108,11 @@ function GuessBoard({
                   label={columns[5]}
                   renderValue={(value, groups) => <CollabGroupNames groups={groups} value={value} separator=", " />}
                 />
-                <Cell attr={g.attributes.race} label={columns[6]} />
+                <Cell
+                  attr={g.attributes.race}
+                  label={columns[6]}
+                  renderValue={(value) => localizedRace(value, i18n.language)}
+                />
               </tr>
             );
           })}

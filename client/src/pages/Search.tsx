@@ -14,6 +14,7 @@ import { PlayerInfo } from '../types';
 import { toast } from '../components/Toast';
 import { useTranslation } from 'react-i18next';
 import { localizedName } from '../utils/playerName';
+import { localizedRace } from '../config/raceJa';
 
 /** 查选手:底部输入 + 自动补全,选中后在上方展示选手卡片(原版布局) */
 export default function Search() {
@@ -57,7 +58,7 @@ export default function Search() {
               <CircleDot size={15} color="#16a34a" />
               {localizedName(player, i18n.language)}
               <span className="muted" style={{ fontWeight: 400 }}>
-                {player.race}
+                {localizedRace(player.race, i18n.language)}
               </span>
             </h3>
             <PlayerInfoTable

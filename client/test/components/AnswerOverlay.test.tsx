@@ -9,6 +9,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import AnswerOverlay, { PlayerInfoTable } from '../../src/components/AnswerOverlay';
 import { renderWithProviders } from '../render';
+import i18n from '../../src/i18n';
 
 const answer = {
   nickname: 'friberg',
@@ -61,6 +62,13 @@ describe('AnswerOverlay', () => {
     );
     await user.keyboard('{Escape}');
     expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+
+  it('localizes the race label in Japanese', async () => {
+    await i18n.changeLanguage('ja');
+    renderWithProviders(<PlayerInfoTable answer={answer} />);
+
+    expect(screen.getByText('人間')).toBeInTheDocument();
   });
 
   it('renders the seven niji fields', () => {

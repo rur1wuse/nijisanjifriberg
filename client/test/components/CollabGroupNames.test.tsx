@@ -4,12 +4,13 @@ import CollabGroupNames from '../../src/components/CollabGroupNames';
 import GuessBoard from '../../src/components/GuessBoard';
 import { PlayerInfoTable } from '../../src/components/AnswerOverlay';
 import COLLAB_NOTES from '../../src/config/collabNotes';
-import type { CollabGroup, MultiplayerGuessFeedback } from '../../src/types';
+import type { CollabGroup, GuessFeedback } from '../../src/types';
+import i18n from '../../src/i18n';
 import { renderWithProviders } from '../render';
 
 const plain = { value: '-', level: 'gray' as const };
 
-function guessWithCollab(collab: string, groups?: CollabGroup[]): MultiplayerGuessFeedback {
+function guessWithCollab(collab: string, groups?: CollabGroup[], race = '-'): GuessFeedback {
   return {
     playerId: 1,
     nickname: 'test',
@@ -20,7 +21,7 @@ function guessWithCollab(collab: string, groups?: CollabGroup[]): MultiplayerGue
       height: plain,
       age: plain,
       collab: { value: collab, level: 'correct', groups },
-      race: plain,
+      race: { value: race, level: race === '-' ? 'gray' : 'wrong' },
     },
   };
 }
@@ -101,6 +102,13 @@ describe('CollabGroupNames', () => {
     expect(screen.getByRole('tooltip')).toHaveTextContent('focus note');
     fireEvent.blur(trigger);
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
+  });
+
+  it('localizes the race cell in Japanese', async () => {
+    await i18n.changeLanguage('ja');
+    renderWithProviders(<GuessBoard guesses={[guessWithCollab('', undefined, '人类')]} />);
+
+    expect(screen.getByText('人間')).toBeInTheDocument();
   });
 
   it('is wired into the guess board collab cell', () => {

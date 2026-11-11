@@ -12,6 +12,7 @@ import { difficultyLabel } from '../utils/difficulty';
 import { localizedName } from '../utils/playerName';
 import CollabGroupNames from './CollabGroupNames';
 import type { CollabGroup } from '../types';
+import { localizedRace } from '../config/raceJa';
 
 export interface AnswerInfo {
   nickname: string;
@@ -28,7 +29,7 @@ export interface AnswerInfo {
 
 /** 选手信息卡(答案卡片/查询结果共用) */
 export function PlayerInfoTable({ answer }: { answer: AnswerInfo }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const rows: [ReactNode, string, ReactNode][] = [
     [<UserRound size={14} key="i" />, t('player.gender'), answer.gender || '-'],
     [<Cake size={14} key="i" />, t('player.debutDate'), answer.debutDate || '-'],
@@ -41,7 +42,7 @@ export function PlayerInfoTable({ answer }: { answer: AnswerInfo }) {
         ? <CollabGroupNames groups={answer.collabGroups} value={answer.collab} />
         : '-',
     ],
-    [<Globe2 size={14} key="i" />, t('player.race'), answer.race || '-'],
+    [<Globe2 size={14} key="i" />, t('player.race'), answer.race ? localizedRace(answer.race, i18n.language) : '-'],
   ];
   if (answer.difficulties) {
     rows.push([
