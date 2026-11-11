@@ -471,7 +471,7 @@ export const resources = {
         restoring: 'ログイン状態を復元中', admin: '管理者', adminPanel: '管理画面', manage: '管理', logout: 'ログアウト', logoutTitle: 'ログアウトしますか？',
         logoutMessage: 'ゲスト状態に切り替わり、進行中のマルチプレイ接続は終了します。', logoutConfirm: 'ログアウト', loginRegister: 'ログイン / 登録', singleMode: 'ソロモード', singleModeDescription: '難易度を選んでソロゲームを開始',
         dailyChallenge: 'デイリーチャレンジ', dailyChallengeDescription: '3 難易度の固定ターゲットを少ない予想数で競います',
-        search: '選手検索', searchDescription: '性別、デビュー日、身長、年齢、関係、人種',
+        search: '選手検索', searchDescription: '性別、デビュー日、身長、年齢、関係、種族',
         emailVerificationReminder: 'メールが未確認です。設定を開いて確認を完了してください。',
         multiplayer: 'マルチプレイ', multiplayerDescription: 'ルーム作成またはランダムマッチ', stats: '統計 / リプレイ', leaderboard: 'ランキング', announcements: '更新情報', bilibili: 'Bilibili：怂皇的一天', github: 'GitHub', specialThanks: '特別感謝', closeSpecialThanks: '特別感謝を閉じる', friendLinks: '相互リンク', closeFriendLinks: '相互リンクを閉じる', noFriendLinks: '相互リンクはまだありません',
       },
@@ -538,11 +538,11 @@ export const resources = {
         claimFailed: 'ログインしましたが、ゲスト戦績を同期できませんでした：{{message}}',
       },
       player: {
-        gender: '性別', debutDate: 'デビュー日', height: '身長', age: '年齢', collab: '関係', race: '人種', difficulties: '所属難易度', nickname: 'ニックネーム',
+        gender: '性別', debutDate: 'デビュー日', height: '身長', age: '年齢', collab: '関係', race: '種族', difficulties: '所属難易度', nickname: 'ニックネーム',
       },
       guess: {
         placeholder: '選手のニックネームを入力...', submit: '予想を送信', submitting: '送信中...',
-        columns: { nickname: '名前', gender: '性別', debutDate: 'デビュー日', height: '身長', age: '年齢', collab: '関係', race: '人種' },
+        columns: { nickname: '名前', gender: '性別', debutDate: 'デビュー日', height: '身長', age: '年齢', collab: '関係', race: '種族' },
       },
       notFound: { title: 'ページが見つかりません', message: 'お探しのページは存在しないか、削除されました。' },
       errorPage: { title: 'エラーが発生しました', message: 'ページの表示中にエラーが発生しました。再読み込みしてください。', reload: '再読み込み' },
