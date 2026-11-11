@@ -35,6 +35,8 @@ import {
   verifyEmailToken,
 } from '../services/emailVerification';
 import { GeeTestVerificationError, verifyGeeTest } from '../services/geetest';
+import { verifyRegistrationCaptcha } from '../services/captcha';
+import { TurnstileVerificationError } from '../services/turnstile';
 import { claimDailyChallengeAttempts } from '../services/dailyChallenge';
 
 const router = Router();
@@ -62,7 +64,8 @@ const geeTestFields = {
   pass_token: z.string().trim().optional(),
   gen_time: z.string().trim().optional(),
 };
-const registerSchema = credentialsSchema.extend({ email: z.string().trim().email().max(320).optional().or(z.literal('')), ...geeTestFields });
+const turnstileFields = { turnstile_token: z.string().trim().optional() };
+const registerSchema = credentialsSchema.extend({ email: z.string().trim().email().max(320).optional().or(z.literal('')), ...geeTestFields, ...turnstileFields });
 const emailSchema = z.object({ email: z.string().trim().email().max(320), ...geeTestFields });
 const emailCodeSchema = z.object({ code: z.string().trim().regex(/^\d{6}$/) });
 
@@ -140,11 +143,28 @@ router.post(
   rateLimit({ name: 'register', limit: 3, windowSeconds: 3600, failClosed: true }),
   validateRegisterBody,
   asyncHandler(async (req, res) => {
-    const { username, password, email: emailInput, lot_number, captcha_output, pass_token, gen_time } = req.body;
+    const {
+      username,
+      password,
+      email: emailInput,
+      lot_number,
+      captcha_output,
+      pass_token,
+      gen_time,
+      turnstile_token,
+    } = req.body;
     try {
-      await verifyGeeTest({ lot_number, captcha_output, pass_token, gen_time });
+      await verifyRegistrationCaptcha(
+        {
+          turnstileToken: turnstile_token,
+          geeTest: { lot_number, captcha_output, pass_token, gen_time },
+        },
+        requestIp(req)
+      );
     } catch (error) {
-      if (error instanceof GeeTestVerificationError) throw new HttpError(400, error.code);
+      if (error instanceof TurnstileVerificationError || error instanceof GeeTestVerificationError) {
+        throw new HttpError(400, error.code);
+      }
       throw error;
     }
     let email: string | null = null;

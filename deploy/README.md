@@ -74,17 +74,18 @@ openssl rand -hex 24
 `CORS_ORIGINS` 必须设置为精确的公网 origin（如 `https://game.example.com`），
 末尾不带斜杠。
 
-`NODE_ENV` 默认为 `production`，此时服务端会强制校验 GeeTest、≥32 字节的
-`JWT_SECRET`、PostgreSQL 与 `REDIS_REQUIRED=true`。仅在无法满足这些条件时
-（例如还没有 GeeTest 密钥的内部试用）才显式设为 `development`，该模式会跳过
-上述生产校验，**不要用于公网正式环境**：
+`NODE_ENV` 默认为 `production`，此时服务端会强制校验 Cloudflare Turnstile、
+≥32 字节的 `JWT_SECRET`、PostgreSQL 与 `REDIS_REQUIRED=true`。仅在无法满足
+这些条件时（例如还没有 Turnstile 密钥的内部试用）才显式设为 `development`，
+该模式会跳过上述生产校验，**不要用于公网正式环境**：
 
 ```text
 NODE_ENV=development
 ```
 
-`GEETEST_CAPTCHA_ID` 与 `GEETEST_PRIVATE_KEY` 允许为空，但不是 `production`
-模式下的豁免条件：缺少任一值会直接启动失败。
+`TURNSTILE_SITE_KEY` 与 `TURNSTILE_SECRET_KEY` 是生产环境的必填项，缺少任一
+值会直接启动失败。`GEETEST_CAPTCHA_ID` 与 `GEETEST_PRIVATE_KEY` 是面向国内
+网络的备用验证，允许留空；配置后当 Turnstile 加载失败时可自动或手动切换。
 
 设置 `SHOW_LEADERBOARD=false` 可隐藏排行榜入口并禁用排行榜 API，默认为
 `true`。

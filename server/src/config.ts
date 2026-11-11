@@ -35,6 +35,8 @@ const configuredDisplayIdForbiddenTokens = (process.env.DISPLAY_ID_FORBIDDEN_TOK
   .split(',')
   .map((token) => token.trim().toUpperCase())
   .filter(Boolean);
+const configuredTurnstileSiteKey = process.env.TURNSTILE_SITE_KEY?.trim() || '';
+const configuredTurnstileSecretKey = process.env.TURNSTILE_SECRET_KEY?.trim() || '';
 const configuredGeeTestCaptchaId = process.env.GEETEST_CAPTCHA_ID?.trim() || '';
 const configuredGeeTestPrivateKey = process.env.GEETEST_PRIVATE_KEY?.trim() || '';
 const invalidDisplayIdForbiddenToken = configuredDisplayIdForbiddenTokens.find(
@@ -87,6 +89,13 @@ export const config = {
     allowedSuffixes: configuredEmailAllowedSuffixes,
     verifyTtlSeconds: Math.max(300, Number(process.env.EMAIL_VERIFY_TTL_SECONDS || 1800)),
   },
+  turnstile: {
+    enabled: Boolean(configuredTurnstileSiteKey && configuredTurnstileSecretKey),
+    siteKey: configuredTurnstileSiteKey,
+    secretKey: configuredTurnstileSecretKey,
+    verifyUrl: process.env.TURNSTILE_VERIFY_URL?.trim() || 'https://challenges.cloudflare.com/turnstile/v0/siteverify',
+    timeoutMs: Math.max(1_000, Math.min(10_000, Number(process.env.TURNSTILE_TIMEOUT_MS || 3_000))),
+  },
   geetest: {
     enabled: Boolean(configuredGeeTestCaptchaId && configuredGeeTestPrivateKey),
     captchaId: configuredGeeTestCaptchaId,
@@ -126,11 +135,17 @@ export function validateProductionConfig(): void {
     throw new Error('POW_REGISTER_DIFFICULTY_MUST_EXCEED_POW_DIFFICULTY');
   }
   if (process.env.NODE_ENV !== 'production') return;
+  if (Boolean(configuredTurnstileSiteKey) !== Boolean(configuredTurnstileSecretKey)) {
+    throw new Error('TURNSTILE_SITE_KEY_AND_SECRET_KEY_MUST_BE_CONFIGURED_TOGETHER');
+  }
+  if (!config.turnstile.enabled) {
+    throw new Error('TURNSTILE_MUST_BE_CONFIGURED_IN_PRODUCTION');
+  }
   if (Boolean(configuredGeeTestCaptchaId) !== Boolean(configuredGeeTestPrivateKey)) {
     throw new Error('GEETEST_CAPTCHA_ID_AND_PRIVATE_KEY_MUST_BE_CONFIGURED_TOGETHER');
   }
   if (!config.geetest.enabled) {
-    throw new Error('GEETEST_MUST_BE_CONFIGURED_IN_PRODUCTION');
+    console.warn('[config] GEETEST_* is not configured; the China-network fallback is disabled');
   }
   if (
     !configuredJwtSecret ||

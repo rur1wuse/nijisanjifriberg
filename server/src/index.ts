@@ -49,6 +49,7 @@ import dailyChallengeRoutes from './routes/dailyChallenge';
 const SHUTDOWN_TIMEOUT_MS = 10_000;
 const CLOUDFLARE_INSIGHTS_SCRIPT_ORIGIN = 'https://static.cloudflareinsights.com';
 const CLOUDFLARE_INSIGHTS_BEACON_ORIGIN = 'https://cloudflareinsights.com';
+const TURNSTILE_ORIGIN = 'https://challenges.cloudflare.com';
 const GEETEST_SCRIPT_ORIGIN = 'https://static.geetest.com';
 const GEETEST_API_ORIGIN = 'https://gcaptcha4.geetest.com';
 const GEETEST_FALLBACK_API_ORIGIN = 'https://api.geetest.com';
@@ -124,6 +125,7 @@ async function main() {
           "'self'",
           "'wasm-unsafe-eval'",
           CLOUDFLARE_INSIGHTS_SCRIPT_ORIGIN,
+          TURNSTILE_ORIGIN,
           GEETEST_SCRIPT_ORIGIN,
           GEETEST_API_ORIGIN,
           GEETEST_GEEVISIT_ORIGIN,
@@ -132,20 +134,22 @@ async function main() {
           ...inlineScriptHashes,
         ],
         workerSrc: ["'self'"],
-        styleSrc: ["'self'", "'unsafe-inline'", GEETEST_SCRIPT_ORIGIN],
+        styleSrc: ["'self'", "'unsafe-inline'", TURNSTILE_ORIGIN, GEETEST_SCRIPT_ORIGIN],
         imgSrc: [
           "'self'",
           'data:',
+          TURNSTILE_ORIGIN,
           GEETEST_SCRIPT_ORIGIN,
           GEETEST_API_ORIGIN,
           GEETEST_GEEVISIT_ORIGIN,
           GEETEST_GSENSEBOT_ORIGIN,
         ],
-        fontSrc: ["'self'", 'data:', GEETEST_SCRIPT_ORIGIN],
+        fontSrc: ["'self'", 'data:', TURNSTILE_ORIGIN, GEETEST_SCRIPT_ORIGIN],
         connectSrc: [
           "'self'",
           ...config.corsOrigins,
           CLOUDFLARE_INSIGHTS_BEACON_ORIGIN,
+          TURNSTILE_ORIGIN,
           GEETEST_API_ORIGIN,
           GEETEST_FALLBACK_API_ORIGIN,
           GEETEST_GEEVISIT_ORIGIN,
@@ -155,6 +159,7 @@ async function main() {
         objectSrc: ["'none'"],
         frameSrc: [
           "'self'",
+          TURNSTILE_ORIGIN,
           'https://*.geetest.com',
           GEETEST_GEEVISIT_ORIGIN,
           GEETEST_GSENSEBOT_ORIGIN,
@@ -187,7 +192,7 @@ async function main() {
   app.use('/api/pow', rejectOversizedBody(16 * 1024), parseJsonOnce('16kb'));
   app.use('/api/pow', powRoutes);
   // Public runtime configuration is deliberately mounted before the PoW gate.
-  // It contains only non-secret browser configuration such as the GeeTest ID.
+  // It contains only non-secret browser configuration such as the Turnstile site key.
   app.use('/api/runtime-config', runtimeConfigRoutes);
   app.use('/api', requirePow);
   app.use('/api/admin/players/import', requireAuth, requireAdmin);
