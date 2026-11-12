@@ -15,9 +15,8 @@ import TurnstileWidget from '../components/TurnstileWidget';
 
 const INACTIVE_POW_PROGRESS = { active: false, percent: 0 };
 const USERNAME_PATTERN = /^[\w一-龥-]+$/;
-const EMAIL_PATTERN = /^[^@\s]+@[^@\s]+$/;
 
-type RegisterField = 'username' | 'password' | 'confirmPassword' | 'email';
+type RegisterField = 'username' | 'password' | 'confirmPassword';
 type RegisterErrors = Partial<Record<RegisterField, string>>;
 type CaptchaMode = 'turnstile' | 'geetest' | 'none';
 
@@ -27,7 +26,6 @@ export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [email, setEmail] = useState('');
   const [registerErrors, setRegisterErrors] = useState<RegisterErrors>({});
   const [loading, setLoading] = useState(false);
   const [captchaConfig, setCaptchaConfig] = useState<CaptchaConfig | null>(null);
@@ -120,9 +118,6 @@ export default function Login() {
       if (!password) errors.password = t('auth.passwordRequired');
       else if (password.length < 10 || password.length > 128) errors.password = t('auth.passwordLength');
       if (password !== confirmPassword) errors.confirmPassword = t('auth.mismatch');
-      if (email && (email.length > 320 || !EMAIL_PATTERN.test(email.trim()))) {
-        errors.email = t('auth.emailInvalid');
-      }
       setRegisterErrors(errors);
       const firstInvalid = Object.keys(errors)[0];
       if (firstInvalid) {
@@ -157,7 +152,6 @@ export default function Login() {
       const res = await api.post(`/auth/${mode}`, {
         username,
         password,
-        ...(mode === 'register' && email ? { email } : {}),
         ...captchaPayload,
       });
       markAuthenticated();
@@ -264,27 +258,6 @@ export default function Login() {
             />
           )}
           {mode === 'register' && (
-            <div className="auth-field">
-              <input
-                className="input"
-                name="email"
-                type="email"
-                placeholder={t('auth.emailOptional')}
-                autoComplete="email"
-                value={email}
-                aria-invalid={Boolean(registerErrors.email)}
-                aria-describedby={registerErrors.email ? 'register-email-error' : undefined}
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                  clearRegisterError('email');
-                }}
-              />
-              {registerErrors.email && (
-                <span className="auth-field-error" id="register-email-error">{registerErrors.email}</span>
-              )}
-            </div>
-          )}
-          {mode === 'register' && (
             <div className="auth-captcha">
               {captchaConfig === null && <span className="muted">{t('auth.captchaLoading')}</span>}
               {captchaConfig?.turnstile.enabled && captchaMode === 'turnstile' && captchaConfig.turnstile.siteKey && (
@@ -343,7 +316,6 @@ export default function Login() {
             className="btn btn-ghost"
             onClick={() => {
               setConfirmPassword('');
-              setEmail('');
               setRegisterErrors({});
               setTurnstileToken(null);
               setTurnstileUnavailable(false);

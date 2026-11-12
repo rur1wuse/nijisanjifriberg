@@ -30,7 +30,6 @@ export const roomCreatePayloadSchema = z.object({
   totalRounds: z.union([z.literal(1), z.literal(3), z.literal(5), z.literal(7)]).default(3),
   maxPlayers: z.number().int().min(MIN_CLASSIC_ROOM_PLAYERS).max(MAX_CLASSIC_ROOM_PLAYERS).default(2),
   allowSpectators: z.boolean().default(false),
-  verifiedOnly: z.boolean().default(false),
   anonymous: z.boolean().default(false),
   maxGuesses: z.number().int().min(MIN_ROOM_MAX_GUESSES).max(MAX_ROOM_MAX_GUESSES)
     .default(DEFAULT_ROOM_MAX_GUESSES),

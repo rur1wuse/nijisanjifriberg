@@ -55,8 +55,6 @@ export interface AuthPayload {
   id: number;
   username: string;
   role: 'user' | 'admin';
-  email: string | null;
-  emailVerified: boolean;
 }
 
 export interface GuestIdentity {
@@ -193,8 +191,6 @@ async function resolveTokenUser(
           id: user.id,
           username: user.username,
           role: user.role,
-          email: user.email ?? null,
-          emailVerified: Boolean(user.emailVerified),
           tokenVersion: user.tokenVersion,
         };
       }
@@ -209,8 +205,6 @@ async function resolveTokenUser(
       id: user.id,
       username: user.username,
       role: user.role,
-      email: user.email ?? null,
-      emailVerified: Boolean(user.email_verified_at),
       tokenVersion: Number(user.token_version),
     };
     try {
@@ -224,8 +218,6 @@ async function resolveTokenUser(
     username: user.username,
     role: user.role,
     tokenVersion: Number(user.token_version),
-    email: user.email ?? null,
-    emailVerified: Boolean(user.email_verified_at),
   };
 }
 
@@ -290,7 +282,7 @@ export async function refreshAuthCookies(
   const user = await authenticateRefreshCookie(cookieHeader);
   if (!user) return null;
   setAuthCookies(res, { id: user.id, token_version: user.tokenVersion });
-  return { id: user.id, username: user.username, role: user.role, email: user.email, emailVerified: user.emailVerified };
+  return { id: user.id, username: user.username, role: user.role };
 }
 
 export async function restoreAuthSession(
@@ -299,7 +291,7 @@ export async function restoreAuthSession(
 ): Promise<AuthPayload | null> {
   const user = await authenticateCookie(cookieHeader);
   if (user) {
-    return { id: user.id, username: user.username, role: user.role, email: user.email, emailVerified: user.emailVerified };
+    return { id: user.id, username: user.username, role: user.role };
   }
   return refreshAuthCookies(cookieHeader, res);
 }

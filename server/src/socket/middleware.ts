@@ -30,7 +30,6 @@ export function registerSocketMiddleware(io: Server): void {
           key: `u:${user.id}`,
           userId: user.id,
           name: userNameFromUsername(user.username),
-          emailVerified: Boolean(user.email && user.emailVerified),
         };
       } else if (guest) {
         if (await isGuestBanned(guest.key)) {

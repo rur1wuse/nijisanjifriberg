@@ -383,7 +383,6 @@
   .settings-dialog { grid-template-columns: 44px minmax(0, 1fr); gap: 14px; padding: 22px 18px; }
   .settings-dialog-icon { width: 44px; height: 44px; }
   .settings-dialog .confirm-heading h2 { font-size: 1.18rem; }
-  .settings-email .btn { width: 100%; }
   .replay-dialog { max-height: calc(100dvh - 20px); padding: 0; border-radius: 16px; }
   .replay-heading, .replay-dialog-body { padding: 18px 14px; }
   .replay-heading { padding-bottom: 14px; }

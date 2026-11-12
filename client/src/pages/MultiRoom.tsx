@@ -1297,9 +1297,6 @@ export default function MultiRoom() {
             : room.status === 'waiting'
               ? t('multi.waitingStatus', { database: difficultyLabel(t, room.dbType), wins: room.winsNeeded })
               : t('multi.playingStatus', { round: room.round, wins: room.winsNeeded })}
-          {room.status === 'waiting' && room.verifiedOnly && (
-            <span className="badge amber">{t('multi.verifiedRoomOnly')}</span>
-          )}
           {room.status === 'waiting' && room.matchmaking && <Countdown deadline={readyDeadline} />}
           {playing && <Countdown deadline={roundDeadline} onExpire={() => setRoundExpired(true)} />}
           {isSpectator && (
@@ -1441,9 +1438,6 @@ export default function MultiRoom() {
                 <li>{room.allowSpectators
                   ? t('multi.allowSpectating')
                   : t('multi.denySpectating')}</li>
-                <li>{room.verifiedOnly
-                  ? t('multi.verifiedRoomOnly')
-                  : t('multi.anyoneCanJoin')}</li>
                 <li>{room.anonymous ? t('multi.anonymousRoom') : t('multi.showNames')}</li>
               </ul>
             </section>

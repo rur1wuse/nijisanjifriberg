@@ -78,17 +78,14 @@ function onceEvent(socket: ClientSocket, event: string, timeoutMs = 2_000): Prom
   });
 }
 
-async function createTestUser(verified: boolean): Promise<{ id: number; key: string; cookie: string }> {
+async function createTestUser(): Promise<{ id: number; key: string; cookie: string }> {
   const suffix = `${Date.now()}${Math.floor(Math.random() * 10_000)}`;
   const username = `socket_test_${suffix}`;
-  const email = `${username}@example.com`;
   const inserted = await db('users').insert({
     username,
     password_hash: 'test-password-hash',
     role: 'user',
     token_version: 0,
-    email,
-    email_verified_at: verified ? new Date().toISOString() : null,
   }).returning('id');
   const id = Number(typeof inserted[0] === 'object' ? inserted[0].id : inserted[0]);
   createdTestUserIds.push(id);
@@ -98,14 +95,6 @@ async function createTestUser(verified: boolean): Promise<{ id: number; key: str
     key: `u:${id}`,
     cookie: withPowCookie(`csgofriberg_session=${token}`),
   };
-}
-
-function createVerifiedUser() {
-  return createTestUser(true);
-}
-
-function createUnverifiedUser() {
-  return createTestUser(false);
 }
 
 describe('multiplayer socket integration', () => {
@@ -273,46 +262,32 @@ describe('multiplayer socket integration', () => {
     }
   });
 
-  it('requires verified email matchmaking and enforces verified-only rooms', async () => {
+  it('requires login for matchmaking and ignores legacy verified-only rooms', async () => {
     const guestKey = `match-policy-guest-${Date.now()}`;
     const guestToken = jwt.sign({ key: guestKey, typ: 'guest' }, config.jwtSecret, { expiresIn: '1h' });
     const guest = await connect(withPowCookie(`csgofriberg_guest=${guestToken}`));
-    const unverified = await createUnverifiedUser();
-    const verified = await createVerifiedUser();
-    const unverifiedSocket = await connect(unverified.cookie);
-    const verifiedSocket = await connect(verified.cookie);
+    const player = await createTestUser();
+    const playerSocket = await connect(player.cookie);
     try {
       expect(await emit(guest, 'match:start', { dbType: 'normal' }))
-        .toEqual({ code: 'EMAIL_VERIFICATION_REQUIRED' });
-      expect(await emit(unverifiedSocket, 'match:start', { dbType: 'normal' }))
-        .toEqual({ code: 'EMAIL_VERIFICATION_REQUIRED' });
-      expect(await emit(verifiedSocket, 'match:start', { dbType: 'normal' }))
+        .toEqual({ code: 'AUTH_REQUIRED' });
+      expect(await emit(playerSocket, 'match:start', { dbType: 'normal' }))
         .toEqual({ queued: true });
-      await emit(verifiedSocket, 'match:cancel');
+      await emit(playerSocket, 'match:cancel');
 
       const created = await emit(guest, 'room:create', {
         dbType: 'normal',
         boType: 1,
         verifiedOnly: true,
       });
-      expect(created.room).toMatchObject({ verifiedOnly: true });
+      expect(created.room).not.toHaveProperty('verifiedOnly');
       createdRoomIds.push(created.room.id);
 
-      expect(await emit(unverifiedSocket, 'room:join', { roomId: created.room.id }))
-        .toEqual({ code: 'ROOM_VERIFIED_EMAIL_ONLY' });
-      expect(await emit(verifiedSocket, 'room:join', { roomId: created.room.id }))
-        .toMatchObject({ role: 'player', room: { verifiedOnly: true } });
-
-      await db('users').where({ id: unverified.id }).update({ email_verified_at: new Date().toISOString() });
-      expect(JSON.parse((await redis()!.get(redisKey(`auth:user:${unverified.id}`)))!))
-        .toMatchObject({ emailVerified: false });
-      expect(await emit(unverifiedSocket, 'match:start', { dbType: 'normal' }))
-        .toEqual({ queued: true });
-      await emit(unverifiedSocket, 'match:cancel');
+      expect(await emit(playerSocket, 'room:join', { roomId: created.room.id }))
+        .toMatchObject({ role: 'player' });
     } finally {
       guest.disconnect();
-      unverifiedSocket.disconnect();
-      verifiedSocket.disconnect();
+      playerSocket.disconnect();
     }
   });
 
@@ -458,8 +433,8 @@ describe('multiplayer socket integration', () => {
   });
 
   it('starts a matched room only after both players are ready', async () => {
-    const userA = await createVerifiedUser();
-    const userB = await createVerifiedUser();
+    const userA = await createTestUser();
+    const userB = await createTestUser();
     const a = await connect(userA.cookie);
     const b = await connect(userB.cookie);
     try {
@@ -514,8 +489,8 @@ describe('multiplayer socket integration', () => {
   });
 
   it('destroys an expired ready check and penalizes only unready players', async () => {
-    const userA = await createVerifiedUser();
-    const userB = await createVerifiedUser();
+    const userA = await createTestUser();
+    const userB = await createTestUser();
     const a = await connect(userA.cookie);
     const b = await connect(userB.cookie);
     try {
@@ -550,8 +525,8 @@ describe('multiplayer socket integration', () => {
 
   it('does not penalize a ready-check exit against an opponent averaging under three guesses', async () => {
     const stamp = Date.now();
-    const userA = await createVerifiedUser();
-    const userB = await createVerifiedUser();
+    const userA = await createTestUser();
+    const userB = await createTestUser();
     const keyA = userA.key;
     const historyRoomId = `match-leave-history-${stamp}`;
     const a = await connect(userA.cookie);
@@ -758,8 +733,8 @@ describe('multiplayer socket integration', () => {
   });
 
   it('accepts one post-match report per player in matchmaking only', async () => {
-    const userA = await createVerifiedUser();
-    const userB = await createVerifiedUser();
+    const userA = await createTestUser();
+    const userB = await createTestUser();
     const a = await connect(userA.cookie);
     const b = await connect(userB.cookie);
     try {
@@ -819,8 +794,8 @@ describe('multiplayer socket integration', () => {
   });
 
   it('accepts a matchmaking report after reconnecting to a finished room', async () => {
-    const userA = await createVerifiedUser();
-    const userB = await createVerifiedUser();
+    const userA = await createTestUser();
+    const userB = await createTestUser();
     let a = await connect(userA.cookie);
     const b = await connect(userB.cookie);
     try {
@@ -1323,8 +1298,8 @@ describe('multiplayer socket integration', () => {
   });
 
   it('turns an accepted matchmaking rematch into a created room and waits for guest readiness', async () => {
-    const userA = await createVerifiedUser();
-    const userB = await createVerifiedUser();
+    const userA = await createTestUser();
+    const userB = await createTestUser();
     const a = await connect(userA.cookie);
     const b = await connect(userB.cookie);
     try {

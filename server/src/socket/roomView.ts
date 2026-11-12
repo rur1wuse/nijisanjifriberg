@@ -250,7 +250,6 @@ export function buildPublicRoom(room: StoredRoom, viewerKey: string) {
         }
       : null,
     allowSpectators: room.allowSpectators,
-    verifiedOnly: room.verifiedOnly,
     anonymous: room.anonymous,
     round: room.round,
     winsNeeded: winsNeeded(room.boType),

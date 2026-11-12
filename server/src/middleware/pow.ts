@@ -44,9 +44,6 @@ function requireFreshRegistrationPow(req: Request, res: Response, next: NextFunc
 
 export function requirePow(req: Request, res: Response, next: NextFunction) {
   if (req.method === 'OPTIONS') return next();
-  // Verification links are bearer tokens delivered through email and must work
-  // when opened directly without a JavaScript PoW client.
-  if (req.method === 'GET' && req.path === '/auth/email/verify') return next();
   if (req.method === 'POST' && req.path === '/auth/register') {
     requireFreshRegistrationPow(req, res, next);
     return;

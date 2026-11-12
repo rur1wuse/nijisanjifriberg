@@ -107,7 +107,6 @@ export default function MultiLobby() {
   const [boType, setBoType] = useState(initialPreferences.boType);
   const [maxPlayers, setMaxPlayers] = useState(initialPreferences.maxPlayers);
   const [allowSpectators, setAllowSpectators] = useState(initialPreferences.allowSpectators);
-  const [verifiedEmailOnly, setVerifiedEmailOnly] = useState(initialPreferences.verifiedEmailOnly);
   const [maxGuesses, setMaxGuesses] = useState(initialPreferences.maxGuesses);
   const [guessIntervalSeconds, setGuessIntervalSeconds] = useState(
     initialPreferences.guessIntervalSeconds
@@ -127,7 +126,7 @@ export default function MultiLobby() {
   const mmAnonymous = true;
   const user = useAuth((state) => state.user);
   const authInitialized = useAuth((state) => state.initialized);
-  const canUseMatchmaking = Boolean(user?.id && user.email && user.emailVerified);
+  const canUseMatchmaking = Boolean(user?.id);
   const [joinCode, setJoinCode] = useState('');
   const [createdRoom, setCreatedRoom] = useState<RoomState | null>(null);
   const [currentRoom, setCurrentRoom] = useState<RoomState | null>(null);
@@ -168,7 +167,6 @@ export default function MultiLobby() {
     boType,
     maxPlayers,
     allowSpectators,
-    verifiedEmailOnly,
     maxGuesses,
     guessIntervalSeconds,
     roundDurationSeconds,
@@ -201,7 +199,6 @@ export default function MultiLobby() {
     setBoType(preset.boType);
     setMaxPlayers(preset.maxPlayers);
     setAllowSpectators(preset.allowSpectators);
-    setVerifiedEmailOnly(preset.verifiedEmailOnly);
     setMaxGuesses(preset.maxGuesses);
     setGuessIntervalSeconds(preset.guessIntervalSeconds);
     setRoundDurationSeconds(preset.roundDurationSeconds);
@@ -271,7 +268,6 @@ export default function MultiLobby() {
       boType,
       maxPlayers: gameMode === 'relay2v2' ? 4 : maxPlayers,
       allowSpectators,
-      verifiedEmailOnly,
       maxGuesses,
       guessIntervalSeconds,
       roundDurationSeconds,
@@ -288,7 +284,6 @@ export default function MultiLobby() {
     mmDbType,
     roundDurationSeconds,
     totalRounds,
-    verifiedEmailOnly,
   ]);
 
   useEffect(() => {
@@ -440,7 +435,6 @@ export default function MultiLobby() {
       boType,
       maxPlayers,
       allowSpectators,
-      verifiedOnly: verifiedEmailOnly,
       anonymous,
       maxGuesses,
       guessIntervalMs: Math.round(guessIntervalSeconds * 1000),
@@ -586,7 +580,7 @@ export default function MultiLobby() {
             {copied ? t('multi.copied') : t('multi.copyCode')}
           </button>
           <p className="muted multi-lobby-created-meta">
-            {t('multi.database', { type: difficultyLabel(t, createdRoom.dbType) })} · {createdRoom.gameMode === 'relay' ? t('multi.relayRounds', { rounds: createdRoom.totalRounds ?? 3 }) : t('multi.format', { bo: createdRoom.boType })} · {t('multi.roomCapacity', { current: createdRoom.players.length, max: createdRoom.maxPlayers ?? 2 })} · {createdRoom.allowSpectators ? t('multi.allowSpectating') : t('multi.denySpectating')} · {createdRoom.verifiedOnly ? t('multi.verifiedRoomOnly') : t('multi.anyoneCanJoin')}
+            {t('multi.database', { type: difficultyLabel(t, createdRoom.dbType) })} · {createdRoom.gameMode === 'relay' ? t('multi.relayRounds', { rounds: createdRoom.totalRounds ?? 3 }) : t('multi.format', { bo: createdRoom.boType })} · {t('multi.roomCapacity', { current: createdRoom.players.length, max: createdRoom.maxPlayers ?? 2 })} · {createdRoom.allowSpectators ? t('multi.allowSpectating') : t('multi.denySpectating')}
             {' · '}{createdRoom.anonymous ? t('multi.anonymousRoom') : t('multi.showNames')}
             {' · '}{t('multi.customRulesSummary', {
               guesses: createdRoom.maxGuesses,
@@ -723,7 +717,6 @@ export default function MultiLobby() {
                       </div>
                       <div className="room-create-options room-settings-options">
                         <label className="spectator-option"><input type="checkbox" checked={allowSpectators} onChange={(event) => setAllowSpectators(event.target.checked)} /><span>{t('multi.allowSpectating')}</span></label>
-                        <label className="spectator-option"><input type="checkbox" checked={verifiedEmailOnly} onChange={(event) => setVerifiedEmailOnly(event.target.checked)} /><span>{t('multi.verifiedRoomOnly')}</span></label>
                       </div>
                       <div className="room-more-settings-fields">
                 <label className="room-number-setting">
@@ -864,9 +857,6 @@ export default function MultiLobby() {
               {t('multi.randomMatch')}
             </h3>
             <p className="muted">{t('multi.fixedBo3')}</p>
-            {authInitialized && !canUseMatchmaking && (
-              <p className="muted matchmaking-requirement">{t('multi.matchVerifiedRequired')}</p>
-            )}
             <OptionGroup
               label={t('multi.playerDatabase')}
               options={difficulties.map((item) => item.key) as DbType[]}

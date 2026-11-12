@@ -211,7 +211,6 @@ describe('cookie authentication', () => {
     ['short username', { username: 'a', password: 'long-enough-password' }, 'REGISTER_USERNAME_LENGTH', 1],
     ['invalid username characters', { username: 'bad name', password: 'long-enough-password' }, 'REGISTER_USERNAME_CHARACTERS', 2],
     ['short password', { username: 'valid_name', password: 'short' }, 'REGISTER_PASSWORD_LENGTH', 3],
-    ['invalid email', { username: 'valid_name', password: 'long-enough-password', email: 'invalid-email' }, 'INVALID_EMAIL', 4],
   ])('returns a specific registration error for %s', async (_label, body, code, ipIndex) => {
     const result = await request('/api/auth/register', '', {
       method: 'POST',

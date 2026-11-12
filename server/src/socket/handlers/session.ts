@@ -1,6 +1,4 @@
 import { Server, Socket } from 'socket.io';
-import { db } from '../../db/knex';
-import { authenticateCookie } from '../../middleware/auth';
 import {
   StoredIdentity,
   clearIdentityRoom,
@@ -43,20 +41,6 @@ export function handleSocketConnection(
     trackBackground,
   } = context;
   const me = socket.data.identity as StoredIdentity;
-  const refreshIdentityEmailState = async () => {
-    if (!me.userId) return;
-    const current = await authenticateCookie(socket.handshake.headers.cookie);
-    if (current?.id !== me.userId) {
-      me.emailVerified = false;
-      return;
-    }
-    // Match eligibility must reflect a verification completed in another request
-    // even when invalidating the shared auth cache has transiently failed.
-    const user = await db('users')
-      .where({ id: me.userId })
-      .first('email', 'email_verified_at');
-    me.emailVerified = Boolean(user?.email && user.email_verified_at);
-  };
   socket.emit('identity:self', { key: me.key });
   void getResourceVersionNotice()
     .then((notice) => {
@@ -126,7 +110,6 @@ export function handleSocketConnection(
     socket,
     me,
     restorePromise,
-    refreshIdentityEmailState,
     lifecycle,
   };
   registerRoomEvents(eventContext);

@@ -424,7 +424,7 @@ router.get(
       if (!Number.isSafeInteger(id) || id <= 0) throw new HttpError(404, 'USER_NOT_FOUND');
       const user = await db('users')
         .where({ id })
-        .first('id', 'username', 'display_id', 'role', 'leaderboard_hidden', 'matchmaking_restricted', 'email', 'email_verified_at', 'banned_at', 'created_at');
+        .first('id', 'username', 'display_id', 'role', 'leaderboard_hidden', 'matchmaking_restricted', 'email', 'banned_at', 'created_at');
       if (!user) throw new HttpError(404, 'USER_NOT_FOUND');
       return res.json({
         type: 'user',
@@ -436,7 +436,6 @@ router.get(
           leaderboardHidden: Boolean(user.leaderboard_hidden),
           matchmakingRestricted: Boolean(user.matchmaking_restricted),
           email: user.email ?? null,
-          emailVerified: Boolean(user.email_verified_at),
           banned: Boolean(user.banned_at),
           createdAt: user.created_at,
         },
@@ -501,7 +500,7 @@ router.get(
     const totalPages = Math.max(1, Math.ceil(total / pageSize));
     const page = Math.min(parsed.page, totalPages);
     const users = await query.clone()
-      .select('id', 'username', 'display_id', 'role', 'leaderboard_hidden', 'matchmaking_restricted', 'email', 'email_verified_at', 'banned_at', 'created_at')
+      .select('id', 'username', 'display_id', 'role', 'leaderboard_hidden', 'matchmaking_restricted', 'email', 'banned_at', 'created_at')
       .orderBy('created_at', 'desc')
       .orderBy('id', 'desc')
       .limit(pageSize)
@@ -515,7 +514,6 @@ router.get(
         leaderboardHidden: Boolean(user.leaderboard_hidden),
         matchmakingRestricted: Boolean(user.matchmaking_restricted),
         email: user.email ?? null,
-        emailVerified: Boolean(user.email_verified_at),
         banned: Boolean(user.banned_at),
         createdAt: user.created_at,
       })),
@@ -535,7 +533,7 @@ router.get(
     const { id } = req.params as unknown as z.infer<typeof idParamsSchema>;
     const user = await db('users')
       .where({ id })
-      .first('id', 'username', 'display_id', 'role', 'leaderboard_hidden', 'matchmaking_restricted', 'email', 'email_verified_at', 'banned_at', 'created_at');
+      .first('id', 'username', 'display_id', 'role', 'leaderboard_hidden', 'matchmaking_restricted', 'email', 'banned_at', 'created_at');
     if (!user) throw new HttpError(404, 'USER_NOT_FOUND');
     res.json({
       user: {
@@ -546,7 +544,6 @@ router.get(
         leaderboardHidden: Boolean(user.leaderboard_hidden),
         matchmakingRestricted: Boolean(user.matchmaking_restricted),
         email: user.email ?? null,
-        emailVerified: Boolean(user.email_verified_at),
         banned: Boolean(user.banned_at),
         createdAt: user.created_at,
       },

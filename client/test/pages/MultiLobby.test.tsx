@@ -24,7 +24,7 @@ vi.mock('../../src/api/socket', () => ({ getSocket: () => socket }));
 describe('MultiLobby matchmaking', () => {
   beforeEach(() => {
     useAuth.setState({
-      user: { id: 7, username: 'verified-user', role: 'user', email: 'verified@example.com', emailVerified: true },
+      user: { id: 7, username: 'signed-in-user', role: 'user' },
       initialized: true,
     });
     socket.handlers.clear();
@@ -66,7 +66,6 @@ describe('MultiLobby matchmaking', () => {
     await user.selectOptions(screen.getByRole('combobox', { name: '房间人数上限' }), '4');
     await user.click(screen.getByText('更多设置'));
     await user.click(screen.getByRole('checkbox', { name: '允许观战' }));
-    await user.click(screen.getByRole('checkbox', { name: '仅允许已验证邮箱用户加入' }));
     const maxGuesses = screen.getByRole('spinbutton', { name: '最大猜测次数' });
     const guessInterval = screen.getByRole('spinbutton', { name: '猜测间隔' });
     const roundDuration = screen.getByRole('spinbutton', { name: '最大猜测时间' });
@@ -83,7 +82,6 @@ describe('MultiLobby matchmaking', () => {
         boType: 5,
         maxPlayers: 4,
         allowSpectators: true,
-        verifiedEmailOnly: true,
         maxGuesses: 12,
         guessIntervalSeconds: 2.5,
         roundDurationSeconds: 300,
@@ -100,7 +98,6 @@ describe('MultiLobby matchmaking', () => {
     expect(screen.getByRole('combobox', { name: '房间人数上限' })).toHaveValue('4');
     await user.click(screen.getByText('更多设置'));
     expect(screen.getByRole('checkbox', { name: '允许观战' })).toBeChecked();
-    expect(screen.getByRole('checkbox', { name: '仅允许已验证邮箱用户加入' })).toBeChecked();
     expect(screen.getByRole('spinbutton', { name: '最大猜测次数' })).toHaveValue(12);
     expect(screen.getByRole('spinbutton', { name: '猜测间隔' })).toHaveValue(2.5);
     expect(screen.getByRole('spinbutton', { name: '最大猜测时间' })).toHaveValue(300);
@@ -166,23 +163,22 @@ describe('MultiLobby matchmaking', () => {
     expect(localStorage.getItem('nijisanjifriberg.multi-lobby-presets')).toBe('[]');
   });
 
-  it('requires a verified email before starting quick match', () => {
+  it('lets any signed-in user start quick match without email verification', () => {
     useAuth.setState({
-      user: { id: 8, username: 'unverified-user', role: 'user', email: 'unverified@example.com', emailVerified: false },
+      user: { id: 8, username: 'unverified-user', role: 'user' },
       initialized: true,
     });
     renderAtRoute(<MultiLobby />, { route: '/multi', path: '/multi' });
 
-    expect(screen.getByText('随机匹配仅对已登录且完成邮箱验证的用户开放。')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: '开始匹配' })).toBeDisabled();
+    expect(screen.queryByText('随机匹配仅对已登录且完成邮箱验证的用户开放。')).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: '开始匹配' })).toBeEnabled();
   });
 
-  it('sends the verified-email restriction when creating a room', async () => {
+  it('sends custom room settings when creating a room', async () => {
     const user = userEvent.setup();
     renderAtRoute(<MultiLobby />, { route: '/multi', path: '/multi' });
 
     await user.click(screen.getByText('更多设置'));
-    await user.click(screen.getByRole('checkbox', { name: '仅允许已验证邮箱用户加入' }));
     const maxGuesses = screen.getByRole('spinbutton', { name: '最大猜测次数' });
     const guessInterval = screen.getByRole('spinbutton', { name: '猜测间隔' });
     const roundDuration = screen.getByRole('spinbutton', { name: '最大猜测时间' });
@@ -192,7 +188,6 @@ describe('MultiLobby matchmaking', () => {
     await user.click(screen.getByRole('button', { name: '创建房间' }));
 
     expect(socket.emit).toHaveBeenCalledWith('room:create', expect.objectContaining({
-      verifiedOnly: true,
       maxGuesses: 15,
       guessIntervalMs: 0,
       roundDurationMs: 600_000,

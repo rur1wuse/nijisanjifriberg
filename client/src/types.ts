@@ -54,8 +54,6 @@ export interface UserInfo {
   id: number;
   username: string;
   role: 'user' | 'admin';
-  email?: string | null;
-  emailVerified?: boolean;
 }
 
 export interface PlayerInfo {
@@ -206,7 +204,6 @@ export interface RoomState {
     requiredKeys?: string[];
   } | null;
   allowSpectators: boolean;
-  verifiedOnly: boolean;
   anonymous: boolean;
   round: number;
   roundId: number;

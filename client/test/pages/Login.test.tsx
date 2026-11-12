@@ -39,13 +39,11 @@ describe('registration validation', () => {
     await user.type(username, 'bad name');
     await user.type(screen.getByPlaceholderText('密码（至少 10 位）'), 'short');
     await user.type(screen.getByPlaceholderText('确认密码'), 'different');
-    await user.type(screen.getByPlaceholderText('邮箱（可选）'), 'invalid-email');
     await user.click(screen.getByRole('button', { name: '注册' }));
 
     expect(screen.getByText('用户名只能包含字母、数字、下划线、连字符和中文')).toBeInTheDocument();
     expect(screen.getByText('密码长度必须为 10-128 个字符')).toBeInTheDocument();
     expect(screen.getByText('两次输入的密码不一致')).toBeInTheDocument();
-    expect(screen.getByText('请输入有效的邮箱地址，例如 name@example.com')).toBeInTheDocument();
     expect(username).toHaveFocus();
     expect(apiPost).not.toHaveBeenCalled();
 

@@ -91,7 +91,6 @@ docker run -d --name redis -p 6379:6379 --restart unless-stopped redis:7-alpine
 | `JWT_SECRET` | 空 | 生产环境必须 ≥32 字节随机串 |
 | `POW_DIFFICULTY` | `17` | 普通请求的 PoW 难度（16–24 bit） |
 | `POW_REGISTER_DIFFICULTY` | `19` | 注册的 PoW 难度，必须高于上一项 |
-| `EMAIL_SMTP_*` | 空 | 可选，配置后启用邮箱验证 |
 | `TURNSTILE_SITE_KEY` / `TURNSTILE_SECRET_KEY` | 空 | 注册人机验证主方案（Cloudflare Turnstile），生产环境必填 |
 | `GEETEST_CAPTCHA_ID` / `GEETEST_PRIVATE_KEY` | 空 | 国内网络备用验证（GeeTest v4），可选 |
 

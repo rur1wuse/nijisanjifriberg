@@ -46,7 +46,6 @@ import { SocketEventContext, SocketLifecycle } from './context';
 import { cancelLocalTimer } from '../timers';
 
 type RoomEventContext = SocketEventContext & {
-  refreshIdentityEmailState: () => Promise<void>;
   lifecycle: SocketLifecycle;
 };
 
@@ -139,9 +138,8 @@ export async function handleRoomCreate(
   payload: z.infer<typeof roomCreatePayloadSchema>,
   ack?: SocketAck
 ): Promise<void> {
-  const { socket, me, restorePromise, refreshIdentityEmailState } = context;
+  const { socket, me, restorePromise } = context;
   await restorePromise;
-  await refreshIdentityEmailState();
   if (!(await socketAllowed('create', me.key, 5, 60))) {
     ack?.({ code: 'RATE_LIMITED' });
     return;
@@ -198,7 +196,6 @@ export async function handleRoomCreate(
     rematchAcceptedKeys: [],
     rematchRequiredKeys: [],
     allowSpectators: payload.allowSpectators,
-    verifiedOnly: payload.verifiedOnly,
     anonymous: payload.anonymous,
     round: 0,
     players: [makeRoomPlayer(me, socket.id, true)],
@@ -242,9 +239,8 @@ export async function handleRoomJoin(
   payload: z.infer<typeof roomJoinPayloadSchema>,
   ack?: SocketAck
 ): Promise<void> {
-  const { io, socket, me, restorePromise, refreshIdentityEmailState } = context;
+  const { io, socket, me, restorePromise } = context;
   await restorePromise;
-  await refreshIdentityEmailState();
   if (!(await socketAllowed('join', me.key, 20, 60))) {
     ack?.({ code: 'RATE_LIMITED' });
     return;
@@ -273,9 +269,6 @@ export async function handleRoomJoin(
       return { role: 'player' as const, room, existing: true };
     }
     const existingSpectator = room.spectators.find((candidate) => candidate.key === me.key);
-    if (room.verifiedOnly && me.key !== room.hostKey && !me.emailVerified) {
-      return { code: 'ROOM_VERIFIED_EMAIL_ONLY' };
-    }
     const asSpectator = Boolean(
       existingSpectator || payload.spectate || room.status !== 'waiting' || room.players.length >= room.maxPlayers
     );

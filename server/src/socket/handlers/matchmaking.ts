@@ -33,7 +33,6 @@ import { setLocalTimer } from '../timers';
 import { SocketEventContext, SocketLifecycle } from './context';
 
 type MatchmakingEventContext = SocketEventContext & {
-  refreshIdentityEmailState: () => Promise<void>;
   lifecycle: SocketLifecycle;
 };
 
@@ -42,9 +41,8 @@ export async function handleMatchStart(
   payload: z.infer<typeof matchStartPayloadSchema>,
   ack?: SocketAck
 ): Promise<void> {
-  const { io, socket, me, restorePromise, refreshIdentityEmailState, lifecycle } = context;
+  const { io, socket, me, restorePromise, lifecycle } = context;
   await restorePromise;
-  await refreshIdentityEmailState();
   if (!(await socketAllowed('match', me.key, 10, 60))) {
     ack?.({ code: 'RATE_LIMITED' });
     return;
@@ -58,9 +56,9 @@ export async function handleMatchStart(
     });
     return;
   }
-  if (!me.userId || !me.emailVerified) {
+  if (!me.userId) {
     await cancelQueue(me.key);
-    ack?.({ code: 'EMAIL_VERIFICATION_REQUIRED' });
+    ack?.({ code: 'AUTH_REQUIRED' });
     return;
   }
   const cooldown = await getMatchmakingCooldown(me.key);
@@ -142,7 +140,6 @@ export async function handleMatchStart(
     rematchAcceptedKeys: [],
     rematchRequiredKeys: [],
     allowSpectators: false,
-    verifiedOnly: true,
     anonymous: Boolean(queuedMe.anonymous || opponent.anonymous),
     round: 0,
     players: [

@@ -11,7 +11,6 @@ import {
   Gamepad2,
   Globe,
   BarChart3,
-  MailWarning,
   LogIn,
   LogOut,
   Wrench,
@@ -94,18 +93,6 @@ export default function Home() {
           <LanguageSelect />
           <span className="personal-settings-anchor">
             <PersonalSettings open={settingsOpen} onOpenChange={setSettingsOpen} />
-            {initialized && user?.email && !user.emailVerified && (
-              <button
-                type="button"
-                className="email-verification-reminder"
-                onClick={() => setSettingsOpen(true)}
-                aria-label={t('home.emailVerificationReminder')}
-                data-umami-event="home-email-verification-reminder"
-              >
-                <MailWarning size={15} aria-hidden="true" />
-                <span>{t('home.emailVerificationReminder')}</span>
-              </button>
-            )}
           </span>
           <ThemeToggle />
           {!initialized ? (

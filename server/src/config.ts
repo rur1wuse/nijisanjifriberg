@@ -27,10 +27,6 @@ const configuredPowDifficulty = Number(process.env.POW_DIFFICULTY || 17);
 const configuredPowRegisterDifficulty = Number(
   process.env.POW_REGISTER_DIFFICULTY || Math.min(24, configuredPowDifficulty + 2)
 );
-const configuredEmailAllowedSuffixes = (process.env.EMAIL_ALLOWED_SUFFIXES || '')
-  .split(',')
-  .map((suffix) => suffix.trim().toLowerCase().replace(/^@/, ''))
-  .filter(Boolean);
 const configuredDisplayIdForbiddenTokens = (process.env.DISPLAY_ID_FORBIDDEN_TOKENS ?? '')
   .split(',')
   .map((token) => token.trim().toUpperCase())
@@ -78,17 +74,6 @@ export const config = {
     Number.isInteger(configuredAdminImportBodyLimitBytes) && configuredAdminImportBodyLimitBytes >= 64 * 1024
       ? configuredAdminImportBodyLimitBytes
       : 2 * 1024 * 1024,
-  email: {
-    host: process.env.EMAIL_SMTP_HOST?.trim() || '',
-    port: Number(process.env.EMAIL_SMTP_PORT || 587),
-    secure: process.env.EMAIL_SMTP_SECURE === 'true',
-    startTls: process.env.EMAIL_SMTP_STARTTLS !== 'false',
-    username: process.env.EMAIL_SMTP_USERNAME?.trim() || '',
-    password: process.env.EMAIL_SMTP_PASSWORD || '',
-    from: process.env.EMAIL_FROM?.trim() || '',
-    allowedSuffixes: configuredEmailAllowedSuffixes,
-    verifyTtlSeconds: Math.max(300, Number(process.env.EMAIL_VERIFY_TTL_SECONDS || 1800)),
-  },
   turnstile: {
     enabled: Boolean(configuredTurnstileSiteKey && configuredTurnstileSecretKey),
     siteKey: configuredTurnstileSiteKey,

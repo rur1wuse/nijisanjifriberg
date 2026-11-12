@@ -532,16 +532,6 @@
 .settings-switch:checked { border-color: var(--primary); background: var(--primary); }
 .settings-switch:checked::after { transform: translateX(20px); background: #fff; }
 .settings-switch:focus-visible { outline: 3px solid var(--primary-soft); outline-offset: 2px; }
-.settings-email {
-  display: grid;
-  gap: 12px;
-  margin-top: 22px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border);
-}
-.settings-email .settings-option-label { font-size: 1.05rem; }
-.settings-email .input { min-height: 46px; font-size: 1rem; }
-.settings-email .btn { min-height: 44px; justify-self: start; }
 .announcement-popup-dialog { width: min(560px, 100%); }
 .confirm-content > .announcement-popup-content {
   max-height: min(52dvh, 420px);

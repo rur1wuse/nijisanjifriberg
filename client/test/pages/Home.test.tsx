@@ -1,43 +1,20 @@
 import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { api } from '../../src/api/client';
 import { useAuth } from '../../src/store/auth';
 import { renderAtRoute } from '../render';
 import Home from '../../src/pages/Home';
 
-const apiGet = vi.hoisted(() => vi.fn());
-
 vi.mock('../../src/api/client', () => ({
-  api: { get: apiGet, post: vi.fn() },
+  api: { get: vi.fn(), post: vi.fn() },
   errMsg: vi.fn(() => '请求失败'),
 }));
 
-describe('Home email verification reminder', () => {
+describe('Home', () => {
   beforeEach(() => {
-    const user = {
-      id: 7,
-      username: 'tester',
-      role: 'user' as const,
-      email: 'tester@example.com',
-      emailVerified: false,
-    };
-    useAuth.setState({ user, initialized: true });
-    apiGet.mockReset();
-    apiGet.mockResolvedValue({ data: { user } });
-  });
-
-  it('shows the reminder and opens personal settings when clicked', async () => {
-    const user = userEvent.setup();
-    renderAtRoute(<Home />);
-
-    const reminder = screen.getByRole('button', { name: '邮箱尚未验证，点击设置完成验证' });
-    expect(reminder).toBeInTheDocument();
-
-    await user.click(reminder);
-
-    expect(await screen.findByRole('dialog', { name: '个人设置' })).toBeInTheDocument();
-    expect(api.get).toHaveBeenCalledWith('/auth/me');
+    useAuth.setState({
+      user: { id: 7, username: 'tester', role: 'user' },
+      initialized: true,
+    });
   });
 
   it('places the daily challenge as the first home menu entry', () => {
@@ -54,29 +31,5 @@ describe('Home email verification reminder', () => {
     expect(screen.queryByRole('link', { name: /更新公告/ })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /友情链接/ })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /B站/ })).not.toBeInTheDocument();
-  });
-
-  it.each([
-    ['verified email', { email: 'tester@example.com', emailVerified: true }],
-    ['no email', { email: null, emailVerified: false }],
-    ['guest', null],
-  ])('does not show the reminder for %s', (_label, emailState) => {
-    if (emailState) {
-      useAuth.setState({
-        user: {
-          id: 7,
-          username: 'tester',
-          role: 'user',
-          ...emailState,
-        },
-        initialized: true,
-      });
-    } else {
-      useAuth.setState({ user: null, initialized: true });
-    }
-
-    renderAtRoute(<Home />);
-
-    expect(screen.queryByRole('button', { name: /邮箱尚未验证/ })).not.toBeInTheDocument();
   });
 });

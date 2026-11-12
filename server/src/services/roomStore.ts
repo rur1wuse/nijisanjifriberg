@@ -26,7 +26,6 @@ export interface StoredIdentity {
   key: string;
   userId: number | null;
   name: string;
-  emailVerified?: boolean;
 }
 
 export interface QueuedIdentity extends StoredIdentity {
@@ -140,7 +139,6 @@ export interface StoredRoom {
   rematchAcceptedKeys: string[];
   rematchRequiredKeys: string[];
   allowSpectators: boolean;
-  verifiedOnly: boolean;
   anonymous: boolean;
   round: number;
   players: StoredPlayer[];
@@ -258,7 +256,6 @@ function normalizeRoom(room: StoredRoom): StoredRoom {
   if (!Array.isArray(room.players)) room.players = [];
   if (!Array.isArray(room.spectators)) room.spectators = [];
   if (typeof room.allowSpectators !== 'boolean') room.allowSpectators = false;
-  if (typeof room.verifiedOnly !== 'boolean') room.verifiedOnly = false;
   if (typeof room.anonymous !== 'boolean') room.anonymous = false;
   if (typeof room.matchmaking !== 'boolean') room.matchmaking = false;
   if (!['classic', 'relay', 'relay2v2'].includes(room.gameMode)) room.gameMode = 'classic';

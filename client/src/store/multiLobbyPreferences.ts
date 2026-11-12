@@ -27,7 +27,6 @@ export interface MultiLobbyPreferences {
   boType: number;
   maxPlayers: number;
   allowSpectators: boolean;
-  verifiedEmailOnly: boolean;
   maxGuesses: number;
   guessIntervalSeconds: number;
   roundDurationSeconds: number;
@@ -42,7 +41,6 @@ export interface MultiLobbyPreset {
   boType: number;
   maxPlayers: number;
   allowSpectators: boolean;
-  verifiedEmailOnly: boolean;
   maxGuesses: number;
   guessIntervalSeconds: number;
   roundDurationSeconds: number;
@@ -64,7 +62,6 @@ function isValidPreset(value: unknown, availableDifficulties: readonly string[])
       : MAX_CLASSIC_MULTI_PLAYERS)
     && (preset.gameMode !== 'relay2v2' || preset.maxPlayers === 4)
     && typeof preset.allowSpectators === 'boolean'
-    && typeof preset.verifiedEmailOnly === 'boolean'
     && Number.isInteger(preset.maxGuesses) && Number(preset.maxGuesses) >= MIN_MULTI_MAX_GUESSES && Number(preset.maxGuesses) <= MAX_MULTI_MAX_GUESSES
     && typeof preset.guessIntervalSeconds === 'number' && Number.isFinite(preset.guessIntervalSeconds)
     && preset.guessIntervalSeconds >= MIN_MULTI_GUESS_INTERVAL_SECONDS && preset.guessIntervalSeconds <= MAX_MULTI_GUESS_INTERVAL_SECONDS
@@ -107,7 +104,6 @@ export function loadMultiLobbyPreferences(
     boType: 3,
     maxPlayers: 2,
     allowSpectators: false,
-    verifiedEmailOnly: false,
     maxGuesses: DEFAULT_MULTI_MAX_GUESSES,
     guessIntervalSeconds: DEFAULT_MULTI_GUESS_INTERVAL_SECONDS,
     roundDurationSeconds: DEFAULT_MULTI_ROUND_DURATION_SECONDS,
@@ -142,9 +138,6 @@ export function loadMultiLobbyPreferences(
       allowSpectators: typeof stored.allowSpectators === 'boolean'
         ? stored.allowSpectators
         : defaults.allowSpectators,
-      verifiedEmailOnly: typeof stored.verifiedEmailOnly === 'boolean'
-        ? stored.verifiedEmailOnly
-        : defaults.verifiedEmailOnly,
       maxGuesses: Number.isInteger(stored.maxGuesses)
         && Number(stored.maxGuesses) >= MIN_MULTI_MAX_GUESSES
         && Number(stored.maxGuesses) <= MAX_MULTI_MAX_GUESSES

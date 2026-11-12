@@ -39,7 +39,6 @@ export interface AdminUser {
   leaderboardHidden: boolean;
   matchmakingRestricted: boolean;
   email: string | null;
-  emailVerified: boolean;
   banned: boolean;
   createdAt: string;
 }
@@ -197,7 +196,7 @@ export function GuestDetailDialog({ guest, onClose, onGuestChange }: { guest: Ad
     } catch (error) { toast.error(errMsg(error)); }
     finally { setUpdating(false); }
   };
-  const fakeUser: AdminUser = { id: guest.id, username: guest.displayId, displayId: guest.displayId, role: 'user', leaderboardHidden: false, matchmakingRestricted: false, email: null, emailVerified: false, banned: guest.banned, createdAt: guest.createdAt };
+  const fakeUser: AdminUser = { id: guest.id, username: guest.displayId, displayId: guest.displayId, role: 'user', leaderboardHidden: false, matchmakingRestricted: false, email: null, banned: guest.banned, createdAt: guest.createdAt };
   return <ModalPortal><div className="admin-player-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><div className="admin-player-dialog admin-user-detail-dialog" role="dialog" aria-modal="true" aria-labelledby="admin-guest-detail-title">
     <div className="admin-player-dialog-heading"><div><h2 id="admin-guest-detail-title">{t('admin.guestDetail')}</h2><p>{guest.displayId}</p></div><button className="confirm-close" type="button" aria-label={t('common.close')} onClick={onClose}><X size={18} /></button></div>
     <div className="admin-user-detail-tabs admin-guest-detail-tabs" role="tablist" aria-label={t('admin.guestDetail')}>
@@ -377,7 +376,7 @@ function QuickManagementTab({
 }) {
   const { t } = useTranslation();
   return <div className="admin-quick-management">
-    <div className="admin-user-leaderboard-control"><div><strong>{t('admin.email')}</strong><span>{user.email ? `${user.email} · ${user.emailVerified ? t('admin.emailVerified') : t('admin.emailUnverified')}` : t('admin.noEmail')}</span></div></div>
+    <div className="admin-user-leaderboard-control"><div><strong>{t('admin.email')}</strong><span>{user.email || t('admin.noEmail')}</span></div></div>
     <div className="admin-user-leaderboard-control"><div><strong>{t('admin.banStatus')}</strong></div><label className="admin-user-leaderboard-toggle"><input type="checkbox" checked={user.banned} disabled={banUpdating} onChange={(event) => onBan(event.target.checked)} /><span>{user.banned ? t('admin.banned') : t('admin.notBanned')}</span></label></div>
     <div className="admin-user-leaderboard-control"><div><strong>{t('admin.matchmakingRestriction')}</strong></div><label className="admin-user-leaderboard-toggle"><input type="checkbox" checked={user.matchmakingRestricted} disabled={restrictionUpdating} onChange={(event) => onRestriction(event.target.checked)} /><span>{user.matchmakingRestricted ? t('admin.matchmakingRestricted') : t('admin.matchmakingNormal')}</span></label></div>
     <div className="admin-user-leaderboard-control"><div><strong>{t('admin.leaderboardVisibility')}</strong></div><label className="admin-user-leaderboard-toggle"><input type="checkbox" checked={!user.leaderboardHidden} disabled={visibilityUpdating} onChange={(event) => onVisibility(!event.target.checked)} /><span>{user.leaderboardHidden ? t('admin.leaderboardHidden') : t('admin.leaderboardVisible')}</span></label></div>
@@ -515,7 +514,7 @@ export default function AdminUsers() {
     { key: 'username', title: t('admin.username') },
     { key: 'displayId', title: t('admin.anonymousId') },
     { key: 'role', title: t('admin.permission'), render: (user) => user.role === 'admin' ? t('admin.adminRole') : t('admin.userRole') },
-    { key: 'email', title: t('auth.emailOptional'), render: (user) => user.email ? <span>{user.email}{user.emailVerified ? ' ✓' : ''}</span> : '-' },
+    { key: 'email', title: t('admin.email'), render: (user) => user.email ? <span>{user.email}</span> : '-' },
     { key: 'banned', title: t('admin.banStatus'), render: (user) => <Badge text={user.banned ? t('admin.banned') : t('admin.notBanned')} color={user.banned ? 'gray' : 'green'} /> },
     { key: 'leaderboardHidden', title: t('admin.leaderboardStatus'), render: (user) => <Badge text={user.leaderboardHidden ? t('admin.leaderboardHidden') : t('admin.leaderboardVisible')} color={user.leaderboardHidden ? 'gray' : 'green'} /> },
     { key: 'createdAt', title: t('admin.createdAt'), render: (user) => formatDate(user.createdAt) },

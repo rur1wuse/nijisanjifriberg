@@ -2,7 +2,6 @@ import { createBrowserRouter, Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from './store/auth';
 import Home from './pages/Home';
 import Login from './pages/Login';
-import EmailVerify from './pages/EmailVerify';
 import Search from './pages/Search';
 import SingleGame from './pages/SingleGame';
 import SingleLobby from './pages/SingleLobby';
@@ -42,7 +41,6 @@ export const router = createBrowserRouter([
     children: [
       { path: '/', element: <Home /> },
       { path: '/login', element: <Login /> },
-      { path: '/email-verify', element: <EmailVerify /> },
       { path: '/search', element: <Search /> },
       { path: '/single', element: <SingleLobby /> },
       { path: '/single/:mode', element: <SingleGame /> },
