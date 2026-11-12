@@ -23,6 +23,17 @@ class ParseTests(unittest.TestCase):
         self.assertEqual(collabs[0]['members'], ['月ノ美兎', 'ましろ'])
         self.assertEqual(collabs[1]['members'], ['月ノ美兎', '剣持刀也', 'ましろ'])
 
+    def test_parse_collabs_strips_member_footnote_markers(self):
+        html = (
+            '<table><tr><td>3</td><td>ROF-MAO(ろふまお)</td><td></td>'
+            '<td>加賀美ハヤト, 不破湊, <a>甲斐田晴</a>'
+            '<a class="note_super">*161</a></td></tr></table>'
+        )
+        collabs = cp.parse_collabs(html)
+        self.assertEqual(
+            collabs[0]['members'], ['加賀美ハヤト', '不破湊', '甲斐田晴']
+        )
+
     def test_strip_marker(self):
         self.assertEqual(cp.strip_marker('ACDC*21'), 'ACDC')
         self.assertEqual(cp.strip_marker(' テスト*3 '), 'テスト')

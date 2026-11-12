@@ -60,7 +60,8 @@ def parse_collabs(page_html: str) -> list[dict]:
             size, name, detail, members_raw = cells[0], cells[1], cells[2], cells[3]
             if not re.fullmatch(r'\d+', size.strip()):
                 continue
-            members = [member.strip() for member in re.split(r'[,、，]', members_raw) if member.strip()]
+            members = [strip_marker(member) for member in re.split(r'[,、，]', members_raw)]
+            members = [member for member in members if member]
             if not members:
                 continue
             collabs.append({

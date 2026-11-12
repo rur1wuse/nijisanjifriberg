@@ -14,6 +14,8 @@ import json
 import re
 from pathlib import Path
 
+from collab_parse import resolve_member
+
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / 'docs' / 'niji' / '.data'
 OUT = ROOT / 'docs' / 'niji'
@@ -247,7 +249,7 @@ def render_collabs(roster_names: list[str], collabs: list[dict]) -> str:
     by_member = {}
     for c in collabs:
         for m in c['members']:
-            by_member.setdefault(m, []).append(c)
+            by_member.setdefault(resolve_member(m, names) or m, []).append(c)
     for old, new in aliases.items():
         if new in by_member and old not in by_member:
             by_member[old] = by_member[new]
@@ -268,7 +270,7 @@ def render_collabs(roster_names: list[str], collabs: list[dict]) -> str:
     out.append('|---:|---:|---|---|')
     for i, c in enumerate(collabs, 1):
         members = ', '.join(clean(m) for m in c['members'])
-        in_roster = sum(1 for m in c['members'] if m in names)
+        in_roster = sum(1 for m in c['members'] if resolve_member(m, names))
         out.append(
             f"| {i} | {c['size']} | {clean(c['name'])} | "
             f"{members} ({in_roster}/{len(c['members'])} 在名单内) |"

@@ -250,7 +250,7 @@ def main() -> int:
         print('[collab-sync] aborted without writing files', file=sys.stderr)
         return 2
 
-    if args.write and changes:
+    if args.write:
         change_by_nickname = {change['nickname']: change for change in changes}
         for player in players:
             change = change_by_nickname.get(str(player['nickname']))
