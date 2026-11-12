@@ -140,6 +140,33 @@ node ../scripts/niji/ui-verify.cjs                                 # 浏览器 U
 ../server/node_modules/.bin/tsx ../scripts/niji/check-i18n-keys.ts  # 三语 key 一致性
 ```
 
+### 组合数据自动同步
+
+`.github/workflows/collab-sync.yml` 每约两天抓取一次 wikiwiki 的
+「コラボ一覧表」，与 `server/src/db/seeds/players.json` 比对后自动开 PR
+（不会自动合并；只更新 `collab_groups`，不新增选手、不改其它字段）。
+
+本地运行（需要 Python 3 和 `pip install -r scripts/niji/requirements.txt`）：
+
+```bash
+python scripts/niji/sync_collabs.py                 # 只报告 diff，不写文件
+python scripts/niji/sync_collabs.py --write         # 写回 seeds / collabs.md / 脚注表
+python -m unittest discover -s scripts/niji -p "test_*.py"
+```
+
+PR 合并**不会**直接更新生产库。部署后需要执行一次组合同步（`update.sh`
+会自动跑，设置 `APPLY_COLLAB_SYNC=0` 可跳过）：
+
+```bash
+docker compose run --rm --no-deps apply-collabs                                  # dry-run
+docker compose run --rm --no-deps apply-collabs server/dist/db/applyCollabGroups.js --apply
+```
+
+自动 PR 使用仓库 `GITHUB_TOKEN` 时不会触发 `docker.yml` 的测试/构建；在
+仓库 secrets 中配置 `COLLAB_SYNC_TOKEN`（细粒度 PAT，含 contents /
+pull_requests / workflows 写权限）后即可获得正常的 CI 检查。GitHub 在仓库
+连续 60 天无活动后会暂停定时工作流，长期没有其它提交时手动 dispatch 一次即可。
+
 ## Docker 生产部署
 
 生产镜像为 PostgreSQL 专用的精简构建（distroless 运行时，不含 Rust、pnpm、TypeScript、Vite、源码与测试）。GitHub Actions 自动执行测试、编译、构建 `linux/amd64` 镜像并发布到 GHCR。

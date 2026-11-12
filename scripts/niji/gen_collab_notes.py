@@ -78,12 +78,7 @@ def parse_notes(page_html: str) -> dict[str, str]:
     return {key: '；'.join(texts) for key, texts in notes.items()}
 
 
-def main() -> None:
-    html = fetch('コラボ一覧表', cache_name='collabs')
-    if not html:
-        raise SystemExit('collab fetch failed')
-    raw_notes = parse_notes(html)
-
+def write_note_files(raw_notes: dict[str, str]) -> tuple[Path, Path]:
     SERVER_OUT.parent.mkdir(parents=True, exist_ok=True)
     SERVER_OUT.write_text(
         json.dumps(dict(sorted(raw_notes.items())), ensure_ascii=False, indent=2) + '\n',
@@ -117,6 +112,15 @@ def main() -> None:
 
     print(f'wrote {SERVER_OUT} ({len(raw_notes)} raw notes)')
     print(f'wrote {CLIENT_OUT} ({len(client_notes)} keys)')
+    return SERVER_OUT, CLIENT_OUT
+
+
+def main() -> None:
+    html = fetch('コラボ一覧表', cache_name='collabs')
+    if not html:
+        raise SystemExit('collab fetch failed')
+    raw_notes = parse_notes(html)
+    write_note_files(raw_notes)
 
 
 if __name__ == '__main__':

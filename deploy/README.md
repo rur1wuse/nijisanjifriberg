@@ -340,6 +340,22 @@ docker compose up -d --no-deps app-2
 PostgreSQL 数据位于配置的 `PGDATA_PATH` bind mount，Redis 数据位于命名
 卷中，更换应用镜像不会影响二者。
 
+### 组合数据（collab_groups）同步
+
+`.github/workflows/collab-sync.yml` 会定期抓取 wikiwiki 的组合表并开 PR 更新
+`server/src/db/seeds/players.json`。**合并 PR 本身不会改动生产库**，因为
+`migrate` 只在选手表为空时导入种子。部署后需要单独执行一次组合同步：
+
+```bash
+# 只报告差异，不写库
+docker compose run --rm --no-deps apply-collabs
+# 写入 collab_groups（只动这一列）并广播玩家缓存失效
+docker compose run --rm --no-deps apply-collabs server/dist/db/applyCollabGroups.js --apply
+```
+
+`update.sh` 在滚动更新完成后会自动执行上面两步；组合已一致时 `--apply`
+是幂等的。设置 `APPLY_COLLAB_SYNC=0` 可以跳过这一步。
+
 ## 7. 备份
 
 PostgreSQL：

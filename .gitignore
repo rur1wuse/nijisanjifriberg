@@ -7,6 +7,9 @@ pow-wasm/target/
 .DS_Store
 target/
 *.tsbuildinfo
+__pycache__/
+docs/niji/.cache/
+docs/niji/.data/
 origin/
 data/pgdata/
 .docker-runtime-test/

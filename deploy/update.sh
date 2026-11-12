@@ -151,6 +151,15 @@ for service in ${APP_SERVICES}; do
   update_instance "${service}"
 done
 
+if [[ "${APPLY_COLLAB_SYNC:-1}" == "1" ]]; then
+  log "Checking collab seed data against the database (dry-run)..."
+  compose run --rm --no-deps apply-collabs
+  log "Applying collab seed data..."
+  compose run --rm --no-deps apply-collabs server/dist/db/applyCollabGroups.js --apply
+else
+  log "Skipping collab seed sync (APPLY_COLLAB_SYNC=${APPLY_COLLAB_SYNC:-0})."
+fi
+
 log "Rolling update completed successfully."
 compose ps
 

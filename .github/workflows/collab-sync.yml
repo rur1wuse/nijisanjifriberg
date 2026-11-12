@@ -1,0 +1,90 @@
+name: Collab data sync
+
+on:
+  schedule:
+    # UTC 18:00 = 02:00 Asia/Shanghai. Day-of-month arithmetic is approximate on
+    # purpose: GitHub's scheduler already drifts, and the value is "about every
+    # two days", not an exact 48h timer.
+    - cron: '0 18 */2 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: collab-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: scripts/niji/requirements.txt
+
+      - name: Install scraper dependencies
+        run: python -m pip install -r scripts/niji/requirements.txt
+
+      - name: Test parser
+        run: python -m unittest discover -s scripts/niji -p "test_*.py" -v
+
+      - name: Scrape and diff collab groups
+        run: |
+          rm -rf docs/niji/.cache
+          python scripts/niji/sync_collabs.py --write \
+            --report-json "$RUNNER_TEMP/collab-report.json" \
+            --report-md "$RUNNER_TEMP/collab-report.md"
+
+      - name: Detect changes
+        id: changes
+        run: |
+          if git diff --quiet -- \
+            server/src/db/seeds/players.json \
+            server/src/db/seeds/collabLegacyNotes.json \
+            client/src/config/collabNotes.ts \
+            docs/niji/collabs.md; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish summary
+        if: always()
+        run: |
+          if [ -f "$RUNNER_TEMP/collab-report.md" ]; then
+            cat "$RUNNER_TEMP/collab-report.md" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      # A PR opened with the default GITHUB_TOKEN does not trigger docker.yml,
+      # so the data PR would skip pnpm test/build. Set COLLAB_SYNC_TOKEN to a
+      # fine-grained PAT (contents, pull_requests, workflows: write) to get the
+      # normal CI checks; GITHUB_TOKEN is only a fallback for manual runs.
+      - name: Open or update pull request
+        if: steps.changes.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.COLLAB_SYNC_TOKEN || secrets.GITHUB_TOKEN }}
+          base: main
+          branch: automation/collab-sync
+          delete-branch: true
+          add-paths: |
+            server/src/db/seeds/players.json
+            server/src/db/seeds/collabLegacyNotes.json
+            client/src/config/collabNotes.ts
+            docs/niji/collabs.md
+          title: 'chore(data): 同步 wikiwiki 组合数据'
+          commit-message: 'chore(data): 同步 wikiwiki 组合数据'
+          body-path: ${{ runner.temp }}/collab-report.md
+          author: 'github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>'
+          committer: 'github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>'

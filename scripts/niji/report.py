@@ -14,8 +14,6 @@ import json
 import re
 from pathlib import Path
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
-
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT / 'docs' / 'niji' / '.data'
 OUT = ROOT / 'docs' / 'niji'
@@ -86,6 +84,7 @@ def read_previous_review() -> dict:
 
 
 def main():
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
     roster = json.loads((DATA / 'roster.json').read_text(encoding='utf-8'))
     profiles = json.loads((DATA / 'profiles.json').read_text(encoding='utf-8'))
     wiki = json.loads((DATA / 'wikipedia_debut.json').read_text(encoding='utf-8'))
@@ -236,8 +235,8 @@ def main():
     write_collabs(roster, collabs)
 
 
-def write_collabs(roster, collabs):
-    names = {m['name'] for m in roster}
+def render_collabs(roster_names: list[str], collabs: list[dict]) -> str:
+    names = set(roster_names)
     aliases = COLLAB_NAME_ALIASES
     out = []
     out.append('# 组合关系明细（コラボ一覧表）')
@@ -257,8 +256,7 @@ def write_collabs(roster, collabs):
     out.append('')
     out.append('| 名字 | 组合数 | 组合名（人数） |')
     out.append('|---|---:|---|')
-    for member in roster:
-        name = member['name']
+    for name in roster_names:
         items = by_member.get(name, [])
         detail = ' / '.join(f"{clean(c['name'])}({c['size']})" for c in items)
         out.append(f'| {clean(name)} | {len(items)} | {detail} |')
@@ -276,8 +274,13 @@ def write_collabs(roster, collabs):
             f"{members} ({in_roster}/{len(c['members'])} 在名单内) |"
         )
     out.append('')
+    return '\n'.join(out)
 
-    (OUT / 'collabs.md').write_text('\n'.join(out), encoding='utf-8')
+
+def write_collabs(roster, collabs):
+    (OUT / 'collabs.md').write_text(
+        render_collabs([m['name'] for m in roster], collabs), encoding='utf-8'
+    )
     print(f'wrote {OUT / "collabs.md"} ({len(collabs)} collabs)')
 
     roster_lines = ['# JP 成员名单（メンバーデータ一覧）', '', f'共 {len(roster)} 人。', '',

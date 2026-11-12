@@ -94,6 +94,26 @@ services:
     security_opt:
       - no-new-privileges:true
 
+  apply-collabs:
+    image: ${IMAGE:-ghcr.io/rur1wuse/nijisanjifriberg:latest}
+    restart: "no"
+    init: true
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment: *app-environment
+    command: ["server/dist/db/applyCollabGroups.js"]
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    mem_limit: 192m
+    security_opt:
+      - no-new-privileges:true
+
   app-1:
     <<: *app-service
     ports:

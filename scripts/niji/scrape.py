@@ -28,12 +28,13 @@ import os
 import re
 import json
 import time
-import html as html_module
 import random
 import urllib.parse
 from pathlib import Path
 
 from curl_cffi import requests
+
+from collab_parse import parse_collabs, table_rows
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8', errors='replace')
@@ -51,12 +52,12 @@ _last_request = 0.0
 _session = requests.Session(impersonate='safari')
 
 
-def fetch(page: str, *, cache_name: str | None = None, retries: int = 5) -> str | None:
-    """抓一个 wiki 页面, 带缓存与限速。page 是不含前缀的页面名。"""
+def fetch(page: str, *, cache_name: str | None = None, retries: int = 5, force: bool = False) -> str | None:
+    """抓一个 wiki 页面, 带缓存与限速。page 是不含前缀的页面名。force=True 时忽略已有缓存。"""
     global _last_request
     cache_name = cache_name or re.sub(r'[^\w\-.]', '_', page)
     cache_file = CACHE_DIR / f'{cache_name}.html'
-    if cache_file.exists() and cache_file.stat().st_size > 1000:
+    if not force and cache_file.exists() and cache_file.stat().st_size > 1000:
         return cache_file.read_text(encoding='utf-8', errors='replace')
 
     url = BASE + urllib.parse.quote(page)
@@ -90,26 +91,6 @@ def strip_tags(html: str) -> str:
     html = re.sub(r'<script[\s\S]*?</script>', ' ', html)
     html = re.sub(r'<style[\s\S]*?</style>', ' ', html)
     return html
-
-
-def cell_text(cell: str) -> str:
-    """保留多值: <br> 转 ' / ', 解 HTML 实体, 压缩空白但不合并分隔符。"""
-    text = re.sub(r'<br[^>]*>', ' / ', cell)
-    text = re.sub(r'<[^>]+>', '', text)
-    text = html_module.unescape(text)
-    text = text.replace('\u3000', ' ')
-    text = re.sub(r'[ \t]+', ' ', text)
-    return text.strip()
-
-
-def table_rows(table_html: str):
-    """把 <table> 拆成 [[cell, cell, ...], ...]"""
-    rows = []
-    for row in re.findall(r'<tr[^>]*>([\s\S]*?)</tr>', table_html):
-        cells = re.findall(r'<t[dh][^>]*>([\s\S]*?)</t[dh]>', row)
-        if cells:
-            rows.append([cell_text(c) for c in cells])
-    return rows
 
 
 # ---------------------------------------------------------------- roster
@@ -245,28 +226,7 @@ def scrape_collabs() -> None:
     html = fetch('コラボ一覧表', cache_name='collabs')
     if not html:
         raise SystemExit('collab fetch failed')
-    body = strip_tags(html)
-
-    tables = re.findall(r'<table[\s\S]*?</table>', body)
-    collabs = []
-    for ti, table in enumerate(tables):
-        for cells in table_rows(table):
-            if len(cells) < 4 or cells[0] in ('人数', ''):
-                continue
-            size, name, detail, members_raw = cells[0], cells[1], cells[2], cells[3]
-            if not re.fullmatch(r'\d+', size.strip()):
-                continue
-            members = [m.strip() for m in re.split(r'[,、，]', members_raw) if m.strip()]
-            if not members:
-                continue
-            collabs.append({
-                'table_index': ti,
-                'size': int(size),
-                'name': name.strip(),
-                'detail': detail.strip(),
-                'members': members,
-                'raw_name': name.strip(),
-            })
+    collabs = parse_collabs(html)
 
     (DATA_DIR / 'collabs.json').write_text(
         json.dumps(collabs, ensure_ascii=False, indent=2), encoding='utf-8'
