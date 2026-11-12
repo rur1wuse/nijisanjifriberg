@@ -8,6 +8,7 @@ if (configuredVersion && !/^\d{13}$/.test(configuredVersion)) {
 }
 const resourceVersion = configuredVersion || String(Date.now());
 process.env.VITE_RESOURCE_VERSION = resourceVersion;
+const backendPort = process.env.PORT || '3000';
 
 export default defineConfig({
   plugins: [
@@ -40,8 +41,8 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      '/api': 'http://localhost:3000',
-      '/socket.io': { target: 'http://localhost:3000', ws: true },
+      '/api': `http://localhost:${backendPort}`,
+      '/socket.io': { target: `http://localhost:${backendPort}`, ws: true },
     },
   },
   build: {
