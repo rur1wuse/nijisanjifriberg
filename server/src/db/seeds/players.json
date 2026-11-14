@@ -1,6 +1,7 @@
 [
   {
     "nickname": "月ノ美兎",
+    "region": "jp",
     "name_zh": "月之美兔",
     "gender": "女",
     "debut_date": "2018-02-08",
@@ -116,6 +117,7 @@
   },
   {
     "nickname": "える",
+    "region": "jp",
     "name_zh": "艾露",
     "gender": "女",
     "debut_date": "2018-02-08",
@@ -362,6 +364,7 @@
   },
   {
     "nickname": "樋口楓",
+    "region": "jp",
     "name_zh": "樋口枫",
     "gender": "女",
     "debut_date": "2018-02-08",
@@ -575,6 +578,7 @@
   },
   {
     "nickname": "静凛",
+    "region": "jp",
     "name_zh": "静凛",
     "gender": "女",
     "debut_date": "2018-02-08",
@@ -643,6 +647,7 @@
   },
   {
     "nickname": "渋谷ハジメ",
+    "region": "jp",
     "name_zh": "涩谷初",
     "gender": "男",
     "debut_date": "2018-02-08",
@@ -769,6 +774,7 @@
   },
   {
     "nickname": "モイラ",
+    "region": "jp",
     "name_zh": "摩伊拉",
     "gender": "女",
     "debut_date": "2018-02-08",
@@ -826,6 +832,7 @@
   },
   {
     "nickname": "宇志海いちご",
+    "region": "jp",
     "name_zh": "宇志海莓",
     "gender": "女",
     "debut_date": "2018-03-15",
@@ -925,6 +932,7 @@
   },
   {
     "nickname": "家長むぎ",
+    "region": "jp",
     "name_zh": "家长麦",
     "gender": "女",
     "debut_date": "2018-03-15",
@@ -982,6 +990,7 @@
   },
   {
     "nickname": "夕陽リリ",
+    "region": "jp",
     "name_zh": "夕阳莉莉",
     "gender": "女",
     "debut_date": "2018-03-15",
@@ -1160,6 +1169,7 @@
   },
   {
     "nickname": "物述有栖",
+    "region": "jp",
     "name_zh": "物述有栖",
     "gender": "女",
     "debut_date": "2018-03-15",
@@ -1236,6 +1246,7 @@
   },
   {
     "nickname": "文野環",
+    "region": "jp",
     "name_zh": "文野环",
     "gender": "女",
     "debut_date": "2018-03-15",
@@ -1360,6 +1371,7 @@
   },
   {
     "nickname": "伏見ガク",
+    "region": "jp",
     "name_zh": "伏见学",
     "gender": "男",
     "debut_date": "2018-03-06",
@@ -1535,6 +1547,7 @@
   },
   {
     "nickname": "ギルザレンIII世",
+    "region": "jp",
     "name_zh": "吉尔扎伦三世",
     "gender": "男",
     "debut_date": "2018-03-15",
@@ -1583,6 +1596,7 @@
   },
   {
     "nickname": "剣持刀也",
+    "region": "jp",
     "name_zh": "剑持刀也",
     "gender": "男",
     "debut_date": "2018-03-15",
@@ -1737,6 +1751,7 @@
   },
   {
     "nickname": "森中花咲",
+    "region": "jp",
     "name_zh": "森中花咲",
     "gender": "女",
     "debut_date": "2018-03-15",
@@ -1903,6 +1918,7 @@
   },
   {
     "nickname": "叶",
+    "region": "jp",
     "name_zh": "叶",
     "gender": "男",
     "debut_date": "2018-05-02",
@@ -2188,6 +2204,7 @@
   },
   {
     "nickname": "赤羽葉子",
+    "region": "jp",
     "name_zh": "赤羽叶子",
     "gender": "女",
     "debut_date": "2018-05-02",
@@ -2270,6 +2287,7 @@
   },
   {
     "nickname": "笹木咲",
+    "region": "jp",
     "name_zh": "笹木咲",
     "gender": "女",
     "debut_date": "2018-07-06",
@@ -2509,6 +2527,7 @@
   },
   {
     "nickname": "本間ひまわり",
+    "region": "jp",
     "name_zh": "本间向日葵",
     "gender": "女",
     "debut_date": "2018-07-06",
@@ -2792,6 +2811,7 @@
   },
   {
     "nickname": "魔界ノりりむ",
+    "region": "jp",
     "name_zh": "魔界之莉莉姆",
     "gender": "女",
     "debut_date": "2018-07-30",
@@ -3003,6 +3023,7 @@
   },
   {
     "nickname": "葛葉",
+    "region": "jp",
     "name_zh": "葛葉",
     "gender": "男",
     "debut_date": "2018-03-08",
@@ -3315,6 +3336,7 @@
   },
   {
     "nickname": "椎名唯華",
+    "region": "jp",
     "name_zh": "椎名唯华",
     "gender": "女",
     "debut_date": "2018-07-30",
@@ -3674,6 +3696,7 @@
   },
   {
     "nickname": "ドーラ",
+    "region": "jp",
     "name_zh": "多拉",
     "gender": "女",
     "debut_date": "2018-06-05",
@@ -3775,6 +3798,7 @@
   },
   {
     "nickname": "轟京子",
+    "region": "jp",
     "name_zh": "轰京子",
     "gender": "女",
     "debut_date": "2018-06-05",
@@ -3856,6 +3880,7 @@
   },
   {
     "nickname": "シスター・クレア",
+    "region": "jp",
     "name_zh": "修女・克蕾雅",
     "gender": "女",
     "debut_date": "2018-06-05",
@@ -3996,6 +4021,7 @@
   },
   {
     "nickname": "花畑チャイカ",
+    "region": "jp",
     "name_zh": "花畑嘉依卡",
     "gender": "男",
     "debut_date": "2018-06-05",
@@ -4327,6 +4353,7 @@
   },
   {
     "nickname": "社築",
+    "region": "jp",
     "name_zh": "社筑",
     "gender": "男",
     "debut_date": "2018-06-05",
@@ -4580,6 +4607,7 @@
   },
   {
     "nickname": "鈴木勝",
+    "region": "jp",
     "name_zh": "铃木胜",
     "gender": "男",
     "debut_date": "2018-06-05",
@@ -4678,6 +4706,7 @@
   },
   {
     "nickname": "緑仙",
+    "region": "jp",
     "name_zh": "绿仙",
     "gender": "性别不明",
     "debut_date": "2018-06-05",
@@ -4821,6 +4850,7 @@
   },
   {
     "nickname": "卯月コウ",
+    "region": "jp",
     "name_zh": "卯月光",
     "gender": "男",
     "debut_date": "2018-06-05",
@@ -4944,6 +4974,7 @@
   },
   {
     "nickname": "神田笑一",
+    "region": "jp",
     "name_zh": "神田笑一",
     "gender": "男",
     "debut_date": "2018-08-09",
@@ -5097,6 +5128,7 @@
   },
   {
     "nickname": "飛鳥ひな",
+    "region": "jp",
     "name_zh": "飞鸟雏",
     "gender": "女",
     "debut_date": "2018-08-09",
@@ -5142,6 +5174,7 @@
   },
   {
     "nickname": "春崎エアル",
+    "region": "jp",
     "name_zh": "春崎艾尔",
     "gender": "男",
     "debut_date": "2018-06-08",
@@ -5238,6 +5271,7 @@
   },
   {
     "nickname": "雨森小夜",
+    "region": "jp",
     "name_zh": "雨森小夜",
     "gender": "女",
     "debut_date": "2018-08-09",
@@ -5259,6 +5293,7 @@
   },
   {
     "nickname": "鷹宮リオン",
+    "region": "jp",
     "name_zh": "鹰宫莉音",
     "gender": "女",
     "debut_date": "2018-08-09",
@@ -5494,6 +5529,7 @@
   },
   {
     "nickname": "舞元啓介",
+    "region": "jp",
     "name_zh": "舞元启介",
     "gender": "男",
     "debut_date": "2018-08-09",
@@ -5682,6 +5718,7 @@
   },
   {
     "nickname": "竜胆尊",
+    "region": "jp",
     "name_zh": "龙胆尊",
     "gender": "女",
     "debut_date": "2018-08-31",
@@ -5804,6 +5841,7 @@
   },
   {
     "nickname": "でびでび・でびる",
+    "region": "jp",
     "name_zh": "德比德比・德比鲁",
     "gender": "性别不明",
     "debut_date": "2018-08-31",
@@ -5997,6 +6035,7 @@
   },
   {
     "nickname": "桜凛月",
+    "region": "jp",
     "name_zh": "樱凛月",
     "gender": "女",
     "debut_date": "2018-08-31",
@@ -6184,6 +6223,7 @@
   },
   {
     "nickname": "町田ちま",
+    "region": "jp",
     "name_zh": "町田千麻",
     "gender": "女",
     "debut_date": "2018-08-31",
@@ -6257,6 +6297,7 @@
   },
   {
     "nickname": "ジョー・力一",
+    "region": "jp",
     "name_zh": "周・力一",
     "gender": "男",
     "debut_date": "2018-08-31",
@@ -6414,6 +6455,7 @@
   },
   {
     "nickname": "ベルモンド・バンデラス",
+    "region": "jp",
     "name_zh": "贝尔蒙德・班德拉斯",
     "gender": "男",
     "debut_date": "2018-09-25",
@@ -6622,6 +6664,7 @@
   },
   {
     "nickname": "矢車りね",
+    "region": "jp",
     "name_zh": "矢车理音",
     "gender": "女",
     "debut_date": "2018-09-25",
@@ -6668,6 +6711,7 @@
   },
   {
     "nickname": "夢追翔",
+    "region": "jp",
     "name_zh": "梦追翔",
     "gender": "男",
     "debut_date": "2018-09-25",
@@ -6812,6 +6856,7 @@
   },
   {
     "nickname": "黒井しば",
+    "region": "jp",
     "name_zh": "黑井柴",
     "gender": "女",
     "debut_date": "2018-09-25",
@@ -6897,6 +6942,7 @@
   },
   {
     "nickname": "夢月ロア",
+    "region": "jp",
     "name_zh": "梦月萝娅",
     "gender": "女",
     "debut_date": "2019-01-17",
@@ -6975,6 +7021,7 @@
   },
   {
     "nickname": "語部紡",
+    "region": "jp",
     "name_zh": "语部纺",
     "gender": "女",
     "debut_date": "2019-01-28",
@@ -6989,6 +7036,7 @@
   },
   {
     "nickname": "戌亥とこ",
+    "region": "jp",
     "name_zh": "戌亥床",
     "gender": "女",
     "debut_date": "2019-03-22",
@@ -7105,6 +7153,7 @@
   },
   {
     "nickname": "アンジュ・カトリーナ",
+    "region": "jp",
     "name_zh": "安洁・卡特莉娜",
     "gender": "女",
     "debut_date": "2019-03-22",
@@ -7236,6 +7285,7 @@
   },
   {
     "nickname": "リゼ・ヘルエスタ",
+    "region": "jp",
     "name_zh": "莉泽・赫露艾斯塔",
     "gender": "女",
     "debut_date": "2019-03-22",
@@ -7374,6 +7424,7 @@
   },
   {
     "nickname": "三枝明那",
+    "region": "jp",
     "name_zh": "三枝明那",
     "gender": "男",
     "debut_date": "2019-04-02",
@@ -7591,6 +7642,7 @@
   },
   {
     "nickname": "愛園愛美",
+    "region": "jp",
     "name_zh": "爱园爱美",
     "gender": "女",
     "debut_date": "2019-04-02",
@@ -7699,6 +7751,7 @@
   },
   {
     "nickname": "鈴原るる",
+    "region": "jp",
     "name_zh": "铃原露露",
     "gender": "女",
     "debut_date": "2019-04-29",
@@ -7735,6 +7788,7 @@
   },
   {
     "nickname": "雪城眞尋",
+    "region": "jp",
     "name_zh": "雪城真寻",
     "gender": "女",
     "debut_date": "2019-04-29",
@@ -7861,6 +7915,7 @@
   },
   {
     "nickname": "エクス・アルビオ",
+    "region": "jp",
     "name_zh": "艾克斯·阿尔比欧",
     "gender": "男",
     "debut_date": "2019-05-17",
@@ -8062,6 +8117,7 @@
   },
   {
     "nickname": "レヴィ・エリファ",
+    "region": "jp",
     "name_zh": "利维·艾莉法",
     "gender": "女",
     "debut_date": "2019-05-17",
@@ -8191,6 +8247,7 @@
   },
   {
     "nickname": "葉山舞鈴",
+    "region": "jp",
     "name_zh": "叶山舞铃",
     "gender": "女",
     "debut_date": "2019-06-19",
@@ -8342,6 +8399,7 @@
   },
   {
     "nickname": "ニュイ・ソシエール",
+    "region": "jp",
     "name_zh": "纽伊·索西艾瑞",
     "gender": "女",
     "debut_date": "2019-06-19",
@@ -8448,6 +8506,7 @@
   },
   {
     "nickname": "葉加瀬冬雪",
+    "region": "jp",
     "name_zh": "叶加濑冬雪",
     "gender": "女",
     "debut_date": "2019-07-03",
@@ -8579,6 +8638,7 @@
   },
   {
     "nickname": "加賀美ハヤト",
+    "region": "jp",
     "name_zh": "加贺美隼人",
     "gender": "男",
     "debut_date": "2019-07-03",
@@ -8771,6 +8831,7 @@
   },
   {
     "nickname": "夜見れな",
+    "region": "jp",
     "name_zh": "夜见蕾娜",
     "gender": "女",
     "debut_date": "2019-07-03",
@@ -8980,6 +9041,7 @@
   },
   {
     "nickname": "アルス・アルマル",
+    "region": "jp",
     "name_zh": "阿露丝·阿尔玛",
     "gender": "女",
     "debut_date": "2019-07-24",
@@ -9148,6 +9210,7 @@
   },
   {
     "nickname": "天宮こころ",
+    "region": "jp",
     "name_zh": "天宫心",
     "gender": "女",
     "debut_date": "2019-08-08",
@@ -9379,6 +9442,7 @@
   },
   {
     "nickname": "エリー・コニファー",
+    "region": "jp",
     "name_zh": "艾莉·柯妮法",
     "gender": "女",
     "debut_date": "2019-08-08",
@@ -9490,6 +9554,7 @@
   },
   {
     "nickname": "ラトナ・プティ",
+    "region": "jp",
     "name_zh": "拉特娜·葡蒂",
     "gender": "女",
     "debut_date": "2019-08-08",
@@ -9619,6 +9684,7 @@
   },
   {
     "nickname": "早瀬走",
+    "region": "jp",
     "name_zh": "早濑走",
     "gender": "女",
     "debut_date": "2019-09-19",
@@ -9707,6 +9773,7 @@
   },
   {
     "nickname": "健屋花那",
+    "region": "jp",
     "name_zh": "健屋花那",
     "gender": "女",
     "debut_date": "2019-09-19",
@@ -9831,6 +9898,7 @@
   },
   {
     "nickname": "シェリン・バーガンディ",
+    "region": "jp",
     "name_zh": "谢林·伯艮第",
     "gender": "男",
     "debut_date": "2019-09-19",
@@ -9903,6 +9971,7 @@
   },
   {
     "nickname": "フミ",
+    "region": "jp",
     "name_zh": "文美",
     "gender": "女",
     "debut_date": "2019-10-17",
@@ -10044,6 +10113,7 @@
   },
   {
     "nickname": "星川サラ",
+    "region": "jp",
     "name_zh": "星川莎拉",
     "gender": "女",
     "debut_date": "2019-10-17",
@@ -10220,6 +10290,7 @@
   },
   {
     "nickname": "山神カルタ",
+    "region": "jp",
     "name_zh": "山神歌流多",
     "gender": "女",
     "debut_date": "2019-10-17",
@@ -10334,6 +10405,7 @@
   },
   {
     "nickname": "えま★おうがすと",
+    "region": "jp",
     "name_zh": "艾玛★奥加斯特",
     "gender": "女",
     "debut_date": "2019-10-31",
@@ -10433,6 +10505,7 @@
   },
   {
     "nickname": "ルイス・キャミー",
+    "region": "jp",
     "name_zh": "路易斯・嘉米",
     "gender": "女",
     "debut_date": "2019-10-31",
@@ -10576,6 +10649,7 @@
   },
   {
     "nickname": "魔使マオ",
+    "region": "jp",
     "name_zh": "魔使真央",
     "gender": "女",
     "debut_date": "2019-10-31",
@@ -10694,6 +10768,7 @@
   },
   {
     "nickname": "不破湊",
+    "region": "jp",
     "name_zh": "不破湊",
     "gender": "男",
     "debut_date": "2019-11-28",
@@ -11036,6 +11111,7 @@
   },
   {
     "nickname": "白雪巴",
+    "region": "jp",
     "name_zh": "白雪巴",
     "gender": "女",
     "debut_date": "2019-11-28",
@@ -11131,6 +11207,7 @@
   },
   {
     "nickname": "ましろ",
+    "region": "jp",
     "name_zh": "真白爻",
     "gender": "男",
     "debut_date": "2019-12-26",
@@ -11202,6 +11279,7 @@
   },
   {
     "nickname": "来栖夏芽",
+    "region": "jp",
     "name_zh": "来栖夏芽",
     "gender": "女",
     "debut_date": "2019-12-26",
@@ -11266,6 +11344,7 @@
   },
   {
     "nickname": "フレン・E・ルスタリオ",
+    "region": "jp",
     "name_zh": "芙莲·E·露丝塔莉欧",
     "gender": "女",
     "debut_date": "2020-01-30",
@@ -11435,6 +11514,7 @@
   },
   {
     "nickname": "イブラヒム",
+    "region": "jp",
     "name_zh": "伊卜拉新",
     "gender": "男",
     "debut_date": "2020-01-30",
@@ -11672,6 +11752,7 @@
   },
   {
     "nickname": "長尾景",
+    "region": "jp",
     "name_zh": "长尾景",
     "gender": "男",
     "debut_date": "2020-04-02",
@@ -11881,6 +11962,7 @@
   },
   {
     "nickname": "弦月藤士郎",
+    "region": "jp",
     "name_zh": "弦月藤士郎",
     "gender": "男",
     "debut_date": "2020-04-02",
@@ -12029,6 +12111,7 @@
   },
   {
     "nickname": "甲斐田晴",
+    "region": "jp",
     "name_zh": "甲斐田晴",
     "gender": "男",
     "debut_date": "2020-04-02",
@@ -12157,6 +12240,7 @@
   },
   {
     "nickname": "空星きらめ",
+    "region": "jp",
     "name_zh": "空星煌",
     "gender": "女",
     "debut_date": "2020-06-30",
@@ -12252,6 +12336,7 @@
   },
   {
     "nickname": "周央サンゴ",
+    "region": "jp",
     "name_zh": "周央珊瑚",
     "gender": "女",
     "debut_date": "2020-08-06",
@@ -12359,6 +12444,7 @@
   },
   {
     "nickname": "東堂コハク",
+    "region": "jp",
     "name_zh": "东堂琥珀",
     "gender": "女",
     "debut_date": "2020-08-06",
@@ -12450,6 +12536,7 @@
   },
   {
     "nickname": "北小路ヒスイ",
+    "region": "jp",
     "name_zh": "北小路翡翠",
     "gender": "女",
     "debut_date": "2020-08-06",
@@ -12555,6 +12642,7 @@
   },
   {
     "nickname": "西園チグサ",
+    "region": "jp",
     "name_zh": "西园千草",
     "gender": "女",
     "debut_date": "2020-08-06",
@@ -12687,6 +12775,7 @@
   },
   {
     "nickname": "ローレン・イロアス",
+    "region": "jp",
     "name_zh": "劳伦·伊罗斯",
     "gender": "男",
     "debut_date": "2021-07-19",
@@ -12804,6 +12893,7 @@
   },
   {
     "nickname": "レオス・ヴィンセント",
+    "region": "jp",
     "name_zh": "雷奥斯·文森特",
     "gender": "男",
     "debut_date": "2021-07-19",
@@ -12957,6 +13047,7 @@
   },
   {
     "nickname": "オリバー・エバンス",
+    "region": "jp",
     "name_zh": "奥利弗·埃文斯",
     "gender": "男",
     "debut_date": "2021-07-19",
@@ -13104,6 +13195,7 @@
   },
   {
     "nickname": "レイン・パターソン",
+    "region": "jp",
     "name_zh": "兰·帕特森",
     "gender": "女",
     "debut_date": "2021-07-19",
@@ -13253,6 +13345,7 @@
   },
   {
     "nickname": "天ヶ瀬むゆ",
+    "region": "jp",
     "name_zh": "天瀬梦愈",
     "gender": "女",
     "debut_date": "2022-03-16",
@@ -13315,6 +13408,7 @@
   },
   {
     "nickname": "先斗寧",
+    "region": "jp",
     "name_zh": "先斗宁",
     "gender": "女",
     "debut_date": "2022-03-16",
@@ -13429,6 +13523,7 @@
   },
   {
     "nickname": "海妹四葉",
+    "region": "jp",
     "name_zh": "海妹四叶",
     "gender": "女",
     "debut_date": "2022-03-16",
@@ -13548,6 +13643,7 @@
   },
   {
     "nickname": "壱百満天原サロメ",
+    "region": "jp",
     "name_zh": "壹百满天原莎乐美",
     "gender": "女",
     "debut_date": "2022-05-21",
@@ -13607,6 +13703,7 @@
   },
   {
     "nickname": "風楽奏斗",
+    "region": "jp",
     "name_zh": "风乐奏斗",
     "gender": "男",
     "debut_date": "2022-07-13",
@@ -13734,6 +13831,7 @@
   },
   {
     "nickname": "渡会雲雀",
+    "region": "jp",
     "name_zh": "渡会云雀",
     "gender": "男",
     "debut_date": "2022-07-13",
@@ -13872,6 +13970,7 @@
   },
   {
     "nickname": "四季凪アキラ",
+    "region": "jp",
     "name_zh": "四季凪圣来",
     "gender": "男",
     "debut_date": "2022-07-13",
@@ -13957,6 +14056,7 @@
   },
   {
     "nickname": "セラフ・ダズルガーデン",
+    "region": "jp",
     "name_zh": "塞拉弗・迪滋加登",
     "gender": "男",
     "debut_date": "2022-07-13",
@@ -14046,6 +14146,7 @@
   },
   {
     "nickname": "Hana Macchia",
+    "region": "id",
     "name_zh": "Hana Macchia",
     "gender": "女",
     "debut_date": "2019-09-13",
@@ -14067,6 +14168,7 @@
   },
   {
     "nickname": "Rai Galilei",
+    "region": "id",
     "name_zh": "Rai Galilei",
     "gender": "男",
     "debut_date": "2019-12-18",
@@ -14103,6 +14205,7 @@
   },
   {
     "nickname": "Layla Alstroemeria",
+    "region": "id",
     "name_zh": "Layla Alstroemeria",
     "gender": "女",
     "debut_date": "2020-03-13",
@@ -14127,6 +14230,7 @@
   },
   {
     "nickname": "Etna Crimson",
+    "region": "id",
     "name_zh": "Etna Crimson",
     "gender": "女",
     "debut_date": "2020-08-07",
@@ -14145,6 +14249,7 @@
   },
   {
     "nickname": "Nagisa Arcinia",
+    "region": "id",
     "name_zh": "Nagisa Arcinia",
     "gender": "女",
     "debut_date": "2020-11-11",
@@ -14163,6 +14268,7 @@
   },
   {
     "nickname": "Derem Kado",
+    "region": "id",
     "name_zh": "Derem Kado",
     "gender": "女",
     "debut_date": "2020-11-11",
@@ -14184,6 +14290,7 @@
   },
   {
     "nickname": "ミン・スゥーハ",
+    "region": "kr",
     "name_zh": "Min Suha",
     "gender": "男",
     "debut_date": "2020-01-23",
@@ -14257,6 +14364,7 @@
   },
   {
     "nickname": "ガオン",
+    "region": "kr",
     "name_zh": "Gaon",
     "gender": "男",
     "debut_date": "2020-01-25",
@@ -14290,6 +14398,7 @@
   },
   {
     "nickname": "ソ・ナギ",
+    "region": "kr",
     "name_zh": "So Nagi",
     "gender": "女",
     "debut_date": "2020-05-22",
@@ -14333,6 +14442,7 @@
   },
   {
     "nickname": "明楽レイ",
+    "region": "kr",
     "name_zh": "Akira Ray",
     "gender": "女",
     "debut_date": "2020-07-31",
@@ -14357,6 +14467,7 @@
   },
   {
     "nickname": "イ・ロハ",
+    "region": "kr",
     "name_zh": "Lee Roha",
     "gender": "女",
     "debut_date": "2020-07-31",
@@ -14396,6 +14507,7 @@
   },
   {
     "nickname": "ヤン・ナリ",
+    "region": "kr",
     "name_zh": "Yang Nari",
     "gender": "女",
     "debut_date": "2020-10-09",
@@ -14465,6 +14577,7 @@
   },
   {
     "nickname": "リュ・ハリ",
+    "region": "kr",
     "name_zh": "Ryu Hari",
     "gender": "女",
     "debut_date": "2020-10-09",
@@ -14495,6 +14608,7 @@
   },
   {
     "nickname": "オ・ジユ",
+    "region": "kr",
     "name_zh": "Oh Jiyu",
     "gender": "女",
     "debut_date": "2020-10-09",
@@ -14528,6 +14642,7 @@
   },
   {
     "nickname": "セフィナ",
+    "region": "kr",
     "name_zh": "Seffyna",
     "gender": "女",
     "debut_date": "2021-04-30",
@@ -14583,6 +14698,7 @@
   },
   {
     "nickname": "ハ・ユン",
+    "region": "kr",
     "name_zh": "Ha Yun",
     "gender": "男",
     "debut_date": "2021-08-25",
@@ -14664,6 +14780,7 @@
   },
   {
     "nickname": "ナ・セラ",
+    "region": "kr",
     "name_zh": "Na Sera",
     "gender": "女",
     "debut_date": "2021-08-25",
@@ -14710,6 +14827,7 @@
   },
   {
     "nickname": "小清水透",
+    "region": "jp",
     "name_zh": "小清水透",
     "gender": "女",
     "debut_date": "2023-01-16",
@@ -14784,6 +14902,7 @@
   },
   {
     "nickname": "獅子堂あかり",
+    "region": "jp",
     "name_zh": "狮子堂灯",
     "gender": "女",
     "debut_date": "2023-01-16",
@@ -14900,6 +15019,7 @@
   },
   {
     "nickname": "鏑木ろこ",
+    "region": "jp",
     "name_zh": "镝木露恋",
     "gender": "女",
     "debut_date": "2023-01-16",
@@ -15041,6 +15161,7 @@
   },
   {
     "nickname": "五十嵐梨花",
+    "region": "jp",
     "name_zh": "五十岚梨花",
     "gender": "女",
     "debut_date": "2023-01-16",
@@ -15151,6 +15272,7 @@
   },
   {
     "nickname": "石神のぞみ",
+    "region": "jp",
     "name_zh": "石神望",
     "gender": "女",
     "debut_date": "2023-01-16",
@@ -15262,6 +15384,7 @@
   },
   {
     "nickname": "ソフィア・ヴァレンタイン",
+    "region": "jp",
     "name_zh": "苏菲娅・瓦纶玎",
     "gender": "女",
     "debut_date": "2023-01-16",
@@ -15366,6 +15489,7 @@
   },
   {
     "nickname": "倉持めると",
+    "region": "jp",
     "name_zh": "仓持妹路特",
     "gender": "女",
     "debut_date": "2023-01-16",
@@ -15506,6 +15630,7 @@
   },
   {
     "nickname": "佐伯イッテツ",
+    "region": "jp",
     "name_zh": "佐伯一彻",
     "gender": "男",
     "debut_date": "2023-03-30",
@@ -15593,6 +15718,7 @@
   },
   {
     "nickname": "赤城ウェン",
+    "region": "jp",
     "name_zh": "赤城文",
     "gender": "男",
     "debut_date": "2023-03-30",
@@ -15692,6 +15818,7 @@
   },
   {
     "nickname": "宇佐美リト",
+    "region": "jp",
     "name_zh": "宇佐美理人",
     "gender": "男",
     "debut_date": "2023-03-30",
@@ -15777,6 +15904,7 @@
   },
   {
     "nickname": "緋八マナ",
+    "region": "jp",
     "name_zh": "绯八舞成",
     "gender": "男",
     "debut_date": "2023-03-30",
@@ -15869,6 +15997,7 @@
   },
   {
     "nickname": "星導ショウ",
+    "region": "jp",
     "name_zh": "星导霄",
     "gender": "男",
     "debut_date": "2023-04-26",
@@ -15981,6 +16110,7 @@
   },
   {
     "nickname": "叢雲カゲツ",
+    "region": "jp",
     "name_zh": "丛云花月",
     "gender": "男",
     "debut_date": "2023-04-26",
@@ -16088,6 +16218,7 @@
   },
   {
     "nickname": "小柳ロウ",
+    "region": "jp",
     "name_zh": "小柳狼",
     "gender": "男",
     "debut_date": "2023-04-26",
@@ -16184,6 +16315,7 @@
   },
   {
     "nickname": "伊波ライ",
+    "region": "jp",
     "name_zh": "伊波雷",
     "gender": "男",
     "debut_date": "2023-04-26",
@@ -16295,6 +16427,7 @@
   },
   {
     "nickname": "立伝都々",
+    "region": "jp",
     "name_zh": "立传都都",
     "gender": "女",
     "debut_date": "2023-11-21",
@@ -16385,6 +16518,7 @@
   },
   {
     "nickname": "栞葉るり",
+    "region": "jp",
     "name_zh": "栞叶琉璃",
     "gender": "女",
     "debut_date": "2023-11-21",
@@ -16437,6 +16571,7 @@
   },
   {
     "nickname": "ミラン・ケストレル",
+    "region": "jp",
     "name_zh": "米兰・凯斯特雷尔",
     "gender": "男",
     "debut_date": "2023-11-21",
@@ -16522,6 +16657,7 @@
   },
   {
     "nickname": "北見遊征",
+    "region": "jp",
     "name_zh": "北见游征",
     "gender": "男",
     "debut_date": "2024-03-12",
@@ -16596,6 +16732,7 @@
   },
   {
     "nickname": "魁星",
+    "region": "jp",
     "name_zh": "魁星",
     "gender": "男",
     "debut_date": "2024-03-12",
@@ -16677,6 +16814,7 @@
   },
   {
     "nickname": "榊ネス",
+    "region": "jp",
     "name_zh": "榊奈司",
     "gender": "男",
     "debut_date": "2024-03-12",
@@ -16764,6 +16902,7 @@
   },
   {
     "nickname": "司賀りこ",
+    "region": "jp",
     "name_zh": "司贺莉子",
     "gender": "女",
     "debut_date": "2024-06-19",
@@ -16876,6 +17015,7 @@
   },
   {
     "nickname": "珠乃井ナナ",
+    "region": "jp",
     "name_zh": "珠乃井南奈",
     "gender": "女",
     "debut_date": "2024-06-19",
@@ -16956,6 +17096,7 @@
   },
   {
     "nickname": "綺沙良",
+    "region": "jp",
     "name_zh": "绮沙良",
     "gender": "女",
     "debut_date": "2024-06-19",
@@ -17031,6 +17172,7 @@
   },
   {
     "nickname": "梢桃音",
+    "region": "jp",
     "name_zh": "梢桃音",
     "gender": "女",
     "debut_date": "2024-06-19",
@@ -17081,6 +17223,7 @@
   },
   {
     "nickname": "ルンルン",
+    "region": "jp",
     "name_zh": "仑仑",
     "gender": "性别不明",
     "debut_date": "2024-06-19",
@@ -17154,6 +17297,7 @@
   },
   {
     "nickname": "七瀬すず菜",
+    "region": "jp",
     "name_zh": "七濑铃菜",
     "gender": "女",
     "debut_date": "2024-08-13",
@@ -17258,6 +17402,7 @@
   },
   {
     "nickname": "早乙女ベリー",
+    "region": "jp",
     "name_zh": "早乙女蓓丽",
     "gender": "女",
     "debut_date": "2024-08-13",
@@ -17391,6 +17536,7 @@
   },
   {
     "nickname": "雲母たまこ",
+    "region": "jp",
     "name_zh": "云母玉子",
     "gender": "女",
     "debut_date": "2024-08-13",
@@ -17492,6 +17638,7 @@
   },
   {
     "nickname": "酒寄颯馬",
+    "region": "jp",
     "name_zh": "酒寄飒马",
     "gender": "男",
     "debut_date": "2024-08-13",
@@ -17557,6 +17704,7 @@
   },
   {
     "nickname": "渚トラウト",
+    "region": "jp",
     "name_zh": "渚托劳特",
     "gender": "男",
     "debut_date": "2024-08-13",
@@ -17647,6 +17795,7 @@
   },
   {
     "nickname": "一橋綾人",
+    "region": "jp",
     "name_zh": "一桥绫人",
     "gender": "男",
     "debut_date": "2025-04-11",
@@ -17697,6 +17846,7 @@
   },
   {
     "nickname": "五木左京",
+    "region": "jp",
     "name_zh": "五木左京",
     "gender": "男",
     "debut_date": "2025-04-11",
@@ -17757,6 +17907,7 @@
   },
   {
     "nickname": "十河ののは",
+    "region": "jp",
     "name_zh": "十河野乃花",
     "gender": "女",
     "debut_date": "2025-08-14",
@@ -17800,6 +17951,7 @@
   },
   {
     "nickname": "夜牛詩乃",
+    "region": "jp",
     "name_zh": "夜牛诗乃",
     "gender": "女",
     "debut_date": "2025-08-14",
@@ -17854,6 +18006,7 @@
   },
   {
     "nickname": "蝸堂みかる",
+    "region": "jp",
     "name_zh": "蜗堂蜜卡露",
     "gender": "女",
     "debut_date": "2025-08-14",
@@ -17911,6 +18064,7 @@
   },
   {
     "nickname": "猫屋敷美紅",
+    "region": "jp",
     "name_zh": "猫屋敷美红",
     "gender": "女",
     "debut_date": "2025-08-14",
@@ -17958,6 +18112,7 @@
   },
   {
     "nickname": "皇れお",
+    "region": "jp",
     "name_zh": "皇怜音",
     "gender": "男",
     "debut_date": "2025-09-17",
@@ -17996,6 +18151,7 @@
   },
   {
     "nickname": "篠宮ゆの",
+    "region": "jp",
     "name_zh": "筱宫优之",
     "gender": "男",
     "debut_date": "2025-09-17",
@@ -18034,6 +18190,7 @@
   },
   {
     "nickname": "城瀬いすみ",
+    "region": "jp",
     "name_zh": "城濑伊澄",
     "gender": "男",
     "debut_date": "2025-09-17",
@@ -18074,6 +18231,7 @@
   },
   {
     "nickname": "花籠つばさ",
+    "region": "jp",
     "name_zh": "花笼翼",
     "gender": "男",
     "debut_date": "2025-09-17",
@@ -18114,6 +18272,7 @@
   },
   {
     "nickname": "白砂あやね",
+    "region": "jp",
     "name_zh": "白砂绫音",
     "gender": "女",
     "debut_date": "2026-01-29",
@@ -18159,6 +18318,7 @@
   },
   {
     "nickname": "水面まどか",
+    "region": "jp",
     "name_zh": "水面円香",
     "gender": "女",
     "debut_date": "2026-01-29",
@@ -18208,6 +18368,7 @@
   },
   {
     "nickname": "男虎",
+    "region": "jp",
     "name_zh": "男虎",
     "gender": "男",
     "debut_date": "2026-04-19",
@@ -18239,6 +18400,7 @@
   },
   {
     "nickname": "九里詠太",
+    "region": "jp",
     "name_zh": "九里咏太",
     "gender": "男",
     "debut_date": "2026-04-19",
@@ -18273,6 +18435,7 @@
   },
   {
     "nickname": "小々波いるか",
+    "region": "jp",
     "name_zh": "小小波衣琉花",
     "gender": "女",
     "debut_date": "2026-04-19",
@@ -18300,6 +18463,7 @@
   },
   {
     "nickname": "千凛あゆむ",
+    "region": "jp",
     "name_zh": "千凛步",
     "gender": "女",
     "debut_date": "2026-04-19",
@@ -18331,6 +18495,7 @@
   },
   {
     "nickname": "塚原大地",
+    "region": "jp",
     "name_zh": "塚原大地",
     "gender": "男",
     "debut_date": "2026-04-19",
@@ -18366,6 +18531,7 @@
   },
   {
     "nickname": "御子神琴音",
+    "region": "jp",
     "name_zh": "御子神琴音",
     "gender": "女",
     "debut_date": "2026-04-19",
@@ -18400,6 +18566,7 @@
   },
   {
     "nickname": "Rei7",
+    "region": "jp",
     "name_zh": "Rei7",
     "gender": "女",
     "debut_date": "2026-04-19",
@@ -18438,6 +18605,7 @@
   },
   {
     "nickname": "レヨン",
+    "region": "jp",
     "name_zh": "芮昂",
     "gender": "男",
     "debut_date": "2026-04-19",
@@ -18469,6 +18637,7 @@
   },
   {
     "nickname": "ぷりん・らら・もーど",
+    "region": "jp",
     "name_zh": "布琳・拉拉・莫德",
     "gender": "女",
     "debut_date": "2026-07-21",
@@ -18497,6 +18666,7 @@
   },
   {
     "nickname": "ぽめろ・ぱんち",
+    "region": "jp",
     "name_zh": "波美洛・潘趣",
     "gender": "女",
     "debut_date": "2026-07-21",
@@ -18522,6 +18692,7 @@
   },
   {
     "nickname": "神永タイガ",
+    "region": "jp",
     "name_zh": "神永大雅",
     "gender": "男",
     "debut_date": "2026-08-27",
@@ -18543,6 +18714,7 @@
   },
   {
     "nickname": "山田龍一郎",
+    "region": "jp",
     "name_zh": "山田龙一郎",
     "gender": "男",
     "debut_date": "2026-08-27",

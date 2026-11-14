@@ -1,4 +1,5 @@
-import { getDifficultyPlayers, pickCachedTarget } from './playerCache';
+import { filterPlayersByRegions, getDifficultyPlayers, pickCachedTarget } from './playerCache';
+import { ALL_REGIONS, RegionKey } from '../regions';
 import { evalStateScript, redisKey, redisState } from '../redis';
 import type { Player } from '../types';
 
@@ -93,11 +94,13 @@ async function recentEntries(
 
 export async function pickTargetAvoidingRecent(input: {
   mode: string;
+  regions?: readonly RegionKey[];
   identities: readonly string[];
   hardExcludedIds?: readonly number[];
   now?: number;
 }): Promise<Player | null> {
-  const pool = getDifficultyPlayers(input.mode);
+  const regions = input.regions ?? ALL_REGIONS;
+  const pool = filterPlayersByRegions(getDifficultyPlayers(input.mode), regions);
   if (!pool.length) return null;
   const poolIds = new Set(pool.map((player) => player.id));
   const hardExcluded = new Set(
@@ -123,7 +126,7 @@ export async function pickTargetAvoidingRecent(input: {
   const excluded = withoutHardExclusions.length
     ? new Set([...hardExcluded, ...recentExcluded])
     : new Set(recentExcluded);
-  return pickCachedTarget(input.mode, excluded);
+  return pickCachedTarget(input.mode, regions, excluded);
 }
 
 export async function rememberTargetSelection(input: {

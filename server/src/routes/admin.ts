@@ -932,6 +932,7 @@ router.get(
           'age_text',
           'collab_groups',
           'race',
+          'region',
           'is_enabled'
         )
         .orderBy('nickname'),
@@ -954,6 +955,7 @@ router.get(
       age_text: String(player.age_text),
       collab_groups: normalizeCollabGroups(player.collab_groups),
       race: String(player.race),
+      region: String(player.region),
       difficulties: difficultiesByPlayer.get(Number(player.id)) ?? [],
       is_enabled: Boolean(player.is_enabled),
     }));

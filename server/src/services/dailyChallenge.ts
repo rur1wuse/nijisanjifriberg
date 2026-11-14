@@ -1,6 +1,7 @@
 import { db } from '../db/knex';
 import { DIFFICULTY_LEVELS } from '../difficulties';
 import { getDifficultyPlayers, pickCachedTarget } from './playerCache';
+import { ALL_REGIONS } from '../regions';
 import { cached, invalidateCached } from './queryCache';
 import { withKeyLock } from './keyLock';
 import { userNameFromUsername } from './identityDisplay';
@@ -119,7 +120,7 @@ export async function ensureDailyChallenges(
     for (const difficulty of DAILY_CHALLENGE_DIFFICULTIES) {
       if (assigned.has(difficulty)) continue;
       if (!getDifficultyPlayers(difficulty).length) throw new Error('DAILY_CHALLENGE_POOL_EMPTY');
-      const target = pickCachedTarget(difficulty, usedPlayerIds);
+      const target = pickCachedTarget(difficulty, ALL_REGIONS, usedPlayerIds);
       if (!target) throw new Error('DAILY_CHALLENGE_POOL_EMPTY');
       await db('daily_challenges')
         .insert({

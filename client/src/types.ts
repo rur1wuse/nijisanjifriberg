@@ -204,6 +204,7 @@ export interface RoomState {
     requiredKeys?: string[];
   } | null;
   allowSpectators: boolean;
+  regions: string[];
   anonymous: boolean;
   round: number;
   roundId: number;

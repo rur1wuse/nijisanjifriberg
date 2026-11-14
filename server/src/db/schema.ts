@@ -96,8 +96,14 @@ export async function ensureSchema(instance: Knex = db): Promise<void> {
       t.string('age_text', 64).notNullable().defaultTo('');
       t.text('collab_groups').notNullable().defaultTo('[]');
       t.string('race', 64).notNullable().defaultTo('');
+      t.string('region', 2).notNullable().defaultTo('jp');
       t.boolean('is_enabled').notNullable().defaultTo(true);
       t.timestamp('created_at').notNullable().defaultTo(instance.fn.now());
+    });
+  }
+  if (!(await instance.schema.hasColumn('players', 'region'))) {
+    await instance.schema.alterTable('players', (t) => {
+      t.string('region', 2).notNullable().defaultTo('jp');
     });
   }
   if (!(await instance.schema.hasColumn('players', 'is_enabled'))) {
@@ -126,6 +132,7 @@ export async function ensureSchema(instance: Knex = db): Promise<void> {
       t.string('guest_key', 64).nullable().index();
       t.integer('target_player_id').notNullable().references('id').inTable('players');
       t.string('mode', 16).notNullable().defaultTo('normal');
+      t.string('region_bank', 16).nullable();
       t.text('guesses').notNullable().defaultTo('[]');
       t.text('guess_times').notNullable().defaultTo('[]');
       t.integer('first_guess_player_id').nullable();
@@ -140,6 +147,9 @@ export async function ensureSchema(instance: Knex = db): Promise<void> {
   }
   if (!(await instance.schema.hasColumn('games', 'guess_times'))) {
     await instance.schema.alterTable('games', (t) => t.text('guess_times').notNullable().defaultTo('[]'));
+  }
+  if (!(await instance.schema.hasColumn('games', 'region_bank'))) {
+    await instance.schema.alterTable('games', (t) => t.string('region_bank', 16).nullable());
   }
   if (!(await instance.schema.hasTable('difficulty_levels'))) {
     await instance.schema.createTable('difficulty_levels', (t) => {
@@ -186,6 +196,7 @@ export async function ensureSchema(instance: Knex = db): Promise<void> {
       t.increments('id').primary();
       t.string('room_id', 64).notNullable();
       t.string('db_type', 16).notNullable().defaultTo('normal');
+      t.string('region_bank', 16).nullable();
       t.integer('bo_type').notNullable().defaultTo(3);
       t.string('game_mode', 16).notNullable().defaultTo('classic');
       t.integer('total_rounds').notNullable().defaultTo(3);
@@ -210,6 +221,11 @@ export async function ensureSchema(instance: Knex = db): Promise<void> {
   if (!(await instance.schema.hasColumn('match_records', 'db_type'))) {
     await instance.schema.alterTable('match_records', (t) => {
       t.string('db_type', 16).notNullable().defaultTo('normal');
+    });
+  }
+  if (!(await instance.schema.hasColumn('match_records', 'region_bank'))) {
+    await instance.schema.alterTable('match_records', (t) => {
+      t.string('region_bank', 16).nullable();
     });
   }
   if (!(await instance.schema.hasColumn('match_records', 'winner_key'))) {

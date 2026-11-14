@@ -8,6 +8,7 @@ import type { Knex } from 'knex';
 import { z } from 'zod';
 import { db } from '../db/knex';
 import { isKnownDifficultyKey } from '../difficulties';
+import { REGION_KEYS } from '../regions';
 import { HttpError } from '../middleware/common';
 import { invalidatePlayerCache } from './playerCache';
 import { normalizeCollabGroups, serializeCollabGroups } from './teamHistory';
@@ -33,6 +34,7 @@ export const playerSchema = z.object({
   age_text: z.string().trim().max(64).default(''),
   collab_groups: z.array(collabGroupSchema).default([]),
   race: z.string().trim().max(64).default(''),
+  region: z.enum(REGION_KEYS).optional(),
   is_enabled: z.boolean().default(true),
   difficulties: difficultyListSchema.optional(),
 });

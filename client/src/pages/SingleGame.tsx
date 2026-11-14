@@ -4,8 +4,8 @@
  * Licensed under the GNU Affero General Public License v3.
  * See LICENSE, NOTICE and COPYRIGHT.md for details.
  */
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { CircleAlert, RotateCcw, Lightbulb, Target, X, Home } from 'lucide-react';
 import Page from '../components/Page';
 import GuessBoard from '../components/GuessBoard';
@@ -17,6 +17,8 @@ import { useConfirm } from '../components/ConfirmDialog';
 import { toast } from '../components/Toast';
 import { useTranslation } from 'react-i18next';
 import { AVAILABLE_DIFFICULTIES } from '../config/difficulties';
+import { parseRegionQuery } from '../config/regions';
+import { setStoredSingleRegions } from '../store/singleRegions';
 import { difficultyDescription, difficultyIcon, difficultyLabel } from '../utils/difficulty';
 import { setStoredSingleDifficulty } from '../store/singleDifficulty';
 
@@ -27,6 +29,9 @@ function exitGame(gameId: string): Promise<unknown> {
 export default function SingleGame() {
   const { t } = useTranslation();
   const { mode = 'normal' } = useParams();
+  const [searchParams] = useSearchParams();
+  const regionsParam = searchParams.get('regions');
+  const regions = useMemo(() => parseRegionQuery(regionsParam), [regionsParam]);
   const navigate = useNavigate();
   const confirm = useConfirm();
   const isValidMode = AVAILABLE_DIFFICULTIES.some((d) => d.key === mode);
@@ -53,7 +58,8 @@ export default function SingleGame() {
       return;
     }
     setStoredSingleDifficulty(mode);
-  }, [isValidMode, mode, navigate]);
+    setStoredSingleRegions(regions);
+  }, [isValidMode, mode, navigate, regions]);
 
   const setCurrentGameId = (id: string | null) => {
     gameIdRef.current = id;
@@ -74,7 +80,7 @@ export default function SingleGame() {
         setGuesses([]);
         await exitGame(previous);
       }
-      const res = await api.post('/game/start', { mode });
+      const res = await api.post('/game/start', { mode, regions });
       setCurrentGameId(String(res.data.gameId));
       setGuesses(res.data.guesses);
       setMaxGuesses(res.data.maxGuesses);
@@ -83,7 +89,7 @@ export default function SingleGame() {
     } finally {
       setStarting(false);
     }
-  }, [mode]);
+  }, [mode, regions]);
 
   useEffect(() => {
     if (!isValidMode) return;
@@ -200,6 +206,11 @@ export default function SingleGame() {
       icon={<ModeIcon size={17} />}
       actions={
         <>
+          <span className="muted single-region-summary">
+            {t('regions.summary', {
+              regions: regions.map((region) => t(`regions.${region}`)).join(' / '),
+            })}
+          </span>
           <button
             className="btn btn-ghost btn-sm"
             aria-label={t('game.restart')}

@@ -164,4 +164,37 @@ describe('single-player settlement soft limit', () => {
       await redis()?.del(redisKey(`single:settlement-limit:g:${guestKey}`));
     }
   });
+
+  it('starts from the selected region pool and keeps banks on separate active games', async () => {
+    const guestKey = `region-pool-${Date.now()}`;
+    const cookie = guestCookie(guestKey);
+    const krGame = await post('/api/game/start', cookie, { mode: 'normal', regions: ['kr'] });
+    expect(krGame.response.status).toBe(200);
+    expect(krGame.data.regions).toEqual(['kr']);
+    const krRaw = await redis()!.get(redisKey(`single:game:${krGame.data.gameId}`));
+    const krTarget = Number(JSON.parse(krRaw!).targetPlayerId);
+    expect((await db('players').where({ id: krTarget }).first('region'))?.region).toBe('kr');
+
+    const jpGame = await post('/api/game/start', cookie, { mode: 'normal', regions: ['jp'] });
+    expect(jpGame.response.status).toBe(200);
+    expect(jpGame.data.gameId).not.toBe(krGame.data.gameId);
+    const jpRaw = await redis()!.get(redisKey(`single:game:${jpGame.data.gameId}`));
+    const jpTarget = Number(JSON.parse(jpRaw!).targetPlayerId);
+    expect((await db('players').where({ id: jpTarget }).first('region'))?.region).toBe('jp');
+
+    await post(`/api/game/${krGame.data.gameId}/exit`, cookie);
+    await post(`/api/game/${jpGame.data.gameId}/exit`, cookie);
+    await redis()?.del(redisKey(`single:settlement-limit:g:${guestKey}`));
+  });
+
+  it('rejects empty or unknown region selections', async () => {
+    const cookie = guestCookie(`region-invalid-${Date.now()}`);
+    const empty = await post('/api/game/start', cookie, { mode: 'normal', regions: [] });
+    expect(empty.response.status).toBe(400);
+    expect(empty.data.code).toBe('REGION_REQUIRED');
+
+    const unknown = await post('/api/game/start', cookie, { mode: 'normal', regions: ['en'] });
+    expect(unknown.response.status).toBe(400);
+    expect(unknown.data.code).toBe('INVALID_REGION');
+  });
 });

@@ -20,6 +20,7 @@ import {
   withRoomLock,
 } from '../../services/roomStore';
 import { logTransientError } from '../../services/transientLog';
+import { parseRegions } from '../../regions';
 import { socketAllowed, socketAllowedWithIp } from '../connection';
 import { MAX_SPECTATORS } from '../constants';
 import { registerSocketEvent, SocketAck } from '../event';
@@ -161,6 +162,12 @@ export async function handleRoomCreate(
     ack?.({ code: 'DIFFICULTY_UNAVAILABLE' });
     return;
   }
+  const parsedRegions = parseRegions(payload.regions);
+  if ('error' in parsedRegions) {
+    ack?.({ code: parsedRegions.error });
+    return;
+  }
+  const regions = parsedRegions.regions;
   const now = Date.now();
   const roomId = await generateRoomId();
   if (!(await reserveRoomCapacity(String(socket.data.ip), roomId))) {
@@ -196,6 +203,7 @@ export async function handleRoomCreate(
     rematchAcceptedKeys: [],
     rematchRequiredKeys: [],
     allowSpectators: payload.allowSpectators,
+    regions,
     anonymous: payload.anonymous,
     round: 0,
     players: [makeRoomPlayer(me, socket.id, true)],

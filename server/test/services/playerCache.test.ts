@@ -9,6 +9,7 @@ import { initRedis, redis, redisKey } from '../../src/redis';
 import { db } from '../../src/db/knex';
 import { ensureSchema } from '../../src/db/schema';
 import {
+  filterPlayersByRegions,
   getDifficultyPlayers,
   getPublicPlayerList,
   isDifficultyAvailable,
@@ -98,8 +99,22 @@ describe('player cache pool', () => {
     expect(pickCachedTarget('normal')).not.toBeNull();
   });
 
-  it('indexes players by nickname and race so either term is searchable', async () => {
-    const nickname = `cache-test-search-${Date.now()}`;
+  it('filters the candidate pool by the selected regions', async () => {
+    const nickname = `cache-test-region-${Date.now()}`;
+    const id = await insertCacheTestPlayer(nickname, { region: 'kr' });
+
+    await refreshPlayerCache();
+
+    const krPool = filterPlayersByRegions(getDifficultyPlayers('normal'), ['kr']);
+    expect(krPool.length).toBeGreaterThan(0);
+    expect(krPool.every((player) => player.region === 'kr')).toBe(true);
+    expect(krPool.map((player) => player.id)).toContain(id);
+
+    const picked = pickCachedTarget('normal', ['kr'], new Set());
+    expect(picked?.region).toBe('kr');
+  });
+
+  it('indexes players by nickname and race so either term is searchable', async () => {    const nickname = `cache-test-search-${Date.now()}`;
     const race = `検索専用種族${Date.now()}`;
     const id = await insertCacheTestPlayer(nickname, { race });
 

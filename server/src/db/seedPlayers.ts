@@ -8,6 +8,7 @@ import type { Knex } from 'knex';
 import { db } from './knex';
 import playersData from './seeds/players.json';
 import { normalizeCollabGroups } from '../services/teamHistory';
+import { isKnownRegion } from '../regions';
 import type { CollabGroup } from '../types';
 
 interface SeedPlayer {
@@ -18,6 +19,7 @@ interface SeedPlayer {
   height_cm: string;
   age_text: string;
   race: string;
+  region?: string;
   collab_groups: CollabGroup[];
   difficulties?: string[];
   is_enabled?: boolean;
@@ -27,6 +29,10 @@ const seedPlayers = playersData as SeedPlayer[];
 
 function difficulties(player: SeedPlayer): string[] {
   return player.difficulties?.length ? [...new Set(player.difficulties)] : ['normal'];
+}
+
+function seedRegion(player: SeedPlayer): string {
+  return isKnownRegion(player.region) ? player.region : 'jp';
 }
 
 export async function insertMissingSeedPlayers(instance: Knex = db): Promise<number> {
@@ -47,6 +53,7 @@ export async function insertMissingSeedPlayers(instance: Knex = db): Promise<num
         age_text: player.age_text ?? '',
         collab_groups: JSON.stringify(normalizeCollabGroups(player.collab_groups)),
         race: player.race ?? '',
+        region: seedRegion(player),
         is_enabled: player.is_enabled ?? true,
       })))
       .returning(['id', 'nickname']);

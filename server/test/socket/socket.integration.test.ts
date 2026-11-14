@@ -262,6 +262,25 @@ describe('multiplayer socket integration', () => {
     }
   });
 
+  it('stores the selected region bank on created rooms', async () => {
+    const key = `region-room-${Date.now()}`;
+    const token = jwt.sign({ key, typ: 'guest' }, config.jwtSecret, { expiresIn: '1h' });
+    const socket = await connect(withPowCookie(`csgofriberg_guest=${token}`));
+    try {
+      expect(await emit(socket, 'room:create', { dbType: 'normal', boType: 1, regions: [] }))
+        .toEqual({ code: 'REGION_REQUIRED' });
+      const created = await emit(socket, 'room:create', {
+        dbType: 'normal',
+        boType: 1,
+        regions: ['kr', 'jp'],
+      });
+      expect(created.room.regions).toEqual(['jp', 'kr']);
+      createdRoomIds.push(created.room.id);
+    } finally {
+      socket.disconnect();
+    }
+  });
+
   it('requires login for matchmaking and ignores legacy verified-only rooms', async () => {
     const guestKey = `match-policy-guest-${Date.now()}`;
     const guestToken = jwt.sign({ key: guestKey, typ: 'guest' }, config.jwtSecret, { expiresIn: '1h' });
@@ -451,6 +470,7 @@ describe('multiplayer socket integration', () => {
         status: 'waiting',
         matchmaking: true,
         rematchAllowed: true,
+        regions: ['jp', 'kr', 'id'],
         round: 0,
         players: [{ ready: false }, { ready: false }],
       });

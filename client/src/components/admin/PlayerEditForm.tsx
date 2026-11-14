@@ -10,6 +10,7 @@ import ModalPortal from '../ModalPortal';
 import { toast } from '../Toast';
 import { useTranslation } from 'react-i18next';
 import DifficultyMultiSelect from './DifficultyMultiSelect';
+import { REGION_OPTIONS, RegionKey } from '../../config/regions';
 import type { CollabGroup } from '../../types';
 
 export interface PlayerForm {
@@ -21,6 +22,7 @@ export interface PlayerForm {
   age_text: string;
   collab_groups: CollabGroup[];
   race: string;
+  region: RegionKey;
   difficulties: string[];
   is_enabled: boolean;
 }
@@ -33,6 +35,7 @@ export const emptyPlayer: PlayerForm = {
   age_text: '',
   collab_groups: [],
   race: '',
+  region: 'jp',
   difficulties: ['normal'],
   is_enabled: true,
 };
@@ -132,6 +135,18 @@ export default function PlayerEditForm({ initial, difficultyKeys, onSubmit, onCa
             <label className="admin-player-field">
               <span>{t('player.race')}</span>
               <input className="input" value={form.race} onChange={(event) => set({ race: event.target.value })} />
+            </label>
+            <label className="admin-player-field">
+              <span>{t('admin.region')}</span>
+              <select
+                className="input"
+                value={form.region}
+                onChange={(event) => set({ region: event.target.value as RegionKey })}
+              >
+                {REGION_OPTIONS.map((key) => (
+                  <option key={key} value={key}>{t(`regions.${key}`)}</option>
+                ))}
+              </select>
             </label>
             <label className="admin-player-field">
               <span>{t('player.collab')}</span>

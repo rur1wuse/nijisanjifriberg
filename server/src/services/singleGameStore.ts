@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { evalCommandScript, redis, redisKey } from '../redis';
+import { ALL_REGIONS, RegionKey, normalizeStoredRegions, serializeRegions } from '../regions';
 import { GuessFeedback } from '../types';
 
 export type SingleGameMode = string;
@@ -12,6 +13,7 @@ export interface SingleGameState {
   userId: number | null;
   guestKey: string | null;
   mode: SingleGameMode;
+  regions: RegionKey[];
   targetPlayerId: number;
   dailyChallengeId?: number;
   guesses: GuessFeedback[];
@@ -31,8 +33,12 @@ function gameKey(id: string): string {
   return redisKey(`single:game:${id}`);
 }
 
-function activeKey(identityKey: string, mode: SingleGameMode): string {
-  return redisKey(`single:active:${identityKey}:${mode}`);
+function activeKey(
+  identityKey: string,
+  mode: SingleGameMode,
+  regions: readonly RegionKey[]
+): string {
+  return redisKey(`single:active:${identityKey}:${mode}:${serializeRegions(regions)}`);
 }
 
 function requiredRedis() {
@@ -58,12 +64,14 @@ export async function createOrResumeSingleGameWithStatus(input: {
   userId: number | null;
   guestKey: string | null;
   mode: SingleGameMode;
+  regions?: readonly RegionKey[];
   targetPlayerId: number;
   kind?: SingleGameKind;
   expiresAt?: number;
   dailyChallengeId?: number;
 }): Promise<{ game: SingleGameState; created: boolean }> {
-  const existing = await loadActiveSingleGame(input.identityKey, input.mode);
+  const regions = input.regions?.length ? normalizeStoredRegions([...input.regions]) : [...ALL_REGIONS];
+  const existing = await loadActiveSingleGame(input.identityKey, input.mode, regions);
   if (existing) return { game: existing, created: false };
 
   const now = Date.now();
@@ -74,6 +82,7 @@ export async function createOrResumeSingleGameWithStatus(input: {
     userId: input.userId,
     guestKey: input.guestKey,
     mode: input.mode,
+    regions,
     targetPlayerId: input.targetPlayerId,
     dailyChallengeId: input.dailyChallengeId,
     guesses: [],
@@ -88,10 +97,11 @@ export async function createOrResumeSingleGameWithStatus(input: {
 
 export async function loadActiveSingleGame(
   identityKey: string,
-  mode: SingleGameMode
+  mode: SingleGameMode,
+  regions: readonly RegionKey[] = ALL_REGIONS
 ): Promise<SingleGameState | null> {
   const client = requiredRedis();
-  const active = activeKey(identityKey, mode);
+  const active = activeKey(identityKey, mode, regions);
   const existingId = await client.get(active);
   if (!existingId) return null;
   // Restoring after a refresh must not extend the inactivity window.
@@ -111,6 +121,7 @@ export async function loadSingleGame(
   if (!raw) return null;
   const game = JSON.parse(raw) as SingleGameState;
   if (game.identityKey !== identityKey) return null;
+  game.regions = normalizeStoredRegions(game.regions);
   normalizeGuessTimes(game);
   const expiresAt = game.expiresAt ?? game.lastActiveAt + SINGLE_GAME_TTL_SECONDS * 1000;
   if (expiresAt <= Date.now()) {
@@ -126,19 +137,20 @@ export async function loadSingleGame(
 
 export async function saveSingleGame(game: SingleGameState): Promise<void> {
   const client = requiredRedis();
+  game.regions = normalizeStoredRegions(game.regions);
   normalizeGuessTimes(game);
   game.lastActiveAt = Date.now();
   const expiresAt = game.expiresAt ?? game.lastActiveAt + SINGLE_GAME_TTL_SECONDS * 1000;
   const ttlSeconds = Math.max(1, Math.ceil((expiresAt - Date.now()) / 1000));
   await client.multi()
     .set(gameKey(game.id), JSON.stringify(game), { EX: ttlSeconds })
-    .set(activeKey(game.identityKey, game.mode), game.id, { EX: ttlSeconds })
+    .set(activeKey(game.identityKey, game.mode, game.regions), game.id, { EX: ttlSeconds })
     .zAdd(redisKey('presence:single'), { score: expiresAt, value: game.id })
     .exec();
 }
 
 export async function deleteSingleGame(game: SingleGameState): Promise<void> {
-  const active = activeKey(game.identityKey, game.mode);
+  const active = activeKey(game.identityKey, game.mode, normalizeStoredRegions(game.regions));
   await evalCommandScript(
     'single-game-delete-v1',
     `redis.call('ZREM', KEYS[3], ARGV[1])

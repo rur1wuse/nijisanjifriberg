@@ -30,6 +30,7 @@ export async function startRound(io: Server, roomId: string): Promise<boolean> {
     ];
     const target = await pickTargetAvoidingRecent({
       mode: room.dbType,
+      regions: room.regions,
       identities,
       hardExcludedIds: previousTargets,
     });

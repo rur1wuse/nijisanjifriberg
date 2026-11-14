@@ -4,6 +4,7 @@ import { GuessFeedback } from '../types';
 import { config } from '../config';
 import { logTransientError } from './transientLog';
 import { DIFFICULTY_LEVELS } from '../difficulties';
+import { RegionKey, normalizeStoredRegions } from '../regions';
 
 export type BoType = 1 | 3 | 5 | 7;
 export type GameMode = 'classic' | 'relay' | 'relay2v2';
@@ -139,6 +140,7 @@ export interface StoredRoom {
   rematchAcceptedKeys: string[];
   rematchRequiredKeys: string[];
   allowSpectators: boolean;
+  regions: RegionKey[];
   anonymous: boolean;
   round: number;
   players: StoredPlayer[];
@@ -256,6 +258,7 @@ function normalizeRoom(room: StoredRoom): StoredRoom {
   if (!Array.isArray(room.players)) room.players = [];
   if (!Array.isArray(room.spectators)) room.spectators = [];
   if (typeof room.allowSpectators !== 'boolean') room.allowSpectators = false;
+  room.regions = normalizeStoredRegions(room.regions);
   if (typeof room.anonymous !== 'boolean') room.anonymous = false;
   if (typeof room.matchmaking !== 'boolean') room.matchmaking = false;
   if (!['classic', 'relay', 'relay2v2'].includes(room.gameMode)) room.gameMode = 'classic';

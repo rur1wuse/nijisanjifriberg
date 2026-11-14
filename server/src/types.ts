@@ -33,6 +33,7 @@ export interface Player {
   age_text: string;
   collab_groups: CollabGroup[];
   race: string;
+  region: string;
   difficulties?: string[];
   is_enabled: boolean | number;
   created_at: string;

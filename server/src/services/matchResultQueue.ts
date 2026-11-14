@@ -9,10 +9,12 @@ import {
   personalStatsCacheKeysForDifficulty,
 } from './statsCache';
 import { winningGuessMetricsByPlayer } from './matchGuessMetrics';
+import { RegionKey, serializeRegions } from '../regions';
 
 export interface MatchResultPayload {
   recordId: string;
   dbType: string;
+  regions?: readonly RegionKey[];
   boType: number;
   gameMode?: 'classic' | 'relay' | 'relay2v2';
   totalRounds?: number;
@@ -133,6 +135,7 @@ export async function persistMatchResult(payload: MatchResultPayload): Promise<v
       .insert({
         room_id: payload.recordId,
         db_type: payload.dbType,
+        region_bank: payload.regions?.length ? serializeRegions(payload.regions) : null,
         bo_type: payload.boType,
         game_mode: gameMode,
         total_rounds: totalRounds,

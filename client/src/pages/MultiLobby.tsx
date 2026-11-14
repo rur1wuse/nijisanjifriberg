@@ -23,6 +23,8 @@ import { useConfirm } from '../components/ConfirmDialog';
 import { toast } from '../components/Toast';
 import { useTranslation } from 'react-i18next';
 import { AVAILABLE_DIFFICULTIES } from '../config/difficulties';
+import { RegionKey } from '../config/regions';
+import RegionPicker from '../components/RegionPicker';
 import { difficultyLabel } from '../utils/difficulty';
 import {
   loadMultiLobbyPreferences,
@@ -107,6 +109,7 @@ export default function MultiLobby() {
   const [boType, setBoType] = useState(initialPreferences.boType);
   const [maxPlayers, setMaxPlayers] = useState(initialPreferences.maxPlayers);
   const [allowSpectators, setAllowSpectators] = useState(initialPreferences.allowSpectators);
+  const [regions, setRegions] = useState<RegionKey[]>(initialPreferences.regions);
   const [maxGuesses, setMaxGuesses] = useState(initialPreferences.maxGuesses);
   const [guessIntervalSeconds, setGuessIntervalSeconds] = useState(
     initialPreferences.guessIntervalSeconds
@@ -167,6 +170,7 @@ export default function MultiLobby() {
     boType,
     maxPlayers,
     allowSpectators,
+    regions,
     maxGuesses,
     guessIntervalSeconds,
     roundDurationSeconds,
@@ -199,6 +203,7 @@ export default function MultiLobby() {
     setBoType(preset.boType);
     setMaxPlayers(preset.maxPlayers);
     setAllowSpectators(preset.allowSpectators);
+    setRegions(preset.regions);
     setMaxGuesses(preset.maxGuesses);
     setGuessIntervalSeconds(preset.guessIntervalSeconds);
     setRoundDurationSeconds(preset.roundDurationSeconds);
@@ -268,6 +273,7 @@ export default function MultiLobby() {
       boType,
       maxPlayers: gameMode === 'relay2v2' ? 4 : maxPlayers,
       allowSpectators,
+      regions,
       maxGuesses,
       guessIntervalSeconds,
       roundDurationSeconds,
@@ -282,6 +288,7 @@ export default function MultiLobby() {
     maxGuesses,
     maxPlayers,
     mmDbType,
+    regions,
     roundDurationSeconds,
     totalRounds,
   ]);
@@ -420,7 +427,7 @@ export default function MultiLobby() {
   };
 
   const create = async (replaceExisting = false) => {
-    if (creating || !advancedSettingsValid) return;
+    if (creating || !advancedSettingsValid || regions.length === 0) return;
     setCreating(true);
     if (!replaceExisting && currentRoom) {
       if (!await leaveCurrentFor(currentRoom, currentRole, t('multi.createNewRoom'))) {
@@ -435,6 +442,7 @@ export default function MultiLobby() {
       boType,
       maxPlayers,
       allowSpectators,
+      regions,
       anonymous,
       maxGuesses,
       guessIntervalMs: Math.round(guessIntervalSeconds * 1000),
@@ -580,7 +588,7 @@ export default function MultiLobby() {
             {copied ? t('multi.copied') : t('multi.copyCode')}
           </button>
           <p className="muted multi-lobby-created-meta">
-            {t('multi.database', { type: difficultyLabel(t, createdRoom.dbType) })} · {createdRoom.gameMode === 'relay' ? t('multi.relayRounds', { rounds: createdRoom.totalRounds ?? 3 }) : t('multi.format', { bo: createdRoom.boType })} · {t('multi.roomCapacity', { current: createdRoom.players.length, max: createdRoom.maxPlayers ?? 2 })} · {createdRoom.allowSpectators ? t('multi.allowSpectating') : t('multi.denySpectating')}
+            {t('multi.database', { type: difficultyLabel(t, createdRoom.dbType) })} · {createdRoom.gameMode === 'relay' ? t('multi.relayRounds', { rounds: createdRoom.totalRounds ?? 3 }) : t('multi.format', { bo: createdRoom.boType })} · {t('multi.roomCapacity', { current: createdRoom.players.length, max: createdRoom.maxPlayers ?? 2 })} · {createdRoom.allowSpectators ? t('multi.allowSpectating') : t('multi.denySpectating')} · {t('regions.summary', { regions: createdRoom.regions.map((region) => t(`regions.${region}`)).join(' / ') })}
             {' · '}{createdRoom.anonymous ? t('multi.anonymousRoom') : t('multi.showNames')}
             {' · '}{t('multi.customRulesSummary', {
               guesses: createdRoom.maxGuesses,
@@ -717,6 +725,7 @@ export default function MultiLobby() {
                       </div>
                       <div className="room-create-options room-settings-options">
                         <label className="spectator-option"><input type="checkbox" checked={allowSpectators} onChange={(event) => setAllowSpectators(event.target.checked)} /><span>{t('multi.allowSpectating')}</span></label>
+                        <RegionPicker value={regions} onChange={setRegions} />
                       </div>
                       <div className="room-more-settings-fields">
                 <label className="room-number-setting">
@@ -843,7 +852,7 @@ export default function MultiLobby() {
               <button
                 className="btn btn-lg"
                 onClick={() => void create()}
-                disabled={creating || !advancedSettingsValid}
+                disabled={creating || !advancedSettingsValid || regions.length === 0}
               >
                 {creating ? <span className="spinner" style={{ width: 16, height: 16 }} /> : <Zap size={16} />}
                 {creating ? t('multi.creating') : t('multi.createRoom')}

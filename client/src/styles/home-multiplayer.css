@@ -310,6 +310,21 @@
 .single-difficulty-option.active .single-difficulty-check { border-color: var(--primary); background: var(--primary); }
 .single-difficulty-badge { position: absolute; top: 9px; right: 12px; color: var(--success); font-size: var(--fs-2xs); font-weight: 800; }
 .single-lobby-action { display: flex; justify-content: center; padding: 14px 0 4px; border-top: 1px solid var(--border); }
+.region-picker { display: grid; gap: 8px; margin-top: 18px; }
+.region-picker-label { font-weight: 600; }
+.region-picker-options { display: flex; flex-wrap: wrap; gap: 10px; }
+.region-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.region-option:has(input:checked) { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 12%, transparent); }
+.region-option input { accent-color: var(--primary); }
+.single-region-summary { white-space: nowrap; }
 
 /* ===== 首页游戏规则 ===== */
 .game-rules-trigger {

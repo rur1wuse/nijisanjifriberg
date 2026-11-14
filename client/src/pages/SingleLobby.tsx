@@ -8,7 +8,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { Check, Gamepad2, Play } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Page from '../components/Page';
+import RegionPicker from '../components/RegionPicker';
 import { AVAILABLE_DIFFICULTIES } from '../config/difficulties';
+import { ALL_REGIONS, RegionKey, serializeRegionQuery } from '../config/regions';
 import {
   difficultyColor,
   difficultyDescription,
@@ -16,6 +18,7 @@ import {
   difficultyLabel,
 } from '../utils/difficulty';
 import { getStoredSingleDifficulty, setStoredSingleDifficulty } from '../store/singleDifficulty';
+import { getStoredSingleRegions, setStoredSingleRegions } from '../store/singleRegions';
 import { useTranslation } from 'react-i18next';
 import { toast } from '../components/Toast';
 
@@ -24,6 +27,9 @@ export default function SingleLobby() {
   const navigate = useNavigate();
   const difficulties = AVAILABLE_DIFFICULTIES;
   const [selected, setSelected] = useState<string | null>(getStoredSingleDifficulty);
+  const [regions, setRegions] = useState<RegionKey[]>(
+    () => getStoredSingleRegions() ?? [...ALL_REGIONS]
+  );
 
   const selectedDifficulty = useMemo(
     () => difficulties.find((item) => item.key === selected)
@@ -44,12 +50,21 @@ export default function SingleLobby() {
     setStoredSingleDifficulty(key);
   };
 
+  const chooseRegions = (next: RegionKey[]) => {
+    setRegions(next);
+    setStoredSingleRegions(next);
+  };
+
   const start = () => {
     if (!selectedDifficulty) {
       toast.error(t('errors.DIFFICULTY_UNAVAILABLE'));
       return;
     }
-    navigate(`/single/${selectedDifficulty.key}`);
+    if (!regions.length) {
+      toast.error(t('errors.REGION_REQUIRED'));
+      return;
+    }
+    navigate(`/single/${selectedDifficulty.key}?regions=${serializeRegionQuery(regions)}`);
   };
 
   return (
@@ -81,8 +96,9 @@ export default function SingleLobby() {
               );
             })}
           </div>
+          <RegionPicker value={regions} onChange={chooseRegions} />
           <div className="single-lobby-action">
-            <button type="button" className="btn btn-lg btn-green" onClick={start}>
+            <button type="button" className="btn btn-lg btn-green" onClick={start} disabled={regions.length === 0}>
               <Play size={17} /> {t('singleLobby.start')}
             </button>
           </div>

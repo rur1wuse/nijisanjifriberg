@@ -55,6 +55,7 @@ export default function AdminPlayers() {
       setPlayers(res.data.players.map((p) => ({
         ...p,
         collab_groups: p.collab_groups ?? [],
+        region: p.region ?? 'jp',
         difficulties: p.difficulties ?? [],
         is_enabled: Boolean(p.is_enabled),
       })));
@@ -180,6 +181,7 @@ export default function AdminPlayers() {
     { key: 'height_cm', title: t('player.height') },
     { key: 'age_text', title: t('player.age') },
     { key: 'race', title: t('player.race') },
+    { key: 'region', title: t('admin.region'), render: (p) => t(`regions.${p.region}`) },
     { key: 'collab_groups', title: t('player.collab'), render: (p) => (p.collab_groups ?? []).length },
     { key: 'difficulties', title: t('admin.difficulties'), render: (p) => p.difficulties.map((key) => difficultyLabel(t, key)).join(', ') },
     { key: 'is_enabled', title: t('admin.pool'), render: (p) => (p.is_enabled ? t('admin.available') : t('admin.disabled')) },

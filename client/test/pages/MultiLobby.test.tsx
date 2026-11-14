@@ -82,6 +82,7 @@ describe('MultiLobby matchmaking', () => {
         boType: 5,
         maxPlayers: 4,
         allowSpectators: true,
+        regions: ['jp', 'kr', 'id'],
         maxGuesses: 12,
         guessIntervalSeconds: 2.5,
         roundDurationSeconds: 300,
@@ -194,6 +195,21 @@ describe('MultiLobby matchmaking', () => {
     }), expect.any(Function));
     expect(roundDuration).toHaveAttribute('min', '10');
     expect(roundDuration).toHaveAttribute('max', '600');
+  });
+
+  it('sends the selected region bank when creating a room', async () => {
+    const user = userEvent.setup();
+    renderAtRoute(<MultiLobby />, { route: '/multi', path: '/multi' });
+
+    await user.click(screen.getByText('更多设置'));
+    await user.click(screen.getByRole('checkbox', { name: 'KR' }));
+    await user.click(screen.getByRole('button', { name: '创建房间' }));
+
+    expect(socket.emit).toHaveBeenCalledWith('room:create', expect.objectContaining({
+      regions: ['jp', 'id'],
+    }), expect.any(Function));
+    expect(JSON.parse(localStorage.getItem('nijisanjifriberg.multi-lobby-preferences') ?? '{}'))
+      .toMatchObject({ regions: ['jp', 'id'] });
   });
 
   it('shows range hints and blocks room creation until advanced settings are valid', async () => {

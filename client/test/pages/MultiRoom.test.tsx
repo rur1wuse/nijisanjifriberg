@@ -71,6 +71,7 @@ const room: RoomState = {
   rematchAllowed: false,
   rematchInvite: null,
   allowSpectators: true,
+  regions: ['jp', 'kr', 'id'],
   anonymous: false,
   round: 2,
   roundId: 2,
@@ -794,6 +795,7 @@ describe('MultiRoom replay', () => {
     expect(within(attributes).getByText('每局最多 12 次 · 最大猜测时间 300 秒 · 猜测间隔 2.5 秒'))
       .toBeInTheDocument();
     expect(within(attributes).getByText('允许观战')).toBeInTheDocument();
+    expect(within(attributes).getByText('题库：JP / KR / ID')).toBeInTheDocument();
     expect(within(attributes).getByText('匿名房间')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: '准备' })).toBeInTheDocument();
   });

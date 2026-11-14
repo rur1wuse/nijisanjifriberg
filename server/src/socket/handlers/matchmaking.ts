@@ -5,6 +5,7 @@ import { isRedisAvailable } from '../../redis';
 import { getMatchmakingCooldown } from '../../services/matchmakingCooldown';
 import { isMatchmakingRestricted } from '../../services/matchmakingRestriction';
 import { isDifficultyAvailable } from '../../services/playerCache';
+import { ALL_REGIONS } from '../../regions';
 import {
   DbType,
   QueuedIdentity,
@@ -140,6 +141,7 @@ export async function handleMatchStart(
     rematchAcceptedKeys: [],
     rematchRequiredKeys: [],
     allowSpectators: false,
+    regions: [...ALL_REGIONS],
     anonymous: Boolean(queuedMe.anonymous || opponent.anonymous),
     round: 0,
     players: [

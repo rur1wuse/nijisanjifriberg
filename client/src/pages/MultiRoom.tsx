@@ -1438,6 +1438,7 @@ export default function MultiRoom() {
                 <li>{room.allowSpectators
                   ? t('multi.allowSpectating')
                   : t('multi.denySpectating')}</li>
+                <li>{t('regions.summary', { regions: room.regions.map((region) => t(`regions.${region}`)).join(' / ') })}</li>
                 <li>{room.anonymous ? t('multi.anonymousRoom') : t('multi.showNames')}</li>
               </ul>
             </section>

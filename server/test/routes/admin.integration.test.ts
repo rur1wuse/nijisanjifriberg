@@ -676,6 +676,7 @@ describe('admin user management', () => {
         age_text: '16歳',
         collab_groups: [{ name: 'JK組' }],
         race: '人类',
+        region: 'jp',
         difficulties: ['normal'],
         is_enabled: true,
       });

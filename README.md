@@ -25,7 +25,7 @@
 
 ## 玩法
 
-系统从 172 名彩虹社 JP 成员中随机选一位作为答案。每次输入选手昵称，系统按 **性别 / 出道日 / 身高 / 年龄 / 关系 / 种族** 六个属性逐项对比：
+系统从 172 名彩虹社成员（JP / KR / ID 出身）中随机选一位作为答案；单人游戏与多人建房可按分部多选题库，随机匹配固定为完整题库。每次输入选手昵称，系统按 **性别 / 出道日 / 身高 / 年龄 / 关系 / 种族** 六个属性逐项对比：
 
 | 反馈 | 含义 |
 | --- | --- |
@@ -178,7 +178,7 @@ docker compose up -d          # 首次会自动跑 migrate
 
 ## 选手数据
 
-选手数据集为 172 名彩虹社 JP 成员，内置于 `server/src/db/seeds/players.json`，字段：
+选手数据集为 172 名彩虹社成员（155 名 JP 出身、6 名 NIJISANJI ID 出身、11 名 NIJISANJI KR 出身），内置于 `server/src/db/seeds/players.json`，字段：
 
 | 字段 | 说明 |
 | --- | --- |
@@ -189,6 +189,14 @@ docker compose up -d          # 首次会自动跑 migrate
 | `age_text` | 年龄（保留原文，如 `16歳`、`不明`、`142億歳`） |
 | `collab_groups` | 参与过的组合数组（最多 300 项），每项为 `{ "name": "...", "note": "..." }`；`note` 为脚注，用于区分同名但成员不同的组合 |
 | `race` | 种族 |
+| `region` | 分部：`jp` / `kr` / `id`，用于单选与建房时的题库筛选 |
+
+存量部署从旧版本升级后，`migrate` 只会给 `players` 补上 `region` 列（默认 `jp`），真实分部需要再执行一次回填：
+
+```bash
+docker compose run --rm --no-deps app-1 server/dist/db/applyPlayerRegions.js            # dry-run，只报告差异
+docker compose run --rm --no-deps app-1 server/dist/db/applyPlayerRegions.js --apply    # 只改 region 一列，幂等
+```
 
 身高与年龄**保留原始字符串**，比较时由 `server/src/services/attributeParsing.ts` 解析数值，自动处理 `億`/`万`/`千` 倍率与「不详」关键字。
 

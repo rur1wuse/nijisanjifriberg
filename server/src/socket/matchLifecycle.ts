@@ -80,6 +80,7 @@ export async function persistMatch(
   await enqueueMatchResult({
     recordId: room.recordId,
     dbType: room.dbType,
+    regions: room.regions,
     boType: room.boType,
     gameMode: room.gameMode,
     totalRounds: room.totalRounds,

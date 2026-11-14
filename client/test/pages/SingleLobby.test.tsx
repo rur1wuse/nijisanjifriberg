@@ -55,4 +55,29 @@ describe('SingleLobby', () => {
     const start = screen.getByRole('button', { name: /开始游戏/ });
     expect(start).toHaveClass('btn', 'btn-lg', 'btn-green');
   });
+
+  it('defaults the pool to every region and persists multi-select changes', async () => {
+    const user = userEvent.setup();
+    renderAtRoute(<SingleLobby />, { route: '/single', path: '/single' });
+
+    expect(screen.getByRole('checkbox', { name: 'JP' })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: 'KR' })).toBeChecked();
+    expect(screen.getByRole('checkbox', { name: 'ID' })).toBeChecked();
+
+    await user.click(screen.getByRole('checkbox', { name: 'KR' }));
+
+    expect(screen.getByRole('checkbox', { name: 'KR' })).not.toBeChecked();
+    expect(localStorage.getItem('nijisanjifriberg.single-regions')).toBe('["jp","id"]');
+  });
+
+  it('disables the start button when no region is selected', async () => {
+    const user = userEvent.setup();
+    renderAtRoute(<SingleLobby />, { route: '/single', path: '/single' });
+
+    for (const name of ['JP', 'KR', 'ID']) {
+      await user.click(screen.getByRole('checkbox', { name }));
+    }
+
+    expect(screen.getByRole('button', { name: /开始游戏/ })).toBeDisabled();
+  });
 });

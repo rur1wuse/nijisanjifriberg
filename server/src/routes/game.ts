@@ -11,7 +11,7 @@ import { optionalAuth } from '../middleware/auth';
 import { validateBody, validateParams, asyncHandler, HttpError } from '../middleware/common';
 import { GuessFeedback, Player } from '../types';
 import { compareGuess, refreshGuessFeedback, MAX_GUESSES } from '../services/gameService';
-import { getEnabledPlayer, getPlayer, isDifficultyAvailable } from '../services/playerCache';
+import { getEnabledPlayer, getPlayer, hasPlayersForRegions, isDifficultyAvailable } from '../services/playerCache';
 import { rateLimit, requestIdentity } from '../middleware/rateLimit';
 import { withKeyLock } from '../services/keyLock';
 import { invalidateCached } from '../services/queryCache';
@@ -31,6 +31,7 @@ import {
   personalStatsCacheKeysForDifficulty,
 } from '../services/statsCache';
 import { pickTargetAvoidingRecent, rememberTargetSelection } from '../services/targetSelection';
+import { parseRegions, serializeRegions } from '../regions';
 
 const router = Router();
 router.use(optionalAuth);
@@ -88,6 +89,7 @@ async function settleGame(game: SingleGameState, status: 'won' | 'lost'): Promis
         guest_key: game.guestKey,
         target_player_id: game.targetPlayerId,
         mode: game.mode,
+        region_bank: serializeRegions(game.regions),
         guesses: JSON.stringify(game.guesses.map((guess) => guess.playerId)),
         guess_times: JSON.stringify(game.guessTimes),
         first_guess_player_id: game.guesses[0]?.playerId ?? null,
@@ -122,23 +124,31 @@ router.post(
   }),
   validateBody(z.object({
     mode: z.string().trim().regex(/^[a-z0-9][a-z0-9_-]{0,31}$/).default('normal'),
+    regions: z.array(z.string()).max(10).optional(),
   })),
   asyncHandler(async (req, res) => {
     const owner = identity(req);
     if (!owner) throw new HttpError(400, 'GUEST_KEY_REQUIRED');
     const mode = req.body.mode as SingleGameMode;
+    const parsedRegions = parseRegions(req.body.regions);
+    if ('error' in parsedRegions) throw new HttpError(400, parsedRegions.error);
+    const regions = parsedRegions.regions;
     if (!isDifficultyAvailable(mode)) throw new HttpError(400, 'DIFFICULTY_UNAVAILABLE');
-    const started = await withKeyLock(`single-start:${owner.identityKey}:${mode}`, async () => {
-      const existing = await loadActiveSingleGame(owner.identityKey, mode);
+    if (!hasPlayersForRegions(mode, regions)) throw new HttpError(400, 'REGION_POOL_EMPTY');
+    const regionKey = serializeRegions(regions);
+    const started = await withKeyLock(`single-start:${owner.identityKey}:${mode}:${regionKey}`, async () => {
+      const existing = await loadActiveSingleGame(owner.identityKey, mode, regions);
       if (existing) return { game: existing, selectedTargetId: null };
       const target = await pickTargetAvoidingRecent({
         mode,
+        regions,
         identities: [owner.identityKey],
       });
       if (!target) throw new HttpError(500, 'EMPTY_PLAYER_POOL');
       const result = await createOrResumeSingleGameWithStatus({
         ...owner,
         mode,
+        regions,
         targetPlayerId: target.id,
       });
       return {
@@ -156,6 +166,7 @@ router.post(
     res.json({
       gameId: started.game.id,
       mode: started.game.mode,
+      regions: started.game.regions,
       maxGuesses: MAX_GUESSES,
       guesses: publicGuesses(started.game),
     });

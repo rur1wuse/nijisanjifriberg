@@ -63,6 +63,9 @@ describe('database schema initialization', () => {
     expect(await instance.schema.hasColumn('players', 'age_text')).toBe(true);
     expect(await instance.schema.hasColumn('players', 'collab_groups')).toBe(true);
     expect(await instance.schema.hasColumn('players', 'race')).toBe(true);
+    expect(await instance.schema.hasColumn('players', 'region')).toBe(true);
+    expect(await instance.schema.hasColumn('games', 'region_bank')).toBe(true);
+    expect(await instance.schema.hasColumn('match_records', 'region_bank')).toBe(true);
     expect(await instance.schema.hasColumn('players', 'nationality')).toBe(false);
     expect(await instance.schema.hasColumn('players', 'team_history')).toBe(false);
     expect(await instance.schema.hasColumn('players', 'major_championships')).toBe(false);
@@ -161,8 +164,22 @@ describe('database schema initialization', () => {
     expect(Number((await instance('daily_challenges').where({ id: 1 }).first()).solved_count)).toBe(2);
   });
 
-  it('backfills classic match total rounds from the existing BO format', async () => {
+  it('adds the player region column with a jp default on legacy databases', async () => {
     const instance = createInstance();
+    await instance.schema.createTable('players', (table) => {
+      table.increments('id').primary();
+      table.string('nickname', 128).notNullable().unique();
+      table.string('name_zh', 128).notNullable().defaultTo('');
+    });
+    await instance('players').insert({ nickname: 'legacy-player' });
+
+    await ensureSchema(instance);
+
+    const player = await instance('players').where({ nickname: 'legacy-player' }).first();
+    expect(player.region).toBe('jp');
+  });
+
+  it('backfills classic match total rounds from the existing BO format', async () => {    const instance = createInstance();
     await instance.schema.createTable('match_records', (table) => {
       table.increments('id').primary();
       table.string('room_id', 64).notNullable().unique();

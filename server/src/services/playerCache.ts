@@ -9,6 +9,7 @@ import { db } from '../db/knex';
 import { redis, redisKey, redisPublisher, redisSubscriber } from '../redis';
 import { Player } from '../types';
 import { DIFFICULTY_LEVELS } from '../difficulties';
+import { ALL_REGIONS, RegionKey } from '../regions';
 import { normalizeCollabGroups } from './teamHistory';
 
 const INVALIDATE_CHANNEL = redisKey('players:invalidate');
@@ -116,8 +117,24 @@ export function getDifficultyPlayers(key: string): Player[] {
   return playersByDifficulty.get(key) ?? [];
 }
 
-export function pickCachedTarget(mode: string, excludedIds: ReadonlySet<number> = new Set()): Player | null {
-  const pool = playersByDifficulty.get(mode) ?? [];
+export function filterPlayersByRegions(
+  players: readonly Player[],
+  regions: readonly RegionKey[]
+): Player[] {
+  const selected = new Set(regions);
+  return players.filter((player) => selected.has(player.region as RegionKey));
+}
+
+export function hasPlayersForRegions(mode: string, regions: readonly RegionKey[]): boolean {
+  return filterPlayersByRegions(playersByDifficulty.get(mode) ?? [], regions).length > 0;
+}
+
+export function pickCachedTarget(
+  mode: string,
+  regions: readonly RegionKey[] = ALL_REGIONS,
+  excludedIds: ReadonlySet<number> = new Set()
+): Player | null {
+  const pool = filterPlayersByRegions(playersByDifficulty.get(mode) ?? [], regions);
   if (!pool.length) return null;
   const candidates = excludedIds.size
     ? pool.filter((player) => !excludedIds.has(player.id))

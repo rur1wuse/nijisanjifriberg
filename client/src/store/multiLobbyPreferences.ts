@@ -4,6 +4,8 @@
  * Licensed under the GNU Affero General Public License v3.
  * See LICENSE, NOTICE and COPYRIGHT.md for details.
  */
+import { ALL_REGIONS, RegionKey, normalizeRegionSelection } from '../config/regions';
+
 const STORAGE_KEY = 'nijisanjifriberg.multi-lobby-preferences';
 const PRESETS_STORAGE_KEY = 'nijisanjifriberg.multi-lobby-presets';
 const BO_OPTIONS = new Set([1, 3, 5, 7]);
@@ -27,6 +29,7 @@ export interface MultiLobbyPreferences {
   boType: number;
   maxPlayers: number;
   allowSpectators: boolean;
+  regions: RegionKey[];
   maxGuesses: number;
   guessIntervalSeconds: number;
   roundDurationSeconds: number;
@@ -41,6 +44,7 @@ export interface MultiLobbyPreset {
   boType: number;
   maxPlayers: number;
   allowSpectators: boolean;
+  regions: RegionKey[];
   maxGuesses: number;
   guessIntervalSeconds: number;
   roundDurationSeconds: number;
@@ -79,7 +83,11 @@ export function loadMultiLobbyPresets(
     const parsed: unknown = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
     return parsed.filter((item) => isValidPreset(item, availableDifficulties))
-      .map((item) => ({ ...item, name: item.name.trim() }));
+      .map((item) => ({
+        ...item,
+        name: item.name.trim(),
+        regions: normalizeRegionSelection((item as { regions?: unknown }).regions),
+      }));
   } catch {
     return [];
   }
@@ -104,6 +112,7 @@ export function loadMultiLobbyPreferences(
     boType: 3,
     maxPlayers: 2,
     allowSpectators: false,
+    regions: [...ALL_REGIONS],
     maxGuesses: DEFAULT_MULTI_MAX_GUESSES,
     guessIntervalSeconds: DEFAULT_MULTI_GUESS_INTERVAL_SECONDS,
     roundDurationSeconds: DEFAULT_MULTI_ROUND_DURATION_SECONDS,
@@ -138,6 +147,7 @@ export function loadMultiLobbyPreferences(
       allowSpectators: typeof stored.allowSpectators === 'boolean'
         ? stored.allowSpectators
         : defaults.allowSpectators,
+      regions: normalizeRegionSelection(stored.regions),
       maxGuesses: Number.isInteger(stored.maxGuesses)
         && Number(stored.maxGuesses) >= MIN_MULTI_MAX_GUESSES
         && Number(stored.maxGuesses) <= MAX_MULTI_MAX_GUESSES
