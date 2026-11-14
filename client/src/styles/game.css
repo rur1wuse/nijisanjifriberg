@@ -411,6 +411,15 @@
   font-weight: 700;
   margin: 10px 0 14px;
 }
+.overlay-card .answer-avatar {
+  display: block;
+  width: 128px;
+  height: 128px;
+  margin: 0 auto 14px;
+  border-radius: 14px;
+  object-fit: cover;
+  background: var(--card-soft);
+}
 .overlay-card .player-info-table { margin: 0 0 4px; }
 .overlay-card .btns {
   display: flex;

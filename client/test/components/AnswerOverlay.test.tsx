@@ -89,4 +89,25 @@ describe('AnswerOverlay', () => {
     expect(screen.getByText('\u6240\u5c5e\u96be\u5ea6')).toBeInTheDocument();
     expect(screen.getByText('\u5b8c\u6574\u7248')).toBeInTheDocument();
   });
+
+  it('renders the target avatar under the answer name', () => {
+    renderWithProviders(
+      <AnswerOverlay
+        title="\u7ed3\u7b97"
+        answer={{ ...answer, nickname: '\u845b\u8449' }}
+        actions={<button type="button">\u67e5\u770b</button>}
+      />
+    );
+
+    const avatar = screen.getByRole('img', { name: '\u845b\u8449' });
+    expect(avatar).toHaveAttribute('src', '/avatars/kuzuha.webp');
+  });
+
+  it('omits the avatar when the nickname has no mapping', () => {
+    renderWithProviders(
+      <AnswerOverlay title="\u7ed3\u7b97" answer={answer} actions={<button type="button">\u67e5\u770b</button>} />
+    );
+
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
+  });
 });

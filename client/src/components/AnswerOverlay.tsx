@@ -10,6 +10,7 @@ import ModalPortal from './ModalPortal';
 import { useTranslation } from 'react-i18next';
 import { difficultyLabel } from '../utils/difficulty';
 import { localizedName } from '../utils/playerName';
+import { avatarUrlFor } from '../config/avatars';
 import CollabGroupNames from './CollabGroupNames';
 import type { CollabGroup } from '../types';
 import { localizedRace } from '../config/raceJa';
@@ -83,6 +84,8 @@ interface Props {
 /** 结算/答案遮罩卡片 */
 export default function AnswerOverlay({ title, answer, extra, actions, onClose, tone }: Props) {
   const { i18n } = useTranslation();
+  const answerName = answer ? localizedName(answer, i18n.language) : '';
+  const avatarUrl = answer ? avatarUrlFor(answer.nickname) : null;
   useEffect(() => {
     const oldOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
@@ -113,7 +116,10 @@ export default function AnswerOverlay({ title, answer, extra, actions, onClose, 
           {extra}
           {answer && (
             <>
-              <p className="answer-name">{localizedName(answer, i18n.language)}</p>
+              <p className="answer-name">{answerName}</p>
+              {avatarUrl && (
+                <img className="answer-avatar" src={avatarUrl} alt={answerName} width={128} height={128} loading="lazy" />
+              )}
               <PlayerInfoTable answer={answer} />
             </>
           )}
