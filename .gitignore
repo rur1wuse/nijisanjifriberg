@@ -24,3 +24,9 @@ skills-lock.json
 nginx/certs/
 
 .omo/
+
+# working design/plan/review notes: regenerated locally, not needed to build
+docs/design/
+docs/niji-plan.md
+docs/niji/data-review.md
+docs/niji/avatars/
