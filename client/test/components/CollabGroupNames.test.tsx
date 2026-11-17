@@ -36,13 +36,13 @@ function expectHoverNote(trigger: HTMLElement, note: string) {
 
 describe('CollabGroupNames', () => {
   it('removes footnote markers and shows the note in a floating tooltip', () => {
-    render(<CollabGroupNames value={'ACDC*21, \u5357\u30c1\u30fc\u30e0*143'} />);
+    const teamKey = Object.keys(COLLAB_NOTES)
+      .find((key) => key.startsWith('\u5357\u30c1\u30fc\u30e0*'));
+    expect(teamKey).toBeTruthy();
+    render(<CollabGroupNames value={`ACDC*21, ${teamKey}`} />);
 
     expectHoverNote(screen.getByText('ACDC'), COLLAB_NOTES['ACDC*21']);
-    expectHoverNote(
-      screen.getByText('\u5357\u30c1\u30fc\u30e0'),
-      COLLAB_NOTES['\u5357\u30c1\u30fc\u30e0*143']
-    );
+    expectHoverNote(screen.getByText('\u5357\u30c1\u30fc\u30e0'), COLLAB_NOTES[teamKey!]);
     expect(screen.queryByText(/\*\d+/)).not.toBeInTheDocument();
   });
 
@@ -55,18 +55,27 @@ describe('CollabGroupNames', () => {
   });
 
   it('keeps a combined wiki cell as one group with its combined note', () => {
-    render(<CollabGroupNames value={'\u5185\u80a1\u30ac\u30cb\u80a1*16 / \u3084\u3057\u30c1\u30e3\u30a4*17'} />);
+    const combinedKey = Object.keys(COLLAB_NOTES)
+      .find((key) => key.includes(' / ') && /\*\d+$/.test(key) && !/[,、]/.test(key));
+    expect(combinedKey).toBeTruthy();
+    render(<CollabGroupNames value={combinedKey!} />);
 
     expectHoverNote(
-      screen.getByText('\u5185\u80a1\u30ac\u30cb\u80a1 / \u3084\u3057\u30c1\u30e3\u30a4'),
-      COLLAB_NOTES['\u5185\u80a1\u30ac\u30cb\u80a1*16 / \u3084\u3057\u30c1\u30e3\u30a4*17']
+      screen.getByText(combinedKey!.replace(/\*\d+/g, '')),
+      COLLAB_NOTES[combinedKey!]
     );
   });
 
   it('removes markers that are not at the end of the name', () => {
-    render(<CollabGroupNames value={'\uff08\u96d1*59\uff09'} />);
+    const innerKey = Object.keys(COLLAB_NOTES)
+      .find((key) => /\*\d+/.test(key) && !/\*\d+$/.test(key) && !/[,、]/.test(key));
+    expect(innerKey).toBeTruthy();
+    render(<CollabGroupNames value={innerKey!} />);
 
-    expectHoverNote(screen.getByText('\uff08\u96d1\uff09'), COLLAB_NOTES['\uff08\u96d1*59\uff09']);
+    expectHoverNote(
+      screen.getByText(innerKey!.replace(/\*\d+/g, '')),
+      COLLAB_NOTES[innerKey!]
+    );
   });
 
   it('only matches whole combo names', () => {
