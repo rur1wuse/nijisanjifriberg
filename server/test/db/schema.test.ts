@@ -86,7 +86,7 @@ describe('database schema initialization', () => {
     expect(await instance.schema.hasColumn('daily_challenge_attempts', 'solve_order')).toBe(true);
 
     const difficulties = await instance('difficulty_levels').orderBy('sort_order').pluck('key');
-    expect(difficulties).toEqual(['normal']);
+    expect(difficulties).toEqual(['easy', 'normal']);
   });
 
   it('backfills solve order when upgrading existing daily challenge tables', async () => {

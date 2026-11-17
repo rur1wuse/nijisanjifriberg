@@ -10,7 +10,7 @@ import { db } from '../db/knex';
 import { optionalAuth } from '../middleware/auth';
 import { validateBody, validateParams, asyncHandler, HttpError } from '../middleware/common';
 import { GuessFeedback, Player } from '../types';
-import { compareGuess, refreshGuessFeedback, MAX_GUESSES } from '../services/gameService';
+import { compareGuess, refreshGuessFeedback, guessLimitForMode } from '../services/gameService';
 import { getEnabledPlayer, getPlayer, hasPlayersForRegions, isDifficultyAvailable } from '../services/playerCache';
 import { rateLimit, requestIdentity } from '../middleware/rateLimit';
 import { withKeyLock } from '../services/keyLock';
@@ -167,7 +167,7 @@ router.post(
       gameId: started.game.id,
       mode: started.game.mode,
       regions: started.game.regions,
-      maxGuesses: MAX_GUESSES,
+      maxGuesses: guessLimitForMode(started.game.mode),
       guesses: publicGuesses(started.game),
     });
   })
@@ -201,7 +201,8 @@ router.post(
       const feedback = compareGuess(guess, target);
       game.guesses.push(feedback);
       game.guessTimes.push(Math.max(0, Math.floor(Date.now() - game.createdAt)));
-      const finished = feedback.correct || game.guesses.length >= MAX_GUESSES;
+      const limit = guessLimitForMode(game.mode);
+      const finished = feedback.correct || (limit !== null && game.guesses.length >= limit);
       const status = feedback.correct ? 'won' : finished ? 'lost' : 'playing';
       const recorded = finished
         ? await settleGame(game, feedback.correct ? 'won' : 'lost')
@@ -212,7 +213,7 @@ router.post(
         feedback,
         status,
         guessCount: game.guesses.length,
-        maxGuesses: MAX_GUESSES,
+        maxGuesses: limit,
         answer: finished ? answerView(target) : undefined,
         recorded,
       };

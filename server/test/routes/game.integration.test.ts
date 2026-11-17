@@ -187,6 +187,34 @@ describe('single-player settlement soft limit', () => {
     await redis()?.del(redisKey(`single:settlement-limit:g:${guestKey}`));
   });
 
+  it('allows unlimited guesses in the easy tier', async () => {
+    const guestKey = `easy-unlimited-${Date.now()}`;
+    const cookie = guestCookie(guestKey);
+    const started = await post('/api/game/start', cookie, { mode: 'easy' });
+    expect(started.response.status).toBe(200);
+    expect(started.data.maxGuesses).toBeNull();
+    const raw = await redis()!.get(redisKey(`single:game:${started.data.gameId}`));
+    const targetId = Number(JSON.parse(raw!).targetPlayerId);
+    const guessIds = await db('players')
+      .where({ is_enabled: true })
+      .whereNot('id', targetId)
+      .limit(9)
+      .pluck('id');
+    expect(guessIds.length).toBeGreaterThanOrEqual(9);
+
+    let last: Awaited<ReturnType<typeof post>> | null = null;
+    for (const id of guessIds) {
+      last = await post(`/api/game/${started.data.gameId}/guess`, cookie, { playerId: Number(id) });
+      expect(last.response.status).toBe(200);
+    }
+    expect(last!.data.status).toBe('playing');
+    expect(last!.data.maxGuesses).toBeNull();
+    expect(last!.data.guessCount).toBe(guessIds.length);
+
+    await post(`/api/game/${started.data.gameId}/exit`, cookie);
+    await redis()?.del(redisKey(`single:settlement-limit:g:${guestKey}`));
+  });
+
   it('rejects empty or unknown region selections', async () => {
     const cookie = guestCookie(`region-invalid-${Date.now()}`);
     const empty = await post('/api/game/start', cookie, { mode: 'normal', regions: [] });

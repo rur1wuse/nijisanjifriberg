@@ -36,8 +36,10 @@ export const resources = {
         language: '语言',
       },
       difficulty: {
+        easy: '简单版',
+        easyDescription: '无限次猜测，其他规则不变；题库仍可多选',
         normal: '完整版',
-        normalDescription: '彩虹社 JP 全成员 · 终极挑战',
+        normalDescription: '彩虹社全成员 · 8 次机会',
       },
       settings: {
         title: '个人设置',
@@ -153,10 +155,10 @@ export const resources = {
         restartTitle: '重新开始？', restartMessage: '当前游戏进度会被清除，并立即生成一局新游戏。',
         leaveTitle: '返回主菜单？', leaveMessage: '当前游戏进度会被清除，返回后无法继续本局。', leaveConfirm: '返回主菜单',
         revealTitle: '查看答案？', revealMessage: '查看答案会立即结束本局，并按失败结算。',
-        guesses: '猜测次数 {{current}} / {{max}}', congratulations: '恭喜，猜对了', ended: '本局结束',
+        guesses: '猜测次数 {{current}} / {{max}}', guessesUnlimited: '已猜测 {{count}} 次 · 不限次数', congratulations: '恭喜，猜对了', ended: '本局结束',
         hint: '绿色正确 · 黄色接近 · 灰色不匹配 · 紫色年龄不详 · 箭头指示目标数值方向 · 出道日 ↑ 表示答案更早、↓ 表示更晚', again: '再来一把', back: '返回菜单',
         startHint: '在下方输入选手昵称开始猜测',
-        normalHint: '目标可能是彩虹社 JP 成员中的任何人', correctAnswer: '正确答案',
+        normalHint: '目标可能是彩虹社成员中的任何人', correctAnswer: '正确答案',
         usedGuesses: '共用了 {{count}} 次猜测', missed: '很遗憾，本局未能猜中', settlementNotRecorded: '结算频率超过限制，本局不会计入个人战绩和排行榜。', viewGame: '查看对局',
         starting: '正在开始新对局…', startFailedTitle: '开局失败', startRetry: '重试', backToLobby: '返回难度选择',
       },
@@ -273,8 +275,10 @@ export const resources = {
   en: {
     translation: {
       difficulty: {
+        easy: 'Easy',
+        easyDescription: 'Unlimited guesses; everything else stays the same, including the player pool picker',
         normal: 'Full',
-        normalDescription: 'Every Nijisanji JP member · Ultimate challenge',
+        normalDescription: 'Every Nijisanji member · 8 guesses',
       },
       settings: {
         title: 'Personal settings',
@@ -348,9 +352,9 @@ export const resources = {
         singleMode: 'Solo · {{mode}}', restart: 'Restart', reveal: 'Reveal answer', restartTitle: 'Restart?',
         restartMessage: 'Current progress will be cleared and a new game will start immediately.', leaveTitle: 'Return home?',
         leaveMessage: 'Current progress will be cleared and this game cannot be resumed.', leaveConfirm: 'Return home', revealTitle: 'Reveal the answer?',
-        revealMessage: 'Revealing the answer ends this game immediately and records a loss.', guesses: 'Guesses {{current}} / {{max}}',
+        revealMessage: 'Revealing the answer ends this game immediately and records a loss.', guesses: 'Guesses {{current}} / {{max}}', guessesUnlimited: 'Guesses: {{count}} · unlimited',
         congratulations: 'Correct!', ended: 'Game over', hint: 'Green is correct · Yellow is close · Gray is far off · Purple means the age is unknown · Arrows show the target direction · Debut date: ↑ means earlier, ↓ means later', again: 'Play again', back: 'Back to menu',
-        startHint: 'Enter a player nickname below to start guessing', normalHint: 'The target can be anyone in the Nijisanji JP roster',
+        startHint: 'Enter a player nickname below to start guessing', normalHint: 'The target can be anyone in the Nijisanji roster',
         correctAnswer: 'Correct answer', usedGuesses: 'Solved in {{count}} guesses', missed: 'You did not find the answer this time', settlementNotRecorded: 'The settlement limit was exceeded. This game will not count toward personal stats or leaderboards.', viewGame: 'View game',
         starting: 'Starting a new game…', startFailedTitle: 'Could not start the game', startRetry: 'Retry', backToLobby: 'Back to difficulty selection',
       },
@@ -460,8 +464,10 @@ export const resources = {
   ja: {
     translation: {
       difficulty: {
+        easy: 'かんたん',
+        easyDescription: '推測回数は無制限。ほかのルールと出題範囲の選択はそのまま',
         normal: 'フル',
-        normalDescription: 'にじさんじ JP 全メンバー · 究極の挑戦',
+        normalDescription: 'にじさんじ 全メンバー · 8 回',
       },
       settings: {
         title: '個人設定',
@@ -565,9 +571,9 @@ export const resources = {
         singleMode: 'ソロ · {{mode}}', restart: 'やり直す', reveal: '答えを見る', restartTitle: 'やり直しますか？',
         restartMessage: '現在の進行状況を消去し、すぐに新しいゲームを開始します。', leaveTitle: 'メインメニューに戻りますか？',
         leaveMessage: '現在の進行状況は消去され、このゲームを再開できなくなります。', leaveConfirm: 'メインメニューへ', revealTitle: '答えを見ますか？',
-        revealMessage: '答えを見るとゲームは直ちに終了し、敗北として記録されます。', guesses: '予想 {{current}} / {{max}}', congratulations: '正解です！',
+        revealMessage: '答えを見るとゲームは直ちに終了し、敗北として記録されます。', guesses: '予想 {{current}} / {{max}}', guessesUnlimited: '予想 {{count}} 回 · 回数無制限', congratulations: '正解です！',
         ended: 'ゲーム終了', hint: '緑は正解 · 黄は惜しい · 矢印は正解の方向 · デビュー日は ↑ がより早い、↓ がより遅い', again: 'もう一度', back: 'メニューに戻る',
-        startHint: '下の入力欄に選手名を入力して予想を始めます', normalHint: 'にじさんじ JP の全メンバーが対象です',
+        startHint: '下の入力欄に選手名を入力して予想を始めます', normalHint: 'にじさんじの全メンバーが対象です',
         correctAnswer: '正解', usedGuesses: '{{count}} 回で正解', missed: '今回は正解できませんでした', settlementNotRecorded: '精算回数の上限を超えたため、この対局は個人戦績とランキングに反映されません。', viewGame: '対局を見る',
         starting: '新しいゲームを開始しています…', startFailedTitle: 'ゲームを開始できませんでした', startRetry: '再試行', backToLobby: '難易度選択に戻る',
       },

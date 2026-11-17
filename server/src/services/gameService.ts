@@ -6,6 +6,7 @@
  */
 import { Player, GuessFeedback, AttributeFeedback } from '../types';
 import { collabGroupKey } from './teamHistory';
+import { difficultyHasUnlimitedGuesses } from '../difficulties';
 import {
   AGE_CLOSE_YEARS,
   DEBUT_CLOSE_DAYS,
@@ -114,3 +115,7 @@ export function refreshGuessFeedback(
 }
 
 export const MAX_GUESSES = 8;
+
+export function guessLimitForMode(mode: string): number | null {
+  return difficultyHasUnlimitedGuesses(mode) ? null : MAX_GUESSES;
+}

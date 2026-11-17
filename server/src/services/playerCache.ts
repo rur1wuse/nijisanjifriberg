@@ -61,6 +61,13 @@ export async function refreshPlayerCache(): Promise<void> {
         player.difficulties.push(difficultyKey);
         if (Boolean(player.is_enabled)) playersByDifficulty.get(difficultyKey)?.push(player);
       }
+      for (const difficulty of DIFFICULTY_LEVELS) {
+        if (!difficulty.isEnabled || !difficulty.poolKey) continue;
+        playersByDifficulty.set(
+          difficulty.key,
+          playersByDifficulty.get(difficulty.poolKey) ?? []
+        );
+      }
       allPlayers = hydrated.filter((player) => Boolean(player.is_enabled));
       playersById = new Map(hydrated.map((player) => [player.id, player]));
       searchablePlayers = allPlayers.map((player) => ({

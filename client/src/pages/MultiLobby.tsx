@@ -22,7 +22,7 @@ import { RoomState } from '../types';
 import { useConfirm } from '../components/ConfirmDialog';
 import { toast } from '../components/Toast';
 import { useTranslation } from 'react-i18next';
-import { AVAILABLE_DIFFICULTIES } from '../config/difficulties';
+import { MULTIPLAYER_DIFFICULTIES } from '../config/difficulties';
 import { RegionKey } from '../config/regions';
 import RegionPicker from '../components/RegionPicker';
 import { difficultyLabel } from '../utils/difficulty';
@@ -86,7 +86,7 @@ function OptionGroup<T extends string | number>({
 
 export default function MultiLobby() {
   const { t } = useTranslation();
-  const difficulties = AVAILABLE_DIFFICULTIES;
+  const difficulties = MULTIPLAYER_DIFFICULTIES;
   const difficultyKeys = difficulties.map((item) => item.key);
   const defaultDifficulty = difficulties.find((item) => item.key === 'normal')?.key
     ?? difficulties[0]?.key

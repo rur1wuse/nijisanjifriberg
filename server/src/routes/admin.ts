@@ -31,7 +31,7 @@ import { getPlayerPerformance } from '../services/playerPerformance';
 import { compareGuess, refreshGuessFeedback, MAX_GUESSES } from '../services/gameService';
 import { getPlayer } from '../services/playerCache';
 import type { GuessFeedback, Player } from '../types';
-import { DIFFICULTY_LEVELS } from '../difficulties';
+import { DIFFICULTY_LEVELS, isSingleOnlyDifficulty } from '../difficulties';
 import {
   createPlayer,
   deletePlayer,
@@ -869,7 +869,9 @@ router.get(
 
     const entries = await Promise.all(
       DIFFICULTY_LEVELS.filter((difficulty) => difficulty.isEnabled).flatMap((difficulty) =>
-        (['single', 'multi'] as const).map(async (mode) => {
+        (['single', 'multi'] as const)
+          .filter((mode) => mode === 'single' || !isSingleOnlyDifficulty(difficulty.key))
+          .map(async (mode) => {
           const rows = mode === 'multi'
             ? await db('match_players as mp')
               .join('users as u', 'u.id', 'mp.user_id')

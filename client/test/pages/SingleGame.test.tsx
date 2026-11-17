@@ -79,6 +79,16 @@ describe('SingleGame UX', () => {
     expect(post).not.toHaveBeenCalled();
   });
 
+  it('shows an unlimited guess counter for the easy tier', async () => {
+    post.mockResolvedValueOnce({ data: { gameId: 'g1', guesses: [], maxGuesses: null } } as never);
+
+    renderGame('easy');
+    await waitForReadyInput();
+
+    expect(screen.getByText('已猜测 0 次 · 不限次数')).toBeInTheDocument();
+    expect(localStorage.getItem('nijisanjifriberg.single-difficulty')).toBe('easy');
+  });
+
   it('shows starting feedback and keeps dock input disabled while start is pending', async () => {
     const start = deferred<{ data: { gameId: string; guesses: []; maxGuesses: number } }>();
     post.mockReturnValueOnce(start.promise as never);

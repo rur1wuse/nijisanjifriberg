@@ -12,7 +12,7 @@ import { api, errMsg } from '../api/client';
 import { toast } from '../components/Toast';
 import { useAuth } from '../store/auth';
 import { useTranslation } from 'react-i18next';
-import { AVAILABLE_DIFFICULTIES } from '../config/difficulties';
+import { AVAILABLE_DIFFICULTIES, MULTIPLAYER_DIFFICULTIES } from '../config/difficulties';
 import { difficultyLabel } from '../utils/difficulty';
 
 interface BoardRow {
@@ -35,9 +35,13 @@ interface LeaderboardResponse {
 
 export default function Leaderboard() {
   const { t } = useTranslation();
-  const difficulties = AVAILABLE_DIFFICULTIES;
   const [mode, setMode] = useState<LeaderboardMode>('single');
-  const [difficulty, setDifficulty] = useState(AVAILABLE_DIFFICULTIES[0]?.key ?? 'normal');
+  const difficulties = mode === 'single' ? AVAILABLE_DIFFICULTIES : MULTIPLAYER_DIFFICULTIES;
+  const [difficulty, setDifficulty] = useState(
+    AVAILABLE_DIFFICULTIES.find((item) => item.key === 'normal')?.key
+      ?? AVAILABLE_DIFFICULTIES[0]?.key
+      ?? 'normal'
+  );
   const [rows, setRows] = useState<BoardRow[]>([]);
   const [currentUser, setCurrentUser] = useState<LeaderboardResponse['currentUser']>(null);
   const [loading, setLoading] = useState(true);

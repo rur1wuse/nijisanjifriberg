@@ -37,7 +37,7 @@ export default function SingleGame() {
   const isValidMode = AVAILABLE_DIFFICULTIES.some((d) => d.key === mode);
   const [gameId, setGameId] = useState<string | null>(null);
   // 与服务端 gameService MAX_GUESSES=8 一致
-  const [maxGuesses, setMaxGuesses] = useState(8);
+  const [maxGuesses, setMaxGuesses] = useState<number | null>(8);
   const [guesses, setGuesses] = useState<GuessFeedback[]>([]);
   const [status, setStatus] = useState<'playing' | 'won' | 'lost'>('playing');
   const [answer, setAnswer] = useState<AnswerInfo | null>(null);
@@ -189,6 +189,11 @@ export default function SingleGame() {
   };
 
   const finished = status !== 'playing';
+  const unlimitedGuesses = maxGuesses === null;
+  const guessSlots = maxGuesses ?? 0;
+  const guessProgressLabel = unlimitedGuesses
+    ? t('game.guessesUnlimited', { count: guesses.length })
+    : t('game.guesses', { current: guesses.length, max: guessSlots });
   const modeLabel = difficultyLabel(t, mode);
   const ModeIcon = difficultyIcon(mode);
   const busyStatus = starting
@@ -247,12 +252,14 @@ export default function SingleGame() {
           <span
             className="guess-progress"
             role="img"
-            aria-label={t('game.guesses', { current: guesses.length, max: maxGuesses })}
-            title={t('game.guesses', { current: guesses.length, max: maxGuesses })}
+            aria-label={guessProgressLabel}
+            title={guessProgressLabel}
           >
-            {Array.from({ length: maxGuesses }, (_, i) => (
-              <i key={i} className={i < guesses.length ? 'used' : ''} />
-            ))}
+            {unlimitedGuesses
+              ? <span className="guess-count">{guessProgressLabel}</span>
+              : Array.from({ length: guessSlots }, (_, i) => (
+                <i key={i} className={i < guesses.length ? 'used' : ''} />
+              ))}
           </span>
           <span style={{ color: 'var(--border)' }}>|</span>
           {busyStatus
@@ -277,13 +284,15 @@ export default function SingleGame() {
           </div>
         ) : (
           <>
-            <div className="guess-progress-dock" aria-hidden="true">
-              <span className="guess-progress">
-                {Array.from({ length: maxGuesses }, (_, i) => (
-                  <i key={i} className={i < guesses.length ? 'used' : ''} />
-                ))}
-              </span>
-            </div>
+            {!unlimitedGuesses && (
+              <div className="guess-progress-dock" aria-hidden="true">
+                <span className="guess-progress">
+                  {Array.from({ length: guessSlots }, (_, i) => (
+                    <i key={i} className={i < guesses.length ? 'used' : ''} />
+                  ))}
+                </span>
+              </div>
+            )}
             <GuessInputBar
               onPick={(p) => guess(p.id)}
               onFocusChange={setInputFocused}

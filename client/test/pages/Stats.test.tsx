@@ -70,7 +70,7 @@ describe('Stats difficulty filter', () => {
     renderAtRoute(<Stats />);
 
     await waitFor(() => expect(apiGet).toHaveBeenCalledWith('/stats/me', {
-      params: { difficulties: 'normal' },
+      params: { difficulties: 'easy,normal' },
     }));
     expect(await screen.findByText('全部分级', { selector: '.difficulty-multi-select-summary' })).toBeInTheDocument();
     expect(screen.getAllByRole('heading', { name: '个人统计', level: 3 })).toHaveLength(1);
@@ -88,7 +88,8 @@ describe('Stats difficulty filter', () => {
     const difficultyGroup = screen.getByRole('group', { name: '统计难度' });
     const normalCheckbox = within(difficultyGroup).getByRole('checkbox', { name: '完整版' });
     expect(normalCheckbox).toBeChecked();
-    expect(normalCheckbox).toBeDisabled();
+    expect(normalCheckbox).toBeEnabled();
+    expect(within(difficultyGroup).getByRole('checkbox', { name: '简单版' })).toBeChecked();
     expect(within(difficultyGroup).getByRole('checkbox', { name: '全部分级' })).toBeChecked();
     expect(apiGet.mock.calls.filter(([url]) => url === '/stats/me')).toHaveLength(1);
   });

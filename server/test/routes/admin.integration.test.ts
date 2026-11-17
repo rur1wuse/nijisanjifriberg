@@ -198,13 +198,15 @@ describe('admin user management', () => {
       const leaderboards = await request(`/api/admin/users/${targetUser.id}/leaderboards`, adminSession);
       expect(leaderboards.response.status).toBe(200);
       expect(leaderboards.data).toMatchObject({ leaderboardHidden: true, entries: expect.any(Array) });
-      expect(leaderboards.data.entries).toHaveLength(2);
+      expect(leaderboards.data.entries).toHaveLength(3);
       expect(leaderboards.data.entries.find((entry: { mode: string; difficulty: string }) => entry.mode === 'single' && entry.difficulty === 'normal')).toMatchObject({
         total: 2,
         wins: 1,
         winRate: 0.5,
         rank: expect.any(Number),
       });
+      expect(leaderboards.data.entries.find((entry: { mode: string; difficulty: string }) => entry.mode === 'single' && entry.difficulty === 'easy')).toMatchObject({ total: 0, wins: 0 });
+      expect(leaderboards.data.entries.some((entry: { mode: string; difficulty: string }) => entry.mode === 'multi' && entry.difficulty === 'easy')).toBe(false);
       expect(leaderboards.data.entries.find((entry: { mode: string; difficulty: string }) => entry.mode === 'multi' && entry.difficulty === 'normal')).toMatchObject({
         total: 2,
         wins: 1,

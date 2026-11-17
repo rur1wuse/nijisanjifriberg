@@ -44,12 +44,14 @@ describe('Leaderboard filters', () => {
     }));
 
     expect(screen.getAllByRole('option').map((option) => (option as HTMLOptionElement).value))
-      .toEqual(['normal']);
+      .toEqual(['easy', 'normal']);
 
     await user.click(screen.getByRole('tab', { name: '多人' }));
     await waitFor(() => expect(apiGet).toHaveBeenLastCalledWith('/leaderboard', {
       params: { mode: 'multi', difficulty: 'normal' },
     }));
+    expect(screen.getAllByRole('option').map((option) => (option as HTMLOptionElement).value))
+      .toEqual(['normal']);
     expect(screen.getByRole('tab', { name: '多人' })).toHaveAttribute('aria-selected', 'true');
   });
 

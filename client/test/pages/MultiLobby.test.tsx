@@ -197,6 +197,13 @@ describe('MultiLobby matchmaking', () => {
     expect(roundDuration).toHaveAttribute('max', '600');
   });
 
+  it('does not offer the solo-only easy tier for multiplayer rooms', () => {
+    renderAtRoute(<MultiLobby />, { route: '/multi', path: '/multi' });
+
+    expect(screen.queryByRole('button', { name: /简单版/ })).not.toBeInTheDocument();
+    expect(screen.getAllByRole('button', { name: '完整版' })).toHaveLength(2);
+  });
+
   it('sends the selected region bank when creating a room', async () => {
     const user = userEvent.setup();
     renderAtRoute(<MultiLobby />, { route: '/multi', path: '/multi' });

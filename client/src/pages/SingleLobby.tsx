@@ -33,6 +33,7 @@ export default function SingleLobby() {
 
   const selectedDifficulty = useMemo(
     () => difficulties.find((item) => item.key === selected)
+      ?? difficulties.find((item) => item.key === 'normal')
       ?? difficulties[0],
     [difficulties, selected]
   );

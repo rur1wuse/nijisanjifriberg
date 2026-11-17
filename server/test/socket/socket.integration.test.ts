@@ -281,6 +281,23 @@ describe('multiplayer socket integration', () => {
     }
   });
 
+  it('rejects the solo-only easy tier for rooms and matchmaking', async () => {
+    const key = `easy-room-${Date.now()}`;
+    const token = jwt.sign({ key, typ: 'guest' }, config.jwtSecret, { expiresIn: '1h' });
+    const socket = await connect(withPowCookie(`csgofriberg_guest=${token}`));
+    const player = await createTestUser();
+    const playerSocket = await connect(player.cookie);
+    try {
+      expect(await emit(socket, 'room:create', { dbType: 'easy', boType: 1 }))
+        .toEqual({ code: 'INVALID_DIFFICULTY' });
+      expect(await emit(playerSocket, 'match:start', { dbType: 'easy' }))
+        .toEqual({ code: 'INVALID_DIFFICULTY' });
+    } finally {
+      socket.disconnect();
+      playerSocket.disconnect();
+    }
+  });
+
   it('requires login for matchmaking and ignores legacy verified-only rooms', async () => {
     const guestKey = `match-policy-guest-${Date.now()}`;
     const guestToken = jwt.sign({ key: guestKey, typ: 'guest' }, config.jwtSecret, { expiresIn: '1h' });

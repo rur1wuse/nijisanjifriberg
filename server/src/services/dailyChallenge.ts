@@ -1,5 +1,5 @@
 import { db } from '../db/knex';
-import { DIFFICULTY_LEVELS } from '../difficulties';
+import { DIFFICULTY_LEVELS, isSingleOnlyDifficulty } from '../difficulties';
 import { getDifficultyPlayers, pickCachedTarget } from './playerCache';
 import { ALL_REGIONS } from '../regions';
 import { cached, invalidateCached } from './queryCache';
@@ -11,7 +11,7 @@ const DAILY_CHALLENGE_RETENTION_DAYS = 90;
 const DAILY_LEADERBOARD_TTL_SECONDS = 20;
 
 export const DAILY_CHALLENGE_DIFFICULTIES = DIFFICULTY_LEVELS
-  .filter((difficulty) => difficulty.isEnabled)
+  .filter((difficulty) => difficulty.isEnabled && !isSingleOnlyDifficulty(difficulty.key))
   .map((difficulty) => difficulty.key);
 
 export interface DailyChallengeWindow {

@@ -5,6 +5,7 @@ import { isRedisAvailable } from '../../redis';
 import { getMatchmakingCooldown } from '../../services/matchmakingCooldown';
 import { isMatchmakingRestricted } from '../../services/matchmakingRestriction';
 import { isDifficultyAvailable } from '../../services/playerCache';
+import { isSingleOnlyDifficulty } from '../../difficulties';
 import { ALL_REGIONS } from '../../regions';
 import {
   DbType,
@@ -75,6 +76,10 @@ export async function handleMatchStart(
   const dbType: DbType = payload.dbType;
   if (!isDifficultyAvailable(dbType)) {
     ack?.({ code: 'DIFFICULTY_UNAVAILABLE' });
+    return;
+  }
+  if (isSingleOnlyDifficulty(dbType)) {
+    ack?.({ code: 'INVALID_DIFFICULTY' });
     return;
   }
   const queuedMe: QueuedIdentity = {

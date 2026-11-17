@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
 import { z } from 'zod';
 import { isDifficultyAvailable } from '../../services/playerCache';
+import { isSingleOnlyDifficulty } from '../../difficulties';
 import { getPlayerPerformance } from '../../services/playerPerformance';
 import {
   readyExitPenaltyMultiplier,
@@ -160,6 +161,10 @@ export async function handleRoomCreate(
   const dbType = payload.dbType;
   if (!isDifficultyAvailable(dbType)) {
     ack?.({ code: 'DIFFICULTY_UNAVAILABLE' });
+    return;
+  }
+  if (isSingleOnlyDifficulty(dbType)) {
+    ack?.({ code: 'INVALID_DIFFICULTY' });
     return;
   }
   const parsedRegions = parseRegions(payload.regions);

@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import Page from '../components/Page';
 import { api, errMsg } from '../api/client';
-import { AVAILABLE_DIFFICULTIES } from '../config/difficulties';
+import { DAILY_DIFFICULTIES } from '../config/difficulties';
 import {
   difficultyColor,
   difficultyDescription,
@@ -36,7 +36,7 @@ interface DailyLobbyResponse {
 export default function DailyLobby() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const difficulties = AVAILABLE_DIFFICULTIES;
+  const difficulties = DAILY_DIFFICULTIES;
   const defaultDifficulty = difficulties[0];
   const [selected, setSelected] = useState<string | null>(getStoredDailyDifficulty);
   const [statuses, setStatuses] = useState<Record<string, DailyStatus>>({});

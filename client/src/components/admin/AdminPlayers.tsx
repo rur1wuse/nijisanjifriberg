@@ -14,7 +14,7 @@ import { clearPlayerListCache } from '../../api/playerList';
 import { toast } from '../Toast';
 import { useTranslation } from 'react-i18next';
 import { difficultyLabel } from '../../utils/difficulty';
-import { AVAILABLE_DIFFICULTIES } from '../../config/difficulties';
+import { ADMIN_DIFFICULTIES } from '../../config/difficulties';
 
 interface AdminPlayer extends PlayerForm {
   id: number;
@@ -319,7 +319,7 @@ export default function AdminPlayers() {
         <PlayerEditForm
           key={editing.id ?? 'new'}
           initial={editing}
-          difficultyKeys={AVAILABLE_DIFFICULTIES.map((item) => item.key)}
+          difficultyKeys={ADMIN_DIFFICULTIES.map((item) => item.key)}
           onSubmit={save}
           onCancel={() => setEditing(null)}
         />

@@ -20,7 +20,7 @@ import { toast } from '../components/Toast';
 import { useConfirm } from '../components/ConfirmDialog';
 import { localizedName } from '../utils/playerName';
 import type { GuessFeedback } from '../types';
-import { AVAILABLE_DIFFICULTIES } from '../config/difficulties';
+import { DAILY_DIFFICULTIES } from '../config/difficulties';
 import { difficultyColor, difficultyIcon, difficultyLabel } from '../utils/difficulty';
 import { setStoredDailyDifficulty } from '../store/dailyDifficulty';
 
@@ -92,7 +92,7 @@ export default function DailyChallenge() {
   const { mode = '' } = useParams();
   const navigate = useNavigate();
   const confirm = useConfirm();
-  const isValidMode = AVAILABLE_DIFFICULTIES.some((difficulty) => difficulty.key === mode);
+  const isValidMode = DAILY_DIFFICULTIES.some((difficulty) => difficulty.key === mode);
   const [daily, setDaily] = useState<DailyChallengeResponse | null>(null);
   const [leaderboard, setLeaderboard] = useState<DailyLeaderboardRow[]>([]);
   const [leaderboardLoading, setLeaderboardLoading] = useState(false);
